@@ -143,7 +143,9 @@ export class FixtureResearcher implements Researcher {
   }
 }
 
-function isCited(fact: Fact): fact is Required<Fact> {
+function isCited(
+  fact: Fact,
+): fact is Fact & { sourceUrl: string } {
   if (!fact.sourceUrl) return false;
   try {
     const url = new URL(fact.sourceUrl);

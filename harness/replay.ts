@@ -14,6 +14,7 @@ import type {
   Claim,
   ClaimExtractor,
   ClaimToPageMetric,
+  Fact,
   Page,
   PageBuilder,
   Researcher,
@@ -238,7 +239,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
 
     const priorClaimPageId = seenClaims.get(claim.normalized);
     const existingPage = pages.get(topic.id);
-    let facts = [];
+    let facts: Fact[] = [];
     if (priorClaimPageId) {
       duplicatesMerged += 1;
       record(

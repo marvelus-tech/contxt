@@ -39,7 +39,7 @@ export interface Page {
   title: string;
   currentClaim: string;
   claimIds: string[];
-  facts: Array<Required<Fact>>;
+  facts: Array<{ text: string; sourceUrl: string }>;
   createdAtMs: number;
   updatedAtMs: number;
 }
