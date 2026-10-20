@@ -66,7 +66,8 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
       this.carry =
         sentences
           .map(({ segment: sentence }) => sentence.trim())
-          .findLast((sentence) => !/[.!?]["')\]]?$/.test(sentence)) ?? "";
+          .filter((sentence) => !/[.!?]["')\]]?$/.test(sentence))
+          .at(-1) ?? "";
 
       for (const sentence of complete) {
         const claim = this.toClaim(sentence.trim(), segment);
