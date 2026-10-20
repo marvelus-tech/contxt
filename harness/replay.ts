@@ -8,6 +8,7 @@ import {
   HeuristicClaimExtractor,
   HeuristicTopicGrouper,
   HtmlPageBuilder,
+  isCitedFact,
 } from "../pipeline/stages.js";
 import { createTranscriber } from "../pipeline/transcribers.js";
 import type {
@@ -162,7 +163,9 @@ transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
 pages created: ${scorecard.pagesCreated}
 pages updated: ${scorecard.pagesUpdated}
 duplicates merged: ${scorecard.duplicatesMerged}
-facts cited: ${scorecard.percentFactsCited.toFixed(1)}%
+facts proposed: ${scorecard.factsProposed}
+facts dropped for no source: ${scorecard.factsDroppedForNoSource}
+facts on pages cited: ${scorecard.factsOnPagesCitedPercent.toFixed(1)}%
 stage latency:
 ${stages || "  no stage samples"}
 claim to page:
@@ -213,8 +216,8 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   let pagesCreated = 0;
   let pagesUpdated = 0;
   let duplicatesMerged = 0;
-  let factsOffered = 0;
-  let factsCited = 0;
+  let factsProposed = 0;
+  let factsDroppedForNoSource = 0;
 
   const record = (
     mediaMs: number,
@@ -266,14 +269,17 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
         existingPage?.id,
       );
     } else {
-      facts = await timed("researcher", () => researcher.research(claim, topic));
+      const proposedFacts = await timed("researcher", () =>
+        researcher.research(claim, topic),
+      );
+      factsProposed += proposedFacts.length;
+      facts = proposedFacts.filter(isCitedFact);
+      factsDroppedForNoSource += proposedFacts.length - facts.length;
     }
 
     const built = await timed("pageBuilder", () =>
       pageBuilder.build({ claim, topic, facts, existingPage }),
     );
-    factsOffered += built.offeredFacts;
-    factsCited += built.citedFacts;
     pages.set(topic.id, built.page);
     seenClaims.set(claim.normalized, topic.id);
     const action = existingPage ? "updated" : "created";
@@ -330,6 +336,9 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   for (const [stage, values] of Object.entries(latencySamples)) {
     if (values.length === 0) delete latencySamples[stage];
   }
+  const pageList = [...pages.values()];
+  const factsOnPages = pageList.flatMap((page) => page.facts);
+  const factsOnPagesCited = factsOnPages.filter(isCitedFact).length;
   const scorecard: Scorecard = {
     runId,
     transcriber: transcriber.id,
@@ -340,14 +349,15 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     pagesCreated,
     pagesUpdated,
     duplicatesMerged,
-    factsOffered,
-    factsCited,
-    percentFactsCited: factsOffered ? (factsCited / factsOffered) * 100 : 100,
+    factsProposed,
+    factsDroppedForNoSource,
+    factsOnPagesCitedPercent: factsOnPages.length
+      ? (factsOnPagesCited / factsOnPages.length) * 100
+      : 100,
     latencyByStageMs: summarizeLatency(latencySamples),
     claimToPageSeconds,
     ...(availability.reason ? { skipReason: availability.reason } : {}),
   };
-  const pageList = [...pages.values()];
   const deckPath = join(runDir, "deck.html");
   const timelinePath = join(runDir, "timeline.json");
   const scorecardPath = join(runDir, "scorecard.json");

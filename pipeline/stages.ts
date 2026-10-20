@@ -152,7 +152,7 @@ export class FixtureResearcher implements Researcher {
   }
 }
 
-function isCited(
+export function isCitedFact(
   fact: Fact,
 ): fact is Fact & { sourceUrl: string } {
   if (!fact.sourceUrl) return false;
@@ -176,7 +176,7 @@ function escapeHtml(value: string): string {
 
 export class HtmlPageBuilder implements PageBuilder {
   async build(input: BuildPageInput): Promise<BuildPageResult> {
-    const facts = input.facts.filter(isCited);
+    const facts = input.facts.filter(isCitedFact);
     const page: Page = input.existingPage
       ? {
           ...input.existingPage,

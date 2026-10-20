@@ -119,9 +119,9 @@ export interface Scorecard {
   pagesCreated: number;
   pagesUpdated: number;
   duplicatesMerged: number;
-  factsOffered: number;
-  factsCited: number;
-  percentFactsCited: number;
+  factsProposed: number;
+  factsDroppedForNoSource: number;
+  factsOnPagesCitedPercent: number;
   latencyByStageMs: Record<string, StageLatency>;
   claimToPageSeconds: ClaimToPageMetric[];
   skipReason?: string;

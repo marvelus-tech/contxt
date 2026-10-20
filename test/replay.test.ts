@@ -114,14 +114,27 @@ test("fixture replay writes a cited three-topic deck and scorecard", async () =>
     assert.equal(result.scorecard.pagesCreated, 3);
     assert.equal(result.scorecard.pagesUpdated, 1);
     assert.equal(result.scorecard.duplicatesMerged, 1);
-    assert.equal(result.scorecard.factsOffered, 10);
-    assert.equal(result.scorecard.factsCited, 9);
-    assert.equal(result.scorecard.percentFactsCited, 90);
+    assert.equal(result.scorecard.factsProposed, 10);
+    assert.equal(result.scorecard.factsDroppedForNoSource, 1);
+    assert.equal(result.scorecard.factsOnPagesCitedPercent, 100);
     assert.equal(result.pages.length, 3);
 
     const deck = await readFile(result.deckPath, "utf8");
     assert.match(deck, /Chronological timeline/);
     assert.doesNotMatch(deck, /uncited note/);
+    const factLists = [
+      ...deck.matchAll(/<h2>Cited facts<\/h2>\s*<ul>(.*?)<\/ul>/gs),
+    ];
+    const deckFacts = factLists.flatMap((list) => [
+      ...(list[1] ?? "").matchAll(/<li>(.*?)<\/li>/g),
+    ]);
+    assert.equal(deckFacts.length, 9);
+    assert.equal(
+      deckFacts.every((fact) =>
+        /href="https?:\/\/[^"]+">Source<\/a>/.test(fact[1] ?? ""),
+      ),
+      true,
+    );
     assert.equal(await readFile(result.timelinePath, "utf8").then(JSON.parse) instanceof Array, true);
     assert.equal(
       await readFile(result.scorecardPath, "utf8").then(JSON.parse).then(
