@@ -43,6 +43,26 @@ test("claim extraction normalizes repeated claims for dedupe", async () => {
   assert.equal(first[0]?.normalized, repeat[0]?.normalized);
 });
 
+test("claim extraction preserves decimals and abbreviations", async () => {
+  const extractor = new HeuristicClaimExtractor();
+  const claims = await extractor.extract(
+    [
+      {
+        startMs: 0,
+        endMs: 1000,
+        text: "The U.S. inflation rate was 3.2 percent last year.",
+      },
+    ],
+    { mediaTimeMs: 1000 },
+  );
+
+  assert.equal(claims.length, 1);
+  assert.equal(
+    claims[0]?.text,
+    "The U.S. inflation rate was 3.2 percent last year.",
+  );
+});
+
 test("page builder drops facts without valid source URLs", async () => {
   const builder = new HtmlPageBuilder();
   const result = await builder.build({

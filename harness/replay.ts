@@ -72,15 +72,28 @@ async function fixtureDuration(path: string): Promise<number> {
 
 async function wavDuration(path: string): Promise<number> {
   const data = await readFile(path);
-  if (data.length < 44 || data.toString("ascii", 0, 4) !== "RIFF") {
+  if (
+    data.length < 12 ||
+    data.toString("ascii", 0, 4) !== "RIFF" ||
+    data.toString("ascii", 8, 12) !== "WAVE"
+  ) {
     throw new Error("Invalid WAV file");
   }
-  const byteRate = data.readUInt32LE(28);
-  const dataIndex = data.indexOf(Buffer.from("data"));
-  if (!byteRate || dataIndex < 0 || dataIndex + 8 > data.length) {
+  let byteRate = 0;
+  let audioBytes = 0;
+  for (let offset = 12; offset + 8 <= data.length; ) {
+    const id = data.toString("ascii", offset, offset + 4);
+    const size = data.readUInt32LE(offset + 4);
+    const body = offset + 8;
+    if (body + size > data.length) throw new Error("Invalid WAV chunk");
+    if (id === "fmt " && size >= 16) byteRate = data.readUInt32LE(body + 8);
+    if (id === "data") audioBytes += size;
+    offset = body + size + (size % 2);
+  }
+  if (!byteRate || !audioBytes) {
     throw new Error("WAV duration metadata is missing");
   }
-  return (data.readUInt32LE(dataIndex + 4) / byteRate) * 1_000;
+  return (audioBytes / byteRate) * 1_000;
 }
 
 async function mediaDuration(path: string): Promise<number> {
@@ -188,7 +201,6 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   const timeline: TimelineEvent[] = [];
   const topics: Topic[] = [];
   const pages = new Map<string, Page>();
-  const claimPages = new Map<string, Page>();
   const seenClaims = new Map<string, string>();
   const latencySamples: Record<string, number[]> = {
     transcriber: [],
@@ -232,25 +244,28 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
 
   const processClaim = async (claim: Claim): Promise<void> => {
     const claimReceived = performance.now();
-    const topic = await timed("topicGrouper", () =>
-      grouper.group(claim, topics),
-    );
+    const priorTopicId = seenClaims.get(claim.normalized);
+    const priorTopic = priorTopicId
+      ? topics.find((candidate) => candidate.id === priorTopicId)
+      : undefined;
+    const topic =
+      priorTopic ??
+      (await timed("topicGrouper", () => grouper.group(claim, topics)));
+    if (priorTopic) priorTopic.claimIds.push(claim.id);
     record(claim.endMs, "topicGrouper", "topic-grouped", topic.title, topic.id);
 
-    const priorClaimPageId = seenClaims.get(claim.normalized);
     const existingPage = pages.get(topic.id);
     let facts: Fact[] = [];
-    if (priorClaimPageId) {
+    if (priorTopic) {
       duplicatesMerged += 1;
       record(
         claim.endMs,
         "dedupe",
         "duplicate-merged",
         claim.text,
-        priorClaimPageId,
+        existingPage?.id,
       );
     } else {
-      seenClaims.set(claim.normalized, existingPage?.id ?? `page-${topic.id}`);
       facts = await timed("researcher", () => researcher.research(claim, topic));
     }
 
@@ -260,7 +275,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     factsOffered += built.offeredFacts;
     factsCited += built.citedFacts;
     pages.set(topic.id, built.page);
-    claimPages.set(claim.id, built.page);
+    seenClaims.set(claim.normalized, topic.id);
     const action = existingPage ? "updated" : "created";
     if (existingPage) pagesUpdated += 1;
     else pagesCreated += 1;
@@ -287,7 +302,9 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     for (let index = 0; index < chunkCount; index += 1) {
       const startMs = index * CHUNK_MS;
       const endMs = Math.min(durationMs, startMs + CHUNK_MS);
-      if (index > 0) await sleep((endMs - startMs) / speed);
+      const targetElapsedMs = startMs / speed;
+      const remainingDelayMs = targetElapsedMs - (performance.now() - started);
+      if (remainingDelayMs > 0) await sleep(remainingDelayMs);
       record(startMs, "harness", "chunk", `Chunk ${index + 1}`);
       const segments = await timed("transcriber", () =>
         transcriber.transcribe({

@@ -48,6 +48,9 @@ function contentTokens(text: string): string[] {
 export class HeuristicClaimExtractor implements ClaimExtractor {
   private carry = "";
   private nextId = 1;
+  private readonly sentenceSegmenter = new Intl.Segmenter("en", {
+    granularity: "sentence",
+  });
 
   async extract(
     segments: TranscriptSegment[],
@@ -56,9 +59,14 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
     const claims: Claim[] = [];
     for (const segment of segments) {
       const combined = `${this.carry} ${segment.text}`.trim();
-      const complete = combined.match(/[^.!?]+[.!?]+/g) ?? [];
-      const consumed = complete.join("").length;
-      this.carry = combined.slice(consumed).trim();
+      const sentences = [...this.sentenceSegmenter.segment(combined)];
+      const complete = sentences
+        .map(({ segment: sentence }) => sentence.trim())
+        .filter((sentence) => /[.!?]["')\]]?$/.test(sentence));
+      this.carry =
+        sentences
+          .map(({ segment: sentence }) => sentence.trim())
+          .findLast((sentence) => !/[.!?]["')\]]?$/.test(sentence)) ?? "";
 
       for (const sentence of complete) {
         const claim = this.toClaim(sentence.trim(), segment);
