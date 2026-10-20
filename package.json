@@ -1,0 +1,25 @@
+{
+  "name": "contxt-replay-harness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "bin": {
+    "contxt-replay": "./dist/harness/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "replay": "npm run build && node dist/harness/cli.js",
+    "ci:replay": "npm run replay -- --fixture samples/demo.json --speed 1000"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "typescript": "^5.9.3"
+  }
+}

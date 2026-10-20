@@ -1,0 +1,49 @@
+{
+  "facts": {
+    "solar output supplied 40 percent of spain s electricity at midday": [
+      {
+        "text": "Solar power regularly sets daytime generation records in Spain.",
+        "sourceUrl": "https://www.ree.es/en"
+      },
+      {
+        "text": "Spain publishes generation data through its national system operator.",
+        "sourceUrl": "https://www.ree.es/en/datos/generation"
+      },
+      {
+        "text": "Solar generation changes throughout the day with available sunlight.",
+        "sourceUrl": "https://www.iea.org/energy-system/renewables/solar-pv"
+      }
+    ],
+    "the city council approved the harbor resilience bond": [
+      {
+        "text": "Municipal bonds can finance public infrastructure.",
+        "sourceUrl": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products"
+      },
+      {
+        "text": "Coastal resilience planning can include protection of public assets.",
+        "sourceUrl": "https://oceanservice.noaa.gov/hazards/resilience/"
+      },
+      {
+        "text": "Council records are a primary source for local approvals.",
+        "sourceUrl": "https://www.archives.gov/records-mgmt"
+      },
+      {
+        "text": "This uncited note must never appear in the deck."
+      }
+    ],
+    "the mars sample return mission is planned for 2033": [
+      {
+        "text": "Mars Sample Return is intended to bring selected samples to Earth.",
+        "sourceUrl": "https://science.nasa.gov/mission/mars-sample-return/"
+      },
+      {
+        "text": "Returned samples could be studied with instruments unavailable on Mars.",
+        "sourceUrl": "https://science.nasa.gov/mars/"
+      },
+      {
+        "text": "Mission schedules can change as architecture and funding are reviewed.",
+        "sourceUrl": "https://www.gao.gov/products/gao-24-106019"
+      }
+    ]
+  }
+}

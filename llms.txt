@@ -1,0 +1,42 @@
+# CONTXT replay harness
+
+Purpose: replay recorded audio or a timestamped transcript through the CONTXT pipeline and score the run.
+
+Install:
+npm install
+
+Offline fixture:
+npm run replay -- --fixture samples/demo.json
+
+Faster fixture:
+npm run replay -- --fixture samples/demo.json --speed 4
+
+Local audio:
+npm run replay -- recording.wav --speed 4 --transcriber whisper
+
+Cloud adapter stubs:
+ASSEMBLYAI_API_KEY=... npm run replay -- recording.mp3 --transcriber assemblyai
+DEEPGRAM_API_KEY=... npm run replay -- recording.mp3 --transcriber deepgram
+
+Missing cloud keys are skipped gracefully. The cloud adapters do not call external services in step 1.
+
+Agent API:
+import { runReplay } from "contxt-replay-harness";
+await runReplay({ inputPath: "samples/demo.json", speed: 4 });
+
+Optional runReplay fields:
+transcriber: fixture | whisper | assemblyai | deepgram
+modelPath: local whisper.cpp model path
+researchFixture: path to mock research JSON
+outRoot: output directory root
+runId: stable run identifier
+stages: replacements for any pipeline stage
+
+Outputs:
+out/<run-id>/deck.html
+out/<run-id>/timeline.json
+out/<run-id>/scorecard.json
+
+Checks:
+npm test
+npm run ci:replay

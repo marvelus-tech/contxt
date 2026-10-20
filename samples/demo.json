@@ -1,0 +1,24 @@
+{
+  "segments": [
+    {
+      "startMs": 200,
+      "endMs": 1200,
+      "text": "Solar output supplied 40 percent of Spain's electricity at midday."
+    },
+    {
+      "startMs": 1800,
+      "endMs": 2900,
+      "text": "The city council approved the harbor resilience bond."
+    },
+    {
+      "startMs": 3400,
+      "endMs": 4700,
+      "text": "The Mars sample return mission is planned for 2033."
+    },
+    {
+      "startMs": 5200,
+      "endMs": 6400,
+      "text": "Solar output supplied 40 percent of Spain's electricity at midday."
+    }
+  ]
+}
