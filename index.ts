@@ -11,3 +11,13 @@ export type {
   TopicGrouper,
   Transcriber,
 } from "./pipeline/types.js";
+export {
+  CloudTranscriber,
+  assemblyAiToSegments,
+  deepgramToSegments,
+  transcribeWithAssemblyAI,
+  transcribeWithDeepgram,
+  wordsToSegments,
+} from "./pipeline/cloud.js";
+export type { CloudTranscription, TimedWord } from "./pipeline/cloud.js";
+export type { Claim, PageClaim, TranscriptSegment } from "./pipeline/types.js";

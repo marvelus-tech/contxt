@@ -1,0 +1,26 @@
+{
+  "title": "First 1992 presidential debate (Bush, Clinton, Perot), opening segment",
+  "date": "1992-10-11",
+  "venue": "Washington University, St. Louis, Missouri",
+  "speakers": [
+    "Jim Lehrer (moderator)",
+    "Ross Perot",
+    "Bill Clinton",
+    "George H. W. Bush",
+    "Ann Compton (panelist)"
+  ],
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Presidential_Debate_with_George_H._W._Bush,_Bill_Clinton_and_Ross_Perot_11_October_1992.webm",
+  "sourceFile": "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e7/Presidential_Debate_with_George_H._W._Bush%2C_Bill_Clinton_and_Ross_Perot_11_October_1992.webm/Presidential_Debate_with_George_H._W._Bush%2C_Bill_Clinton_and_Ross_Perot_11_October_1992.webm.240p.vp9.webm",
+  "license": "Public domain. Wikimedia Commons lists the file as 'Public domain' (Copyrighted: False); uploaded from the George H. W. Bush Presidential Library (TheBushLibrary) channel.",
+  "clipStart": "00:02:06.0",
+  "clipEnd": "00:17:41.4",
+  "clipStartMs": 126000,
+  "clipEndMs": 1061400,
+  "durationMs": 935400,
+  "startCue": "LEHRER: Good evening, and welcome to the first of 3 debates...",
+  "endCue": "CLINTON: ...We need to invest and grow, and that's what I want to do.",
+  "audio": "samples/audio/debate1992.opus (32 kbps Opus, 16 kHz mono). Rebuild with scripts/fetch_debate1992.sh",
+  "reference": "samples/debate1992.reference.json",
+  "referenceSource": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/",
+  "referenceNotes": "Edited transcript, not verbatim. One '(Inaudible)' Bush interjection removed."
+}

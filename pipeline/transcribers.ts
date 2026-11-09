@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { CloudTranscriber } from "./cloud.js";
 import type {
   AudioChunk,
   TranscriptSegment,
@@ -13,7 +14,8 @@ import type {
 const execFileAsync = promisify(execFile);
 
 interface FixtureFile {
-  segments: TranscriptSegment[];
+  segments: Array<TranscriptSegment & { speakerLabel?: string }>;
+  speakers?: Array<{ id: string; name?: string }>;
 }
 
 export class FixtureTranscriber implements Transcriber {
@@ -25,7 +27,20 @@ export class FixtureTranscriber implements Transcriber {
     if (!Array.isArray(parsed.segments)) {
       throw new Error("Fixture must contain a segments array");
     }
-    return new FixtureTranscriber(parsed.segments);
+    // Optional speakers[] maps a segment's speaker id to a display name.
+    const names = new Map(
+      (parsed.speakers ?? []).map((speaker) => [speaker.id, speaker.name ?? speaker.id]),
+    );
+    return new FixtureTranscriber(
+      parsed.segments.map((segment) => ({
+        startMs: segment.startMs,
+        endMs: segment.endMs,
+        text: segment.text,
+        ...(segment.speaker
+          ? { speaker: names.get(segment.speaker) ?? segment.speaker }
+          : {}),
+      })),
+    );
   }
 
   async status(): Promise<{ status: TranscriberStatus }> {
@@ -37,30 +52,6 @@ export class FixtureTranscriber implements Transcriber {
       (segment) =>
         segment.startMs >= chunk.startMs && segment.startMs < chunk.endMs,
     );
-  }
-}
-
-class CloudStubTranscriber implements Transcriber {
-  constructor(
-    readonly id: string,
-    private readonly envName: string,
-  ) {}
-
-  async status(): Promise<{ status: TranscriberStatus; reason?: string }> {
-    if (!process.env[this.envName]) {
-      return {
-        status: "skipped",
-        reason: `Missing ${this.envName}`,
-      };
-    }
-    return {
-      status: "stub",
-      reason: `${this.id} is an interface stub in step 1`,
-    };
-  }
-
-  async transcribe(): Promise<TranscriptSegment[]> {
-    return [];
   }
 }
 
@@ -165,13 +156,14 @@ export async function createTranscriber(
   kind: "fixture" | "whisper" | "assemblyai" | "deepgram",
   inputPath: string,
   modelPath?: string,
+  cloud: { model?: string; keyterms?: string[] } = {},
 ): Promise<Transcriber> {
   if (kind === "fixture") return FixtureTranscriber.fromFile(inputPath);
   if (kind === "assemblyai") {
-    return new CloudStubTranscriber("assemblyai", "ASSEMBLYAI_API_KEY");
+    return new CloudTranscriber("assemblyai", cloud);
   }
   if (kind === "deepgram") {
-    return new CloudStubTranscriber("deepgram", "DEEPGRAM_API_KEY");
+    return new CloudTranscriber("deepgram", cloud);
   }
   return new LocalWhisperTranscriber(modelPath);
 }

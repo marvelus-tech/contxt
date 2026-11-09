@@ -14,11 +14,15 @@ npm run replay -- --fixture samples/demo.json --speed 4
 Local audio:
 npm run replay -- recording.wav --speed 4 --transcriber whisper
 
-Cloud adapter stubs:
-ASSEMBLYAI_API_KEY=... npm run replay -- recording.mp3 --transcriber assemblyai
-DEEPGRAM_API_KEY=... npm run replay -- recording.mp3 --transcriber deepgram
+Cloud transcription (keys from env; see .env.example):
+npm run replay -- recording.opus --transcriber assemblyai [--cloud-model universal-3-5-pro]
+npm run replay -- recording.opus --transcriber deepgram [--keyterm Name ...]
+npm run transcribe -- recording.opus --provider assemblyai --out fixture.json --raw raw.json
 
-Missing cloud keys are skipped gracefully. The cloud adapters do not call external services in step 1.
+Missing cloud keys are skipped gracefully. AssemblyAI defaults to universal-3-5-pro with speaker_labels; Deepgram defaults to nova-3 with diarize, smart_format, punctuate, utterances.
+
+Debate sample with speakers:
+npm run ci:debate   (samples/debate1992.json, 5 named speakers)
 
 Agent API:
 import { runReplay } from "contxt-replay-harness";
@@ -31,8 +35,11 @@ researchFixture: path to mock research JSON
 outRoot: output directory root
 runId: stable run identifier
 stages: replacements for any pipeline stage
+cloudModel: cloud model override
+keyterms: keyterm prompts for cloud transcribers
 
 Outputs:
+out/<run-id>/claims.json   (each claim with speaker, startMs, endMs, topicId)
 out/<run-id>/deck.html
 out/<run-id>/timeline.json
 out/<run-id>/scorecard.json
@@ -40,3 +47,4 @@ out/<run-id>/scorecard.json
 Checks:
 npm test
 npm run ci:replay
+npm run ci:debate

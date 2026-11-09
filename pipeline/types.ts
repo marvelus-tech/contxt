@@ -11,6 +11,8 @@ export interface TranscriptSegment {
   startMs: number;
   endMs: number;
   text: string;
+  /** Display label for who said it, for example "Ross Perot" or "Speaker A". */
+  speaker?: string;
 }
 
 export interface Claim {
@@ -19,6 +21,7 @@ export interface Claim {
   normalized: string;
   startMs: number;
   endMs: number;
+  speaker?: string;
 }
 
 export interface Topic {
@@ -38,10 +41,19 @@ export interface Page {
   topicId: string;
   title: string;
   currentClaim: string;
+  currentSpeaker?: string;
   claimIds: string[];
+  claims: PageClaim[];
   facts: Array<{ text: string; sourceUrl: string }>;
   createdAtMs: number;
   updatedAtMs: number;
+}
+
+export interface PageClaim {
+  id: string;
+  text: string;
+  startMs: number;
+  speaker?: string;
 }
 
 export interface StageContext {
@@ -93,6 +105,8 @@ export interface TimelineEvent {
   detail: string;
   refId?: string;
   latencyMs?: number;
+  speaker?: string;
+  claim?: string;
 }
 
 export interface StageLatency {
@@ -107,6 +121,7 @@ export interface ClaimToPageMetric {
   pageId: string;
   action: "created" | "updated";
   seconds: number;
+  speaker?: string;
 }
 
 export interface Scorecard {
@@ -124,5 +139,6 @@ export interface Scorecard {
   factsOnPagesCitedPercent: number;
   latencyByStageMs: Record<string, StageLatency>;
   claimToPageSeconds: ClaimToPageMetric[];
+  claimsBySpeaker?: Record<string, number>;
   skipReason?: string;
 }
