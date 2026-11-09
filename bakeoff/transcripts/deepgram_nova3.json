@@ -19,7 +19,8 @@
    "name": "Jim Lehrer (moderator)",
    "providerLabel": "S0",
    "segments": 32,
-   "talkMs": 137930
+   "talkMs": 137930,
+   "role": "moderator"
   },
   {
    "id": "CLINTON",

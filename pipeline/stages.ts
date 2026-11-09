@@ -1,9 +1,11 @@
 import { readFile } from "node:fs/promises";
+import { classifyClaim } from "./claims.js";
 import type {
   BuildPageInput,
   BuildPageResult,
   Claim,
   ClaimExtractor,
+  ClaimExtractorStats,
   Fact,
   Page,
   PageBuilder,
@@ -46,6 +48,19 @@ function contentTokens(text: string): string[] {
     .filter((token) => token.length > 2 && !stopWords.has(token));
 }
 
+// The sentence segmenter splits after titles such as "Mr." when a capital follows.
+const TRAILING_ABBREVIATION = /\b(?:Mr|Mrs|Ms|Dr|St|Sr|Jr|Gov|Sen|Rep|Gen|Lt|Col|Prof|Mt|vs)\.$/i;
+
+function joinAbbreviations(parts: string[]): string[] {
+  const out: string[] = [];
+  for (const part of parts.filter(Boolean)) {
+    const last = out.at(-1);
+    if (last !== undefined && TRAILING_ABBREVIATION.test(last)) out[out.length - 1] = `${last} ${part}`;
+    else out.push(part);
+  }
+  return out;
+}
+
 export class HeuristicClaimExtractor implements ClaimExtractor {
   private carry = "";
   private carrySegment: TranscriptSegment | undefined;
@@ -74,15 +89,11 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
       }
       const startSegment = this.carry && this.carrySegment ? this.carrySegment : segment;
       const combined = `${this.carry} ${segment.text}`.trim();
-      const sentences = [...this.sentenceSegmenter.segment(combined)];
-      const complete = sentences
-        .map(({ segment: sentence }) => sentence.trim())
-        .filter((sentence) => /[.!?]["')\]]?$/.test(sentence));
-      this.carry =
-        sentences
-          .map(({ segment: sentence }) => sentence.trim())
-          .filter((sentence) => !/[.!?]["')\]]?$/.test(sentence))
-          .at(-1) ?? "";
+      const sentences = joinAbbreviations(
+        [...this.sentenceSegmenter.segment(combined)].map(({ segment: sentence }) => sentence.trim()),
+      );
+      const complete = sentences.filter((sentence) => /[.!?]["')\]]?$/.test(sentence));
+      this.carry = sentences.filter((sentence) => !/[.!?]["')\]]?$/.test(sentence)).at(-1) ?? "";
       this.carrySegment = this.carry ? segment : undefined;
 
       for (const sentence of complete) {
@@ -111,10 +122,18 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
     return claim ? [claim] : [];
   }
 
+  private readonly counts: ClaimExtractorStats = { sentences: 0, dropped: {} };
+
+  stats(): ClaimExtractorStats {
+    return { sentences: this.counts.sentences, dropped: { ...this.counts.dropped } };
+  }
+
   private toClaim(text: string, segment: TranscriptSegment): Claim | undefined {
-    const words = text.match(/\b[\p{L}\p{N}]+\b/gu) ?? [];
-    const cue = /\b(is|are|was|were|hit|approved|planned|announced|costs?)\b/i;
-    if (words.length < 4 || (!/\d/.test(text) && !cue.test(text))) {
+    this.counts.sentences += 1;
+    const verdict = classifyClaim(text, { moderator: segment.speakerRole === "moderator" });
+    if (!verdict.keep) {
+      const reason = verdict.reason ?? "other";
+      this.counts.dropped[reason] = (this.counts.dropped[reason] ?? 0) + 1;
       return undefined;
     }
     return {
@@ -124,6 +143,11 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
       startMs: segment.startMs,
       endMs: segment.endMs,
       ...(segment.speaker ? { speaker: segment.speaker } : {}),
+      ...(segment.speakerConfidence !== undefined
+        ? { speakerConfidence: segment.speakerConfidence }
+        : {}),
+      type: verdict.type!,
+      checkable: verdict.checkable,
     };
   }
 }

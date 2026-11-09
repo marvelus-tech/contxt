@@ -13,6 +13,10 @@ export interface TranscriptSegment {
   text: string;
   /** Display label for who said it, for example "Ross Perot" or "Speaker A". */
   speaker?: string;
+  /** 0 to 1 when the speaker name was inferred rather than given. */
+  speakerConfidence?: number;
+  /** Set for the moderator, whose framing lines are procedural rather than claims. */
+  speakerRole?: "moderator";
 }
 
 export interface Claim {
@@ -22,6 +26,10 @@ export interface Claim {
   startMs: number;
   endMs: number;
   speaker?: string;
+  speakerConfidence?: number;
+  type?: "statistic" | "factual" | "prediction" | "promise" | "opinion";
+  /** Statistic and factual claims are checkable. */
+  checkable?: boolean;
 }
 
 export interface Topic {
@@ -66,9 +74,15 @@ export interface Transcriber {
   transcribe(chunk: AudioChunk): Promise<TranscriptSegment[]>;
 }
 
+export interface ClaimExtractorStats {
+  sentences: number;
+  dropped: Record<string, number>;
+}
+
 export interface ClaimExtractor {
   extract(segments: TranscriptSegment[], context: StageContext): Promise<Claim[]>;
   flush(context: StageContext): Promise<Claim[]>;
+  stats?(): ClaimExtractorStats;
 }
 
 export interface TopicGrouper {
@@ -140,5 +154,12 @@ export interface Scorecard {
   latencyByStageMs: Record<string, StageLatency>;
   claimToPageSeconds: ClaimToPageMetric[];
   claimsBySpeaker?: Record<string, number>;
+  claimStats?: Partial<ClaimExtractorStats> & {
+    claimsExtracted: number;
+    uniqueClaims: number;
+    repeatsMerged: number;
+    checkableUnique: number;
+    uniqueByType: Record<string, number>;
+  };
   skipReason?: string;
 }

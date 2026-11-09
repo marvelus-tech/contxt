@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { extname } from "node:path";
 import { performance } from "node:perf_hooks";
+import { applySpeakerNames, nameSpeakers, type SpeakerNamingResult } from "./speakers.js";
 import type {
   AudioChunk,
   TranscriptSegment,
@@ -30,6 +31,8 @@ export interface CloudTranscription {
 type FetchLike = typeof fetch;
 
 const SENTENCE_END = /[.?!]["'”’)\]]?$/;
+// Titles and abbreviations that end in a period but do not end a sentence.
+const ABBREVIATION = /^(?:Mr|Mrs|Ms|Dr|St|Sr|Jr|Gov|Sen|Rep|Gen|Lt|Col|Prof|Mt|vs|etc|U\.S|D\.C)\.$/i;
 
 /**
  * Groups words into sentence-sized segments. A new segment starts whenever the
@@ -55,7 +58,7 @@ export function wordsToSegments(
   for (const word of words) {
     if (current.length > 0 && current.at(-1)!.speaker !== word.speaker) flush();
     current.push(word);
-    if (SENTENCE_END.test(word.text) && current.length >= minWords) flush();
+    if (SENTENCE_END.test(word.text) && !ABBREVIATION.test(word.text) && current.length >= minWords) flush();
   }
   flush();
   return segments;
@@ -266,13 +269,22 @@ export async function transcribeWithDeepgram(
  * Harness adapter. The whole file is transcribed once on the first chunk, and
  * each replay chunk then receives the segments that start inside it.
  */
+export interface CloudTranscriberOptions extends AssemblyAiOptions, DeepgramOptions {
+  /** Map generic labels to names. Default true. */
+  nameSpeakers?: boolean;
+  /** Known participants to help naming, for example ["Jim Lehrer", "Ross Perot"]. */
+  speakerHints?: string[];
+}
+
 export class CloudTranscriber implements Transcriber {
   private pending: Promise<CloudTranscription> | undefined;
+  private segments: TranscriptSegment[] | undefined;
   result: CloudTranscription | undefined;
+  naming: SpeakerNamingResult | undefined;
 
   constructor(
     readonly id: "assemblyai" | "deepgram",
-    private readonly options: AssemblyAiOptions & DeepgramOptions = {},
+    private readonly options: CloudTranscriberOptions = {},
   ) {}
 
   private get envName(): string {
@@ -292,7 +304,14 @@ export class CloudTranscriber implements Transcriber {
         ? transcribeWithAssemblyAI(chunk.sourcePath, this.options)
         : transcribeWithDeepgram(chunk.sourcePath, this.options);
     this.result = await this.pending;
-    return this.result.segments.filter(
+    if (!this.segments) {
+      if (this.options.nameSpeakers === false) this.segments = this.result.segments;
+      else {
+        this.naming = nameSpeakers(this.result.segments, { hints: this.options.speakerHints ?? [] });
+        this.segments = applySpeakerNames(this.result.segments, this.naming);
+      }
+    }
+    return this.segments.filter(
       (segment) => segment.startMs >= chunk.startMs && segment.startMs < chunk.endMs,
     );
   }

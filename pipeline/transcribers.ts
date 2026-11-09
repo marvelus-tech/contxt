@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { CloudTranscriber } from "./cloud.js";
+import { applySpeakerNames, isGenericLabel, nameSpeakers } from "./speakers.js";
 import type {
   AudioChunk,
   TranscriptSegment,
@@ -15,32 +16,43 @@ const execFileAsync = promisify(execFile);
 
 interface FixtureFile {
   segments: Array<TranscriptSegment & { speakerLabel?: string }>;
-  speakers?: Array<{ id: string; name?: string }>;
+  speakers?: Array<{ id: string; name?: string; confidence?: number; role?: "moderator" }>;
 }
 
 export class FixtureTranscriber implements Transcriber {
   readonly id = "fixture";
   private constructor(private readonly segments: TranscriptSegment[]) {}
 
-  static async fromFile(path: string): Promise<FixtureTranscriber> {
+  static async fromFile(path: string, speakerHints: string[] = []): Promise<FixtureTranscriber> {
     const parsed = JSON.parse(await readFile(path, "utf8")) as FixtureFile;
     if (!Array.isArray(parsed.segments)) {
       throw new Error("Fixture must contain a segments array");
     }
     // Optional speakers[] maps a segment's speaker id to a display name.
     const names = new Map(
-      (parsed.speakers ?? []).map((speaker) => [speaker.id, speaker.name ?? speaker.id]),
+      (parsed.speakers ?? []).map((speaker) => [speaker.id, speaker]),
     );
-    return new FixtureTranscriber(
-      parsed.segments.map((segment) => ({
+    let segments: TranscriptSegment[] = parsed.segments.map((segment) => {
+      const known = segment.speaker ? names.get(segment.speaker) : undefined;
+      return {
         startMs: segment.startMs,
         endMs: segment.endMs,
         text: segment.text,
-        ...(segment.speaker
-          ? { speaker: names.get(segment.speaker) ?? segment.speaker }
-          : {}),
-      })),
-    );
+        ...(segment.speaker ? { speaker: known?.name ?? segment.speaker } : {}),
+        ...(known?.confidence !== undefined ? { speakerConfidence: known.confidence } : {}),
+        ...(known?.role ? { speakerRole: known.role } : {}),
+      };
+    });
+    // Generic diarization labels with no names given: infer names from the talk.
+    const generic = segments.some((segment) => segment.speaker) &&
+      segments.every((segment) => isGenericLabel(segment.speaker));
+    if (generic || speakerHints.length) {
+      const labelled = segments.some((segment) => segment.speaker);
+      if (labelled && (generic || speakerHints.length)) {
+        segments = applySpeakerNames(segments, nameSpeakers(segments, { hints: speakerHints }));
+      }
+    }
+    return new FixtureTranscriber(segments);
   }
 
   async status(): Promise<{ status: TranscriberStatus }> {
@@ -156,9 +168,9 @@ export async function createTranscriber(
   kind: "fixture" | "whisper" | "assemblyai" | "deepgram",
   inputPath: string,
   modelPath?: string,
-  cloud: { model?: string; keyterms?: string[] } = {},
+  cloud: { model?: string; keyterms?: string[]; speakerHints?: string[] } = {},
 ): Promise<Transcriber> {
-  if (kind === "fixture") return FixtureTranscriber.fromFile(inputPath);
+  if (kind === "fixture") return FixtureTranscriber.fromFile(inputPath, cloud.speakerHints);
   if (kind === "assemblyai") {
     return new CloudTranscriber("assemblyai", cloud);
   }

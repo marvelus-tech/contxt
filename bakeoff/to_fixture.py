@@ -25,7 +25,7 @@ def build(words,mapping,provider,model,raw):
     flush()
     spk={}
     for s in segs:
-        x=spk.setdefault(s['speaker'],{'id':s['speaker'],'name':NAMES.get(s['speaker'],s['speaker']),'providerLabel':s['speakerLabel'],'segments':0,'talkMs':0})
+        x=spk.setdefault(s['speaker'],{'id':s['speaker'],'name':NAMES.get(s['speaker'],s['speaker']),'providerLabel':s['speakerLabel'],'segments':0,'talkMs':0,**({'role':'moderator'} if s['speaker']=='LEHRER' else {})})
         x['segments']+=1;x['talkMs']+=s['endMs']-s['startMs']
     return {'meta':{'title':'First 1992 presidential debate (Bush, Clinton, Perot), opening 15:35',
         'source':'https://commons.wikimedia.org/wiki/File:Presidential_Debate_with_George_H._W._Bush,_Bill_Clinton_and_Ross_Perot_11_October_1992.webm',

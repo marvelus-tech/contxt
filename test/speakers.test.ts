@@ -37,7 +37,7 @@ test("unfinished text is closed out when the speaker changes", async () => {
   const claims = await extractor.extract(
     [
       { startMs: 0, endMs: 900, speaker: "A", text: "Unemployment was 7 percent and" },
-      { startMs: 1000, endMs: 2000, speaker: "B", text: "Inflation was 3 percent." },
+      { startMs: 1000, endMs: 2000, speaker: "B", text: "Inflation was 3 percent last year." },
     ],
     { mediaTimeMs: 2000 },
   );

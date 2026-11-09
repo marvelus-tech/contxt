@@ -7,6 +7,7 @@ function usage(): string {
   contxt-replay recording.wav [--speed 4] [--transcriber whisper]
   contxt-replay recording.opus --transcriber assemblyai [--cloud-model universal-3-5-pro]
   contxt-replay recording.opus --transcriber deepgram [--keyterm Perot --keyterm Lehrer]
+  contxt-replay recording.opus --transcriber assemblyai --speakers "Jim Lehrer,Ross Perot,Bill Clinton"
 
 Transcribers: fixture, whisper, assemblyai, deepgram`;
 }
@@ -18,6 +19,7 @@ function parseArgs(args: string[]): ReplayOptions {
   let modelPath: string | undefined;
   let cloudModel: string | undefined;
   const keyterms: string[] = [];
+  let speakerHints: string[] = [];
 
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]!;
@@ -46,6 +48,10 @@ function parseArgs(args: string[]): ReplayOptions {
       cloudModel = args[++index];
       continue;
     }
+    if (argument === "--speakers") {
+      speakerHints = (args[++index] ?? "").split(",").map((name) => name.trim()).filter(Boolean);
+      continue;
+    }
     if (argument === "--keyterm") {
       const term = args[++index];
       if (term) keyterms.push(term);
@@ -72,6 +78,7 @@ function parseArgs(args: string[]): ReplayOptions {
     modelPath,
     ...(cloudModel ? { cloudModel } : {}),
     ...(keyterms.length ? { keyterms } : {}),
+    ...(speakerHints.length ? { speakerHints } : {}),
   };
 }
 
