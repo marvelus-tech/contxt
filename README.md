@@ -141,6 +141,19 @@ If a key is missing, the run exits successfully with `skipped` in the scorecard.
    - Results and the recommendation are in [docs/REPORT.md](docs/REPORT.md).
    - The clip comes from `scripts/fetch_debate1992.sh`. It's public domain, from Wikimedia Commons, and runs 00:02:06.0 to 00:17:41.4. Details are in `samples/debate1992.clip.json`.
 
+## Claims, types and speaker names (step 3)
+
+- **Speaker naming.**
+  - Generic labels (`Speaker A`, `Speaker 0`) are named automatically from introductions ("I am..."), how people address each other ("Governor Clinton, one minute") and turn-taking.
+  - Uncertain labels keep their generic name, plus a `speakerConfidence`.
+  - Pass hints with `--speakers "Jim Lehrer,Ross Perot,Bill Clinton"` on `replay` or `transcribe`. Turn naming off with `transcribe --no-naming`.
+- **Numbers.** Spoken numbers are normalised, so "four trillion dollars" and "$4 trillion" are both checkable statistics and count as the same claim.
+- **Claim quality.**
+  - Greetings, moderator procedure, questions and filler are dropped. The counts are in `scorecard.json`, under `claimStats.dropped`.
+  - Each claim is typed `statistic`, `factual`, `prediction`, `promise` or `opinion`. Only statistic and factual claims are `checkable`, and only checkable claims go to research and pages.
+  - Repeats merge across the whole recording. `claims.json` lists each unique claim with every `occurrence` (time, speaker, wording).
+- **Evaluation.** `npm run eval:claims` re-runs naming accuracy and claim metrics on the committed provider output. Results are in [docs/CLAIMS.md](docs/CLAIMS.md).
+
 ## Agent API
 
 Agents can import `runReplay()`:
@@ -164,4 +177,5 @@ See `llms.txt` for the compact command reference.
 npm test
 npm run ci:replay
 npm run ci:debate
+npm run eval:claims
 ```

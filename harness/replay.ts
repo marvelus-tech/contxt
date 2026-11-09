@@ -10,6 +10,7 @@ import {
   HtmlPageBuilder,
   isCitedFact,
 } from "../pipeline/stages.js";
+import { ClaimIndex } from "../pipeline/claims.js";
 import { createTranscriber } from "../pipeline/transcribers.js";
 import type {
   Claim,
@@ -47,6 +48,8 @@ export interface ReplayOptions {
   cloudModel?: string;
   /** Keyterm prompts for cloud transcribers (names, jargon). */
   keyterms?: string[];
+  /** Known participants used to name generic speaker labels. */
+  speakerHints?: string[];
   researchFixture?: string;
   outRoot?: string;
   runId?: string;
@@ -165,7 +168,14 @@ export function formatScorecard(scorecard: Scorecard): string {
     .join("\n");
   return `CONTXT replay scorecard
 transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
-claims: ${scorecard.claimToPageSeconds.length}
+claims extracted: ${scorecard.claimStats?.claimsExtracted ?? scorecard.claimToPageSeconds.length}
+unique claims: ${scorecard.claimStats?.uniqueClaims ?? "n/a"} (checkable ${scorecard.claimStats?.checkableUnique ?? "n/a"})
+claim types: ${Object.entries(scorecard.claimStats?.uniqueByType ?? {})
+    .map(([type, count]) => `${type} ${count}`)
+    .join(", ") || "none"}
+sentences dropped: ${Object.entries(scorecard.claimStats?.dropped ?? {})
+    .map(([reason, count]) => `${reason} ${count}`)
+    .join(", ") || "none"}
 claims by speaker: ${Object.entries(scorecard.claimsBySpeaker ?? {})
     .map(([speaker, count]) => `${speaker} ${count}`)
     .join(", ") || "none"}
@@ -197,6 +207,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     (await createTranscriber(kind, inputPath, options.modelPath, {
       ...(options.cloudModel ? { model: options.cloudModel } : {}),
       ...(options.keyterms?.length ? { keyterms: options.keyterms } : {}),
+      ...(options.speakerHints?.length ? { speakerHints: options.speakerHints } : {}),
     }));
   const extractor =
     options.stages?.claimExtractor ?? new HeuristicClaimExtractor();
@@ -216,7 +227,9 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   const timeline: TimelineEvent[] = [];
   const topics: Topic[] = [];
   const pages = new Map<string, Page>();
-  const seenClaims = new Map<string, string>();
+  const claimIndex = new ClaimIndex();
+  const topicByMergedClaim = new Map<string, string>();
+  const mergedIdByClaim = new Map<string, string>();
   const latencySamples: Record<string, number[]> = {
     transcriber: [],
     claimExtractor: [],
@@ -263,7 +276,31 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
 
   const processClaim = async (claim: Claim): Promise<void> => {
     const claimReceived = performance.now();
-    const priorTopicId = seenClaims.get(claim.normalized);
+    claimsSeen.push(claim);
+    const { merged, isRepeat } = claimIndex.add({
+      claimId: claim.id,
+      startMs: claim.startMs,
+      endMs: claim.endMs,
+      text: claim.text,
+      ...(claim.speaker ? { speaker: claim.speaker } : {}),
+    });
+    mergedIdByClaim.set(claim.id, merged.id);
+    if (isRepeat) duplicatesMerged += 1;
+    // Only checkable claims (statistic, factual) go on to research and pages.
+    // Custom extractors that do not classify are treated as checkable.
+    if (claim.checkable === false) {
+      record(
+        claim.endMs,
+        "claimExtractor",
+        isRepeat ? "repeat-not-checkable" : "claim-not-checkable",
+        claim.type ?? "not checkable",
+        merged.id,
+        undefined,
+        claim,
+      );
+      return;
+    }
+    const priorTopicId = topicByMergedClaim.get(merged.id);
     const priorTopic = priorTopicId
       ? topics.find((candidate) => candidate.id === priorTopicId)
       : undefined;
@@ -271,7 +308,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       priorTopic ??
       (await timed("topicGrouper", () => grouper.group(claim, topics)));
     if (priorTopic) priorTopic.claimIds.push(claim.id);
-    claimsSeen.push(claim);
+    topicByMergedClaim.set(merged.id, topic.id);
     record(
       claim.endMs,
       "topicGrouper",
@@ -285,7 +322,6 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     const existingPage = pages.get(topic.id);
     let facts: Fact[] = [];
     if (priorTopic) {
-      duplicatesMerged += 1;
       record(
         claim.endMs,
         "dedupe",
@@ -308,7 +344,6 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       pageBuilder.build({ claim, topic, facts, existingPage }),
     );
     pages.set(topic.id, built.page);
-    seenClaims.set(claim.normalized, topic.id);
     const action = existingPage ? "updated" : "created";
     if (existingPage) pagesUpdated += 1;
     else pagesCreated += 1;
@@ -365,6 +400,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   for (const [stage, values] of Object.entries(latencySamples)) {
     if (values.length === 0) delete latencySamples[stage];
   }
+  const claimById = new Map(claimsSeen.map((claim) => [claim.id, claim]));
   const pageList = [...pages.values()];
   const factsOnPages = pageList.flatMap((page) => page.facts);
   const factsOnPagesCited = factsOnPages.filter(isCitedFact).length;
@@ -385,6 +421,20 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       : 100,
     latencyByStageMs: summarizeLatency(latencySamples),
     claimToPageSeconds,
+    claimStats: {
+      ...(extractor.stats?.() ?? {}),
+      claimsExtracted: claimsSeen.length,
+      uniqueClaims: claimIndex.merged.length,
+      repeatsMerged: claimsSeen.length - claimIndex.merged.length,
+      checkableUnique: claimIndex.merged.filter(
+        (merged) => claimById.get(merged.id)?.checkable !== false,
+      ).length,
+      uniqueByType: claimIndex.merged.reduce<Record<string, number>>((counts, merged) => {
+        const type = claimById.get(merged.id)?.type ?? "untyped";
+        counts[type] = (counts[type] ?? 0) + 1;
+        return counts;
+      }, {}),
+    },
     claimsBySpeaker: Object.fromEntries(
       [...new Set(claimsSeen.map((claim) => claim.speaker ?? "unknown"))].map(
         (speaker) => [
@@ -400,14 +450,21 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   const timelinePath = join(runDir, "timeline.json");
   const scorecardPath = join(runDir, "scorecard.json");
   const claimsPath = join(runDir, "claims.json");
-  const claimsOut = claimsSeen.map((claim) => ({
-    id: claim.id,
-    speaker: claim.speaker ?? null,
-    startMs: claim.startMs,
-    endMs: claim.endMs,
-    text: claim.text,
-    topicId: seenClaims.get(claim.normalized) ?? null,
-  }));
+  const claimsOut = claimIndex.merged.map((merged) => {
+    const first = claimById.get(merged.id)!;
+    return {
+      id: merged.id,
+      type: first.type ?? null,
+      checkable: first.checkable ?? true,
+      speaker: first.speaker ?? null,
+      ...(first.speakerConfidence !== undefined ? { speakerConfidence: first.speakerConfidence } : {}),
+      startMs: first.startMs,
+      endMs: first.endMs,
+      text: first.text,
+      topicId: topicByMergedClaim.get(merged.id) ?? null,
+      occurrences: merged.occurrences,
+    };
+  });
   await Promise.all([
     writeFile(claimsPath, `${JSON.stringify(claimsOut, null, 2)}\n`),
     writeFile(deckPath, pageBuilder.render(pageList, timeline)),

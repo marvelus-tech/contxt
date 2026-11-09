@@ -71,7 +71,9 @@ def score(name,hw,turns):
 
 DEFAULT=[('Deepgram nova-3','bakeoff/raw/deepgram_nova3.json'),
       ('AssemblyAI universal-3-pro','bakeoff/raw/assemblyai_u3pro.json'),
-      ('AssemblyAI universal-3-5-pro','bakeoff/raw/assemblyai_u35pro.json')]
+      ('AssemblyAI universal-3-5-pro','bakeoff/raw/assemblyai_u35pro.json'),
+      ('AssemblyAI universal-3-5-pro (opus)','bakeoff/raw/assemblyai_u35pro_opus.json'),
+      ('Deepgram nova-3 + keyterms (opus)','bakeoff/raw/deepgram_nova3_keyterms_opus.json')]
 pairs=[tuple(a.split('=',1)) for a in sys.argv[1:]] or DEFAULT
 def load_any(p):
     d=json.load(open(p))

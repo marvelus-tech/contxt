@@ -1,0 +1,1217 @@
+{
+ "runs": [
+  {
+   "provider": "Deepgram nova-3",
+   "file": "deepgram_nova3",
+   "naming": {
+    "no hints": {
+     "labels": 5,
+     "exactCorrect": 4,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker 0",
+       "name": "Jim Lara",
+       "confidence": 0.87,
+       "named": true,
+       "truth": "lehrer",
+       "correct": false,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 1",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 2",
+       "name": "Ross Perot",
+       "confidence": 0.67,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 3",
+       "name": "George Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 4",
+       "name": "Anne Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    },
+    "with hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker 0",
+       "name": "Jim Lehrer",
+       "confidence": 0.8,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 1",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 2",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 3",
+       "name": "George H. W. Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 4",
+       "name": "Ann Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    }
+   },
+   "claimStats": {
+    "sentences": 181,
+    "dropped": {
+     "procedural": 32,
+     "greeting": 1,
+     "question": 5,
+     "filler": 18
+    },
+    "claimsExtracted": 125,
+    "uniqueClaims": 124,
+    "repeatsMerged": 1,
+    "checkableUnique": 52,
+    "uniqueByType": {
+     "statistic": 16,
+     "factual": 36,
+     "opinion": 53,
+     "promise": 12,
+     "prediction": 7
+    }
+   },
+   "claimsBySpeaker": {
+    "Ross Perot": 25,
+    "Bill Clinton": 49,
+    "George Bush": 51
+   },
+   "sampleClaims": [
+    {
+     "id": "claim-1",
+     "type": "statistic",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 0.67,
+     "startMs": 106345,
+     "endMs": 113785,
+     "text": "I think the principal issue that separates me is that five and a half million people came together on their own and put me on the ballot.",
+     "topicId": "topic-1",
+     "occurrences": [
+      {
+       "claimId": "claim-1",
+       "startMs": 106345,
+       "endMs": 113785,
+       "text": "I think the principal issue that separates me is that five and a half million people came together on their own and put me on the ballot.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-2",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 0.67,
+     "startMs": 114530,
+     "endMs": 117170,
+     "text": "I was not put on the ballot by either of the two parties.",
+     "topicId": "topic-2",
+     "occurrences": [
+      {
+       "claimId": "claim-2",
+       "startMs": 114530,
+       "endMs": 117170,
+       "text": "I was not put on the ballot by either of the two parties.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-3",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 0.67,
+     "startMs": 117170,
+     "endMs": 123090,
+     "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+     "topicId": "topic-3",
+     "occurrences": [
+      {
+       "claimId": "claim-3",
+       "startMs": 117170,
+       "endMs": 123090,
+       "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-4",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 0.67,
+     "startMs": 123410,
+     "endMs": 125810,
+     "text": "This is a movement that came from the people.",
+     "topicId": "topic-4",
+     "occurrences": [
+      {
+       "claimId": "claim-4",
+       "startMs": 123410,
+       "endMs": 125810,
+       "text": "This is a movement that came from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-5",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 0.67,
+     "startMs": 126225,
+     "endMs": 132305,
+     "text": "This is the way the framers of the constitution intended our government to be, a government that comes from the people.",
+     "topicId": "topic-5",
+     "occurrences": [
+      {
+       "claimId": "claim-5",
+       "startMs": 126225,
+       "endMs": 132305,
+       "text": "This is the way the framers of the constitution intended our government to be, a government that comes from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "provider": "AssemblyAI universal-3-pro",
+   "file": "assemblyai_u3pro",
+   "naming": {
+    "no hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker A",
+       "name": "Jim Lehrer",
+       "confidence": 0.83,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker B",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker C",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker D",
+       "name": "George Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker E",
+       "name": "Ann Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    },
+    "with hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker A",
+       "name": "Jim Lehrer",
+       "confidence": 0.83,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker B",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker C",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker D",
+       "name": "George H. W. Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker E",
+       "name": "Ann Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    }
+   },
+   "claimStats": {
+    "sentences": 175,
+    "dropped": {
+     "procedural": 29,
+     "greeting": 1,
+     "question": 5,
+     "filler": 14
+    },
+    "claimsExtracted": 126,
+    "uniqueClaims": 125,
+    "repeatsMerged": 1,
+    "checkableUnique": 56,
+    "uniqueByType": {
+     "statistic": 16,
+     "factual": 40,
+     "opinion": 51,
+     "promise": 11,
+     "prediction": 7
+    }
+   },
+   "claimsBySpeaker": {
+    "Ross Perot": 23,
+    "Bill Clinton": 52,
+    "George Bush": 51
+   },
+   "sampleClaims": [
+    {
+     "id": "claim-1",
+     "type": "statistic",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 106704,
+     "endMs": 113690,
+     "text": "I think the principal issue that separates me is that 5.5 million people came together on their own and put me on the ballot.",
+     "topicId": "topic-1",
+     "occurrences": [
+      {
+       "claimId": "claim-1",
+       "startMs": 106704,
+       "endMs": 113690,
+       "text": "I think the principal issue that separates me is that 5.5 million people came together on their own and put me on the ballot.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-2",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 114734,
+     "endMs": 116886,
+     "text": "I was not put on the ballot by either of the two parties.",
+     "topicId": "topic-2",
+     "occurrences": [
+      {
+       "claimId": "claim-2",
+       "startMs": 114734,
+       "endMs": 116886,
+       "text": "I was not put on the ballot by either of the two parties.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-3",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 117304,
+     "endMs": 122748,
+     "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+     "topicId": "topic-3",
+     "occurrences": [
+      {
+       "claimId": "claim-3",
+       "startMs": 117304,
+       "endMs": 122748,
+       "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-4",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 123423,
+     "endMs": 125880,
+     "text": "This is a movement that came from the people.",
+     "topicId": "topic-4",
+     "occurrences": [
+      {
+       "claimId": "claim-4",
+       "startMs": 123423,
+       "endMs": 125880,
+       "text": "This is a movement that came from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-5",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 126458,
+     "endMs": 132223,
+     "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people.",
+     "topicId": "topic-5",
+     "occurrences": [
+      {
+       "claimId": "claim-5",
+       "startMs": 126458,
+       "endMs": 132223,
+       "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "provider": "AssemblyAI universal-3-5-pro",
+   "file": "assemblyai_u35pro",
+   "naming": {
+    "no hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker A",
+       "name": "Jim Lehrer",
+       "confidence": 0.74,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker B",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker C",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker D",
+       "name": "George Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker E",
+       "name": "Ann Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    },
+    "with hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker A",
+       "name": "Jim Lehrer",
+       "confidence": 0.87,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker B",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker C",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker D",
+       "name": "George H. W. Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker E",
+       "name": "Ann Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    }
+   },
+   "claimStats": {
+    "sentences": 183,
+    "dropped": {
+     "procedural": 30,
+     "greeting": 1,
+     "question": 6,
+     "filler": 18
+    },
+    "claimsExtracted": 128,
+    "uniqueClaims": 127,
+    "repeatsMerged": 1,
+    "checkableUnique": 58,
+    "uniqueByType": {
+     "statistic": 17,
+     "factual": 41,
+     "opinion": 51,
+     "promise": 9,
+     "prediction": 9
+    }
+   },
+   "claimsBySpeaker": {
+    "Ross Perot": 24,
+    "Bill Clinton": 53,
+    "George Bush": 51
+   },
+   "sampleClaims": [
+    {
+     "id": "claim-1",
+     "type": "statistic",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 106704,
+     "endMs": 113690,
+     "text": "I think the principal issue that separates me Is that 5.5 million people came together on their own and put me on the ballot.",
+     "topicId": "topic-1",
+     "occurrences": [
+      {
+       "claimId": "claim-1",
+       "startMs": 106704,
+       "endMs": 113690,
+       "text": "I think the principal issue that separates me Is that 5.5 million people came together on their own and put me on the ballot.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-2",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 114734,
+     "endMs": 116886,
+     "text": "I was not put on the ballot by either of the two parties.",
+     "topicId": "topic-2",
+     "occurrences": [
+      {
+       "claimId": "claim-2",
+       "startMs": 114734,
+       "endMs": 116886,
+       "text": "I was not put on the ballot by either of the two parties.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-3",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 117304,
+     "endMs": 122748,
+     "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+     "topicId": "topic-3",
+     "occurrences": [
+      {
+       "claimId": "claim-3",
+       "startMs": 117304,
+       "endMs": 122748,
+       "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-4",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 123423,
+     "endMs": 125880,
+     "text": "This is a movement that came from the people.",
+     "topicId": "topic-4",
+     "occurrences": [
+      {
+       "claimId": "claim-4",
+       "startMs": 123423,
+       "endMs": 125880,
+       "text": "This is a movement that came from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-5",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 126458,
+     "endMs": 132223,
+     "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people.",
+     "topicId": "topic-5",
+     "occurrences": [
+      {
+       "claimId": "claim-5",
+       "startMs": 126458,
+       "endMs": 132223,
+       "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "provider": "AssemblyAI universal-3-5-pro (opus)",
+   "file": "assemblyai_u35pro_opus",
+   "naming": {
+    "no hints": {
+     "labels": 5,
+     "exactCorrect": 4,
+     "rightPerson": 4,
+     "wordWeightedAccuracy": 0.9837,
+     "speakers": [
+      {
+       "label": "Speaker A",
+       "name": "Jim Lehrer",
+       "confidence": 0.74,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker B",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker C",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker D",
+       "name": "George Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker E",
+       "name": "Speaker E",
+       "confidence": 0,
+       "named": false,
+       "truth": "compton",
+       "correct": false,
+       "rightPerson": false
+      }
+     ]
+    },
+    "with hints": {
+     "labels": 5,
+     "exactCorrect": 4,
+     "rightPerson": 4,
+     "wordWeightedAccuracy": 0.9837,
+     "speakers": [
+      {
+       "label": "Speaker A",
+       "name": "Jim Lehrer",
+       "confidence": 0.87,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker B",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker C",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker D",
+       "name": "George H. W. Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker E",
+       "name": "Speaker E",
+       "confidence": 0,
+       "named": false,
+       "truth": "compton",
+       "correct": false,
+       "rightPerson": false
+      }
+     ]
+    }
+   },
+   "claimStats": {
+    "sentences": 181,
+    "dropped": {
+     "procedural": 30,
+     "greeting": 1,
+     "question": 6,
+     "filler": 18
+    },
+    "claimsExtracted": 126,
+    "uniqueClaims": 125,
+    "repeatsMerged": 1,
+    "checkableUnique": 58,
+    "uniqueByType": {
+     "statistic": 17,
+     "factual": 41,
+     "opinion": 49,
+     "promise": 9,
+     "prediction": 9
+    }
+   },
+   "claimsBySpeaker": {
+    "Ross Perot": 23,
+    "Bill Clinton": 52,
+    "George Bush": 51
+   },
+   "sampleClaims": [
+    {
+     "id": "claim-1",
+     "type": "statistic",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 106704,
+     "endMs": 113706,
+     "text": "I think the principal issue that separates me Is that 5.5 million people came together on their own and put me on the ballot.",
+     "topicId": "topic-1",
+     "occurrences": [
+      {
+       "claimId": "claim-1",
+       "startMs": 106704,
+       "endMs": 113706,
+       "text": "I think the principal issue that separates me Is that 5.5 million people came together on their own and put me on the ballot.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-2",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 114734,
+     "endMs": 116886,
+     "text": "I was not put on the ballot by either of the two parties.",
+     "topicId": "topic-2",
+     "occurrences": [
+      {
+       "claimId": "claim-2",
+       "startMs": 114734,
+       "endMs": 116886,
+       "text": "I was not put on the ballot by either of the two parties.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-3",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 117304,
+     "endMs": 122748,
+     "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+     "topicId": "topic-3",
+     "occurrences": [
+      {
+       "claimId": "claim-3",
+       "startMs": 117304,
+       "endMs": 122748,
+       "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-4",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 123423,
+     "endMs": 125960,
+     "text": "This is a movement that came from the people.",
+     "topicId": "topic-4",
+     "occurrences": [
+      {
+       "claimId": "claim-4",
+       "startMs": 123423,
+       "endMs": 125960,
+       "text": "This is a movement that came from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-5",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 126458,
+     "endMs": 132223,
+     "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people.",
+     "topicId": "topic-5",
+     "occurrences": [
+      {
+       "claimId": "claim-5",
+       "startMs": 126458,
+       "endMs": 132223,
+       "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "provider": "Deepgram nova-3 + keyterms (opus)",
+   "file": "deepgram_nova3_keyterms_opus",
+   "naming": {
+    "no hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker 0",
+       "name": "Jim Lehrer",
+       "confidence": 0.87,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 1",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 2",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 3",
+       "name": "George Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 4",
+       "name": "Anne Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    },
+    "with hints": {
+     "labels": 5,
+     "exactCorrect": 5,
+     "rightPerson": 5,
+     "wordWeightedAccuracy": 1,
+     "speakers": [
+      {
+       "label": "Speaker 0",
+       "name": "Jim Lehrer",
+       "confidence": 0.87,
+       "named": true,
+       "truth": "lehrer",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 1",
+       "name": "Bill Clinton",
+       "confidence": 1,
+       "named": true,
+       "truth": "clinton",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 2",
+       "name": "Ross Perot",
+       "confidence": 1,
+       "named": true,
+       "truth": "perot",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 3",
+       "name": "George H. W. Bush",
+       "confidence": 1,
+       "named": true,
+       "truth": "bush",
+       "correct": true,
+       "rightPerson": true
+      },
+      {
+       "label": "Speaker 4",
+       "name": "Ann Compton",
+       "confidence": 0.66,
+       "named": true,
+       "truth": "compton",
+       "correct": true,
+       "rightPerson": true
+      }
+     ]
+    }
+   },
+   "claimStats": {
+    "sentences": 182,
+    "dropped": {
+     "procedural": 33,
+     "greeting": 1,
+     "question": 5,
+     "filler": 18
+    },
+    "claimsExtracted": 125,
+    "uniqueClaims": 124,
+    "repeatsMerged": 1,
+    "checkableUnique": 51,
+    "uniqueByType": {
+     "statistic": 16,
+     "factual": 35,
+     "opinion": 54,
+     "promise": 12,
+     "prediction": 7
+    }
+   },
+   "claimsBySpeaker": {
+    "Ross Perot": 25,
+    "Bill Clinton": 50,
+    "George Bush": 50
+   },
+   "sampleClaims": [
+    {
+     "id": "claim-1",
+     "type": "statistic",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 106375,
+     "endMs": 113735,
+     "text": "I think the principal issue that separates me is that five and a half million people came together on their own and put me on the ballot.",
+     "topicId": "topic-1",
+     "occurrences": [
+      {
+       "claimId": "claim-1",
+       "startMs": 106375,
+       "endMs": 113735,
+       "text": "I think the principal issue that separates me is that five and a half million people came together on their own and put me on the ballot.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-2",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 114510,
+     "endMs": 117150,
+     "text": "I was not put on the ballot by either of the two parties.",
+     "topicId": "topic-2",
+     "occurrences": [
+      {
+       "claimId": "claim-2",
+       "startMs": 114510,
+       "endMs": 117150,
+       "text": "I was not put on the ballot by either of the two parties.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-3",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 117150,
+     "endMs": 123070,
+     "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+     "topicId": "topic-3",
+     "occurrences": [
+      {
+       "claimId": "claim-3",
+       "startMs": 117150,
+       "endMs": 123070,
+       "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-4",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 123390,
+     "endMs": 125790,
+     "text": "This is a movement that came from the people.",
+     "topicId": "topic-4",
+     "occurrences": [
+      {
+       "claimId": "claim-4",
+       "startMs": 123390,
+       "endMs": 125790,
+       "text": "This is a movement that came from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    },
+    {
+     "id": "claim-5",
+     "type": "factual",
+     "checkable": true,
+     "speaker": "Ross Perot",
+     "speakerConfidence": 1,
+     "startMs": 126225,
+     "endMs": 132305,
+     "text": "This is the way the framers of the constitution intended our government to be, a government that comes from the people.",
+     "topicId": "topic-5",
+     "occurrences": [
+      {
+       "claimId": "claim-5",
+       "startMs": 126225,
+       "endMs": 132305,
+       "text": "This is the way the framers of the constitution intended our government to be, a government that comes from the people.",
+       "speaker": "Ross Perot"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "agreement": [
+  {
+   "a": "deepgram_nova3",
+   "b": "assemblyai_u35pro",
+   "aCheckable": 52,
+   "bCheckable": 58,
+   "aFoundInB": 49,
+   "bFoundInA": 50
+  },
+  {
+   "a": "deepgram_nova3_keyterms_opus",
+   "b": "assemblyai_u35pro_opus",
+   "aCheckable": 51,
+   "bCheckable": 58,
+   "aFoundInB": 49,
+   "bFoundInA": 50
+  }
+ ]
+}

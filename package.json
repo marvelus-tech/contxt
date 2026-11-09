@@ -19,7 +19,8 @@
     "replay": "npm run build && node dist/harness/cli.js",
     "ci:replay": "npm run replay -- --fixture samples/demo.json --speed 1000",
     "transcribe": "npm run build && node dist/harness/transcribe.js",
-    "ci:debate": "npm run replay -- --fixture samples/debate1992.json --speed 1000"
+    "ci:debate": "npm run replay -- --fixture samples/debate1992.json --speed 1000",
+    "eval:claims": "npm run build && node bakeoff/eval_claims.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",

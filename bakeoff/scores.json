@@ -243,6 +243,147 @@
     "CLINTON"
    ],
    "turn_seq_similarity": 0.9152542372881356
+  },
+  {
+   "provider": "AssemblyAI universal-3-5-pro (opus)",
+   "wer": 0.03957879448075526,
+   "sub": 31,
+   "dele": 28,
+   "ins": 50,
+   "ref_words": 2754,
+   "hyp_words": 2776,
+   "speakers_found": 5,
+   "mapping": {
+    "A": "LEHRER",
+    "C": "PEROT",
+    "B": "CLINTON",
+    "D": "BUSH",
+    "E": "COMPTON"
+   },
+   "mapping_detail": {
+    "A": {
+     "LEHRER": 354
+    },
+    "C": {
+     "PEROT": 573,
+     "LEHRER": 4
+    },
+    "B": {
+     "CLINTON": 964
+    },
+    "D": {
+     "BUSH": 755
+    },
+    "E": {
+     "COMPTON": 46
+    }
+   },
+   "speaker_word_acc": 0.9985163204747775,
+   "aligned_words": 2696,
+   "hyp_turns": 27,
+   "ref_turns": 30,
+   "hyp_turn_seq": [
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "COMPTON",
+    "CLINTON",
+    "COMPTON",
+    "CLINTON"
+   ],
+   "turn_seq_similarity": 0.8771929824561403
+  },
+  {
+   "provider": "Deepgram nova-3 + keyterms (opus)",
+   "wer": 0.042483660130718956,
+   "sub": 45,
+   "dele": 33,
+   "ins": 39,
+   "ref_words": 2754,
+   "hyp_words": 2760,
+   "speakers_found": 5,
+   "mapping": {
+    "S0": "LEHRER",
+    "S2": "PEROT",
+    "S1": "CLINTON",
+    "S3": "BUSH",
+    "S4": "COMPTON"
+   },
+   "mapping_detail": {
+    "S0": {
+     "LEHRER": 351,
+     "PEROT": 3
+    },
+    "S2": {
+     "PEROT": 580,
+     "LEHRER": 2
+    },
+    "S1": {
+     "CLINTON": 947
+    },
+    "S3": {
+     "BUSH": 748
+    },
+    "S4": {
+     "COMPTON": 45
+    }
+   },
+   "speaker_word_acc": 0.9981315396113603,
+   "aligned_words": 2676,
+   "hyp_turns": 29,
+   "ref_turns": 30,
+   "hyp_turn_seq": [
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "COMPTON",
+    "CLINTON",
+    "COMPTON",
+    "CLINTON"
+   ],
+   "turn_seq_similarity": 0.9152542372881356
   }
  ]
 }

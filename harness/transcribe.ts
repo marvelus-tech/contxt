@@ -7,6 +7,7 @@
 // Keys come from ASSEMBLYAI_API_KEY or DEEPGRAM_API_KEY. They are never printed.
 import { mkdir, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
+import { nameSpeakers } from "../pipeline/speakers.js";
 import {
   transcribeWithAssemblyAI,
   transcribeWithDeepgram,
@@ -16,7 +17,8 @@ import {
 function usage(): string {
   return `Usage:
   contxt-transcribe <audio> --provider assemblyai|deepgram --out fixture.json
-    [--raw raw.json] [--model name] [--keyterm term ...]`;
+    [--raw raw.json] [--model name] [--keyterm term ...]
+    [--speakers "Name One,Name Two"] [--no-naming]`;
 }
 
 const args = process.argv.slice(2);
@@ -26,6 +28,8 @@ let out: string | undefined;
 let raw: string | undefined;
 let model: string | undefined;
 const keyterms: string[] = [];
+let speakerHints: string[] = [];
+let naming = true;
 for (let index = 0; index < args.length; index += 1) {
   const argument = args[index]!;
   if (argument === "--provider") provider = args[++index] as typeof provider;
@@ -33,6 +37,8 @@ for (let index = 0; index < args.length; index += 1) {
   else if (argument === "--raw") raw = args[++index];
   else if (argument === "--model") model = args[++index];
   else if (argument === "--keyterm") keyterms.push(args[++index] ?? "");
+  else if (argument === "--speakers") speakerHints = (args[++index] ?? "").split(",").map((n) => n.trim()).filter(Boolean);
+  else if (argument === "--no-naming") naming = false;
   else if (argument === "--help" || argument === "-h") {
     console.log(usage());
     process.exit(0);
@@ -56,9 +62,15 @@ try {
     provider === "assemblyai"
       ? await transcribeWithAssemblyAI(input, options)
       : await transcribeWithDeepgram(input, options);
-  const speakers = [...new Set(result.segments.map((segment) => segment.speaker).filter(Boolean))].map(
-    (id) => ({ id, name: id }),
-  );
+  const labels = [...new Set(result.segments.map((segment) => segment.speaker).filter(Boolean))] as string[];
+  const named = naming ? nameSpeakers(result.segments, { hints: speakerHints }) : undefined;
+  // Segments keep the provider label; speakers[] carries the inferred name.
+  const speakers = labels.map((id) => {
+    const guess = named?.byLabel.get(id);
+    return guess
+      ? { id, name: guess.name, confidence: guess.confidence, named: guess.named, ...(guess.role ? { role: guess.role } : {}), evidence: guess.evidence }
+      : { id, name: id };
+  });
   const fixture = {
     meta: {
       source: basename(input),
