@@ -5,7 +5,8 @@ function usage(): string {
   return `Usage:
   contxt-replay --fixture samples/demo.json [--speed 4]
   contxt-replay recording.wav [--speed 4] [--transcriber whisper]
-  contxt-replay recording.mp3 --transcriber assemblyai
+  contxt-replay recording.opus --transcriber assemblyai [--cloud-model universal-3-5-pro]
+  contxt-replay recording.opus --transcriber deepgram [--keyterm Perot --keyterm Lehrer]
 
 Transcribers: fixture, whisper, assemblyai, deepgram`;
 }
@@ -15,6 +16,8 @@ function parseArgs(args: string[]): ReplayOptions {
   let speed = 1;
   let transcriber: ReplayOptions["transcriber"];
   let modelPath: string | undefined;
+  let cloudModel: string | undefined;
+  const keyterms: string[] = [];
 
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]!;
@@ -39,6 +42,15 @@ function parseArgs(args: string[]): ReplayOptions {
       modelPath = args[++index];
       continue;
     }
+    if (argument === "--cloud-model") {
+      cloudModel = args[++index];
+      continue;
+    }
+    if (argument === "--keyterm") {
+      const term = args[++index];
+      if (term) keyterms.push(term);
+      continue;
+    }
     if (!argument.startsWith("-") && !inputPath) {
       inputPath = argument;
       continue;
@@ -53,7 +65,14 @@ function parseArgs(args: string[]): ReplayOptions {
   ) {
     throw new Error(`Unknown transcriber: ${transcriber}`);
   }
-  return { inputPath, speed, transcriber, modelPath };
+  return {
+    inputPath,
+    speed,
+    transcriber,
+    modelPath,
+    ...(cloudModel ? { cloudModel } : {}),
+    ...(keyterms.length ? { keyterms } : {}),
+  };
 }
 
 try {

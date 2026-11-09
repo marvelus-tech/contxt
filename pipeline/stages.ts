@@ -7,6 +7,7 @@ import type {
   Fact,
   Page,
   PageBuilder,
+  PageClaim,
   Researcher,
   StageContext,
   TimelineEvent,
@@ -47,6 +48,7 @@ function contentTokens(text: string): string[] {
 
 export class HeuristicClaimExtractor implements ClaimExtractor {
   private carry = "";
+  private carrySegment: TranscriptSegment | undefined;
   private nextId = 1;
   private readonly sentenceSegmenter = new Intl.Segmenter("en", {
     granularity: "sentence",
@@ -58,6 +60,19 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
   ): Promise<Claim[]> {
     const claims: Claim[] = [];
     for (const segment of segments) {
+      // A sentence never spans two speakers. If the speaker changes, the
+      // unfinished text belongs to the previous speaker and is closed out.
+      if (
+        this.carry &&
+        this.carrySegment &&
+        this.carrySegment.speaker !== segment.speaker
+      ) {
+        const claim = this.toClaim(this.carry, this.carrySegment);
+        if (claim) claims.push(claim);
+        this.carry = "";
+        this.carrySegment = undefined;
+      }
+      const startSegment = this.carry && this.carrySegment ? this.carrySegment : segment;
       const combined = `${this.carry} ${segment.text}`.trim();
       const sentences = [...this.sentenceSegmenter.segment(combined)];
       const complete = sentences
@@ -68,9 +83,13 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
           .map(({ segment: sentence }) => sentence.trim())
           .filter((sentence) => !/[.!?]["')\]]?$/.test(sentence))
           .at(-1) ?? "";
+      this.carrySegment = this.carry ? segment : undefined;
 
       for (const sentence of complete) {
-        const claim = this.toClaim(sentence.trim(), segment);
+        const claim = this.toClaim(sentence.trim(), {
+          ...segment,
+          startMs: Math.min(startSegment.startMs, segment.startMs),
+        });
         if (claim) claims.push(claim);
       }
     }
@@ -80,11 +99,14 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
   async flush(context: StageContext): Promise<Claim[]> {
     if (!this.carry) return [];
     const text = this.carry;
+    const speaker = this.carrySegment?.speaker;
     this.carry = "";
+    this.carrySegment = undefined;
     const claim = this.toClaim(text, {
       startMs: context.mediaTimeMs,
       endMs: context.mediaTimeMs,
       text,
+      speaker,
     });
     return claim ? [claim] : [];
   }
@@ -101,6 +123,7 @@ export class HeuristicClaimExtractor implements ClaimExtractor {
       normalized: normalizeClaim(text),
       startMs: segment.startMs,
       endMs: segment.endMs,
+      ...(segment.speaker ? { speaker: segment.speaker } : {}),
     };
   }
 }
@@ -174,6 +197,22 @@ function escapeHtml(value: string): string {
   );
 }
 
+function pageClaim(claim: Claim): PageClaim {
+  return {
+    id: claim.id,
+    text: claim.text,
+    startMs: claim.startMs,
+    ...(claim.speaker ? { speaker: claim.speaker } : {}),
+  };
+}
+
+function formatClock(ms: number): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(total / 60);
+  const seconds = String(total % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
 export class HtmlPageBuilder implements PageBuilder {
   async build(input: BuildPageInput): Promise<BuildPageResult> {
     const facts = input.facts.filter(isCitedFact);
@@ -181,7 +220,9 @@ export class HtmlPageBuilder implements PageBuilder {
       ? {
           ...input.existingPage,
           currentClaim: input.claim.text,
+          currentSpeaker: input.claim.speaker,
           claimIds: [...input.existingPage.claimIds, input.claim.id],
+          claims: [...input.existingPage.claims, pageClaim(input.claim)],
           facts: [...input.existingPage.facts, ...facts].filter(
             (fact, index, all) =>
               all.findIndex(
@@ -197,7 +238,9 @@ export class HtmlPageBuilder implements PageBuilder {
           topicId: input.topic.id,
           title: input.topic.title,
           currentClaim: input.claim.text,
+          currentSpeaker: input.claim.speaker,
           claimIds: [input.claim.id],
+          claims: [pageClaim(input.claim)],
           facts,
           createdAtMs: input.claim.endMs,
           updatedAtMs: input.claim.endMs,
@@ -215,7 +258,24 @@ export class HtmlPageBuilder implements PageBuilder {
         (page, index) => `<section id="${escapeHtml(page.id)}" class="page">
   <p class="eyebrow">Topic ${index + 1} of ${pages.length}</p>
   <h1>${escapeHtml(page.title)}</h1>
-  <p class="claim">${escapeHtml(page.currentClaim)}</p>
+  <p class="claim">${escapeHtml(page.currentClaim)}</p>${
+    page.currentSpeaker
+      ? `\n  <p class="speaker">Said by ${escapeHtml(page.currentSpeaker)}</p>`
+      : ""
+  }${
+    page.claims.length > 1
+      ? `\n  <h2>Claims on this topic</h2>\n  <ol class="claims">${page.claims
+          .map(
+            (claim) =>
+              `<li><time>${formatClock(claim.startMs)}</time> ${
+                claim.speaker
+                  ? `<strong>${escapeHtml(claim.speaker)}:</strong> `
+                  : ""
+              }${escapeHtml(claim.text)}</li>`,
+          )
+          .join("")}</ol>`
+      : ""
+  }
   <h2>Cited facts</h2>
   <ul>${page.facts
     .slice(0, 5)
@@ -233,7 +293,15 @@ export class HtmlPageBuilder implements PageBuilder {
       .filter((event) => event.type.startsWith("page-"))
       .map(
         (event) =>
-          `<li><time>${(event.mediaMs / 1000).toFixed(1)}s</time> ${escapeHtml(event.detail)}</li>`,
+          `<li><time>${(event.mediaMs / 1000).toFixed(1)}s</time> ${escapeHtml(event.detail)}${
+            event.claim
+              ? `<br><span class="said">${
+                  event.speaker
+                    ? `<strong>${escapeHtml(event.speaker)}:</strong> `
+                    : ""
+                }${escapeHtml(event.claim)}</span>`
+              : ""
+          }</li>`,
       )
       .join("");
 
@@ -243,7 +311,7 @@ export class HtmlPageBuilder implements PageBuilder {
 :root{color:#24211d;background:#f7f0e4;font:18px/1.55 system-ui,sans-serif}body{margin:0}
 nav{position:fixed;inset:auto 0 0;display:flex;justify-content:center;gap:1rem;padding:1rem;background:#f7f0e4e8}
 .page{min-height:82vh;padding:8vh max(8vw,2rem);scroll-snap-align:start}.claim{font-size:1.5rem;max-width:50rem}
-.eyebrow,time{color:#6d5843}a{color:#714214}main{scroll-snap-type:y mandatory}
+.eyebrow,time,.speaker{color:#6d5843}.speaker{margin-top:-.5rem;font-weight:600}.said{color:#4a4038}a{color:#714214}main{scroll-snap-type:y mandatory}
 .timeline{padding:3rem max(8vw,2rem) 7rem}li{margin:.7rem 0}
 </style></head><body><main>${sections || '<section class="page"><h1>No topics yet</h1></section>'}
 <section class="timeline"><h1>Chronological timeline</h1><ol>${markers}</ol></section></main>

@@ -1,0 +1,248 @@
+{
+ "ref_turn_seq": [
+  "LEHRER",
+  "PEROT",
+  "LEHRER",
+  "CLINTON",
+  "LEHRER",
+  "BUSH",
+  "LEHRER",
+  "CLINTON",
+  "LEHRER",
+  "BUSH",
+  "LEHRER",
+  "PEROT",
+  "LEHRER",
+  "BUSH",
+  "LEHRER",
+  "PEROT",
+  "LEHRER",
+  "PEROT",
+  "LEHRER",
+  "PEROT",
+  "LEHRER",
+  "CLINTON",
+  "CLINTON",
+  "LEHRER",
+  "COMPTON",
+  "CLINTON",
+  "COMPTON",
+  "CLINTON",
+  "COMPTON",
+  "CLINTON"
+ ],
+ "results": [
+  {
+   "provider": "Deepgram nova-3",
+   "wer": 0.04212055192447349,
+   "sub": 47,
+   "dele": 32,
+   "ins": 37,
+   "ref_words": 2754,
+   "hyp_words": 2759,
+   "speakers_found": 5,
+   "mapping": {
+    "S0": "LEHRER",
+    "S2": "PEROT",
+    "S1": "CLINTON",
+    "S3": "BUSH",
+    "S4": "COMPTON"
+   },
+   "mapping_detail": {
+    "S0": {
+     "LEHRER": 352
+    },
+    "S2": {
+     "PEROT": 582
+    },
+    "S1": {
+     "CLINTON": 949
+    },
+    "S3": {
+     "BUSH": 747
+    },
+    "S4": {
+     "COMPTON": 45
+    }
+   },
+   "speaker_word_acc": 1.0,
+   "aligned_words": 2675,
+   "hyp_turns": 29,
+   "ref_turns": 30,
+   "hyp_turn_seq": [
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "COMPTON",
+    "CLINTON",
+    "COMPTON",
+    "CLINTON"
+   ],
+   "turn_seq_similarity": 0.9152542372881356
+  },
+  {
+   "provider": "AssemblyAI universal-3-pro",
+   "wer": 0.03159041394335512,
+   "sub": 30,
+   "dele": 23,
+   "ins": 34,
+   "ref_words": 2754,
+   "hyp_words": 2765,
+   "speakers_found": 5,
+   "mapping": {
+    "A": "LEHRER",
+    "C": "PEROT",
+    "B": "CLINTON",
+    "D": "BUSH",
+    "E": "COMPTON"
+   },
+   "mapping_detail": {
+    "A": {
+     "LEHRER": 359
+    },
+    "C": {
+     "PEROT": 576,
+     "LEHRER": 2
+    },
+    "B": {
+     "CLINTON": 965
+    },
+    "D": {
+     "BUSH": 754
+    },
+    "E": {
+     "COMPTON": 46
+    }
+   },
+   "speaker_word_acc": 0.999259807549963,
+   "aligned_words": 2702,
+   "hyp_turns": 29,
+   "ref_turns": 30,
+   "hyp_turn_seq": [
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "COMPTON",
+    "CLINTON",
+    "COMPTON",
+    "CLINTON"
+   ],
+   "turn_seq_similarity": 0.9152542372881356
+  },
+  {
+   "provider": "AssemblyAI universal-3-5-pro",
+   "wer": 0.03776325344952796,
+   "sub": 30,
+   "dele": 26,
+   "ins": 48,
+   "ref_words": 2754,
+   "hyp_words": 2776,
+   "speakers_found": 5,
+   "mapping": {
+    "A": "LEHRER",
+    "C": "PEROT",
+    "B": "CLINTON",
+    "D": "BUSH",
+    "E": "COMPTON"
+   },
+   "mapping_detail": {
+    "A": {
+     "LEHRER": 359
+    },
+    "C": {
+     "PEROT": 573,
+     "LEHRER": 2
+    },
+    "B": {
+     "CLINTON": 964
+    },
+    "D": {
+     "BUSH": 755
+    },
+    "E": {
+     "COMPTON": 46
+    }
+   },
+   "speaker_word_acc": 0.9992589848091886,
+   "aligned_words": 2699,
+   "hyp_turns": 29,
+   "ref_turns": 30,
+   "hyp_turn_seq": [
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "BUSH",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "PEROT",
+    "LEHRER",
+    "CLINTON",
+    "LEHRER",
+    "COMPTON",
+    "CLINTON",
+    "COMPTON",
+    "CLINTON"
+   ],
+   "turn_seq_similarity": 0.9152542372881356
+  }
+ ]
+}

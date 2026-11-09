@@ -43,6 +43,10 @@ export interface ReplayOptions {
   speed?: number;
   transcriber?: "fixture" | "whisper" | "assemblyai" | "deepgram";
   modelPath?: string;
+  /** Cloud model override, for example universal-3-pro or nova-3. */
+  cloudModel?: string;
+  /** Keyterm prompts for cloud transcribers (names, jargon). */
+  keyterms?: string[];
   researchFixture?: string;
   outRoot?: string;
   runId?: string;
@@ -55,6 +59,7 @@ export interface ReplayResult {
   deckPath: string;
   timelinePath: string;
   scorecardPath: string;
+  claimsPath: string;
   scorecard: Scorecard;
   timeline: TimelineEvent[];
   pages: Page[];
@@ -101,7 +106,7 @@ async function mediaDuration(path: string): Promise<number> {
   const extension = extname(path).toLowerCase();
   if (extension === ".json") return fixtureDuration(path);
   if (extension === ".wav") return wavDuration(path);
-  if (extension === ".mp3") {
+  if ([".mp3", ".opus", ".ogg", ".webm", ".m4a", ".flac"].includes(extension)) {
     try {
       const { stdout } = await execFileAsync("ffprobe", [
         "-v",
@@ -114,10 +119,10 @@ async function mediaDuration(path: string): Promise<number> {
       ]);
       return Number.parseFloat(stdout) * 1_000;
     } catch {
-      throw new Error("MP3 replay needs ffprobe to determine duration");
+      throw new Error(`${extension.slice(1).toUpperCase()} replay needs ffprobe to determine duration`);
     }
   }
-  throw new Error("Replay input must be a WAV, MP3, or transcript JSON file");
+  throw new Error("Replay input must be a WAV, MP3, Opus, OGG, WebM, M4A or FLAC file, or a transcript JSON file");
 }
 
 function runIdentifier(): string {
@@ -155,11 +160,15 @@ export function formatScorecard(scorecard: Scorecard): string {
   const claims = scorecard.claimToPageSeconds
     .map(
       (metric) =>
-        `  ${metric.claimId} -> ${metric.pageId}: ${metric.action} in ${metric.seconds.toFixed(3)} seconds`,
+        `  ${metric.claimId}${metric.speaker ? ` (${metric.speaker})` : ""} -> ${metric.pageId}: ${metric.action} in ${metric.seconds.toFixed(3)} seconds`,
     )
     .join("\n");
   return `CONTXT replay scorecard
 transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
+claims: ${scorecard.claimToPageSeconds.length}
+claims by speaker: ${Object.entries(scorecard.claimsBySpeaker ?? {})
+    .map(([speaker, count]) => `${speaker} ${count}`)
+    .join(", ") || "none"}
 pages created: ${scorecard.pagesCreated}
 pages updated: ${scorecard.pagesUpdated}
 duplicates merged: ${scorecard.duplicatesMerged}
@@ -185,7 +194,10 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     (extname(inputPath).toLowerCase() === ".json" ? "fixture" : "whisper");
   const transcriber =
     options.stages?.transcriber ??
-    (await createTranscriber(kind, inputPath, options.modelPath));
+    (await createTranscriber(kind, inputPath, options.modelPath, {
+      ...(options.cloudModel ? { model: options.cloudModel } : {}),
+      ...(options.keyterms?.length ? { keyterms: options.keyterms } : {}),
+    }));
   const extractor =
     options.stages?.claimExtractor ?? new HeuristicClaimExtractor();
   const grouper = options.stages?.topicGrouper ?? new HeuristicTopicGrouper();
@@ -213,6 +225,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     pageBuilder: [],
   };
   const claimToPageSeconds: ClaimToPageMetric[] = [];
+  const claimsSeen: Claim[] = [];
   let pagesCreated = 0;
   let pagesUpdated = 0;
   let duplicatesMerged = 0;
@@ -226,6 +239,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     detail: string,
     refId?: string,
     latencyMs?: number,
+    claim?: Claim,
   ): void => {
     timeline.push({
       atMs: Number((performance.now() - started).toFixed(3)),
@@ -235,6 +249,8 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       detail,
       refId,
       latencyMs,
+      ...(claim?.speaker ? { speaker: claim.speaker } : {}),
+      ...(claim ? { claim: claim.text } : {}),
     });
   };
 
@@ -255,7 +271,16 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       priorTopic ??
       (await timed("topicGrouper", () => grouper.group(claim, topics)));
     if (priorTopic) priorTopic.claimIds.push(claim.id);
-    record(claim.endMs, "topicGrouper", "topic-grouped", topic.title, topic.id);
+    claimsSeen.push(claim);
+    record(
+      claim.endMs,
+      "topicGrouper",
+      "topic-grouped",
+      topic.title,
+      topic.id,
+      undefined,
+      claim,
+    );
 
     const existingPage = pages.get(topic.id);
     let facts: Fact[] = [];
@@ -267,6 +292,8 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
         "duplicate-merged",
         claim.text,
         existingPage?.id,
+        undefined,
+        claim,
       );
     } else {
       const proposedFacts = await timed("researcher", () =>
@@ -291,6 +318,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       pageId: built.page.id,
       action,
       seconds: Number(seconds.toFixed(6)),
+      ...(claim.speaker ? { speaker: claim.speaker } : {}),
     });
     record(
       claim.endMs,
@@ -299,6 +327,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       `${action === "created" ? "Created" : "Updated"} ${built.page.title}`,
       built.page.id,
       seconds * 1_000,
+      claim,
     );
   };
 
@@ -356,12 +385,31 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       : 100,
     latencyByStageMs: summarizeLatency(latencySamples),
     claimToPageSeconds,
+    claimsBySpeaker: Object.fromEntries(
+      [...new Set(claimsSeen.map((claim) => claim.speaker ?? "unknown"))].map(
+        (speaker) => [
+          speaker,
+          claimsSeen.filter((claim) => (claim.speaker ?? "unknown") === speaker)
+            .length,
+        ],
+      ),
+    ),
     ...(availability.reason ? { skipReason: availability.reason } : {}),
   };
   const deckPath = join(runDir, "deck.html");
   const timelinePath = join(runDir, "timeline.json");
   const scorecardPath = join(runDir, "scorecard.json");
+  const claimsPath = join(runDir, "claims.json");
+  const claimsOut = claimsSeen.map((claim) => ({
+    id: claim.id,
+    speaker: claim.speaker ?? null,
+    startMs: claim.startMs,
+    endMs: claim.endMs,
+    text: claim.text,
+    topicId: seenClaims.get(claim.normalized) ?? null,
+  }));
   await Promise.all([
+    writeFile(claimsPath, `${JSON.stringify(claimsOut, null, 2)}\n`),
     writeFile(deckPath, pageBuilder.render(pageList, timeline)),
     writeFile(timelinePath, `${JSON.stringify(timeline, null, 2)}\n`),
     writeFile(scorecardPath, `${JSON.stringify(scorecard, null, 2)}\n`),
@@ -372,6 +420,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     deckPath,
     timelinePath,
     scorecardPath,
+    claimsPath,
     scorecard,
     timeline,
     pages: pageList,

@@ -2,3 +2,7 @@ node_modules/
 dist/
 out/
 *.log
+.env
+.cache/
+samples/audio/*.wav
+__pycache__/

@@ -1,0 +1,2 @@
+jiwer>=3
+num2words>=0.5

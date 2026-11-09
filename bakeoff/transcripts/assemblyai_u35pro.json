@@ -1,0 +1,1343 @@
+{
+ "meta": {
+  "title": "First 1992 presidential debate (Bush, Clinton, Perot), opening 15:35",
+  "source": "https://commons.wikimedia.org/wiki/File:Presidential_Debate_with_George_H._W._Bush,_Bill_Clinton_and_Ross_Perot_11_October_1992.webm",
+  "license": "Public domain",
+  "date": "1992-10-11",
+  "clipStartInSourceMs": 126000,
+  "clipEndInSourceMs": 1061400,
+  "durationMs": 935400,
+  "provider": "assemblyai",
+  "model": "universal-3-5-pro",
+  "rawFile": "bakeoff/raw/assemblyai_u35pro.json",
+  "speakerNames": "Provider labels mapped to names by aligning with the debates.org transcript",
+  "reference": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+ },
+ "speakers": [
+  {
+   "id": "LEHRER",
+   "name": "Jim Lehrer (moderator)",
+   "providerLabel": "A",
+   "segments": 31,
+   "talkMs": 129274
+  },
+  {
+   "id": "CLINTON",
+   "name": "Bill Clinton",
+   "providerLabel": "B",
+   "segments": 64,
+   "talkMs": 277485
+  },
+  {
+   "id": "PEROT",
+   "name": "Ross Perot",
+   "providerLabel": "C",
+   "segments": 29,
+   "talkMs": 168624
+  },
+  {
+   "id": "BUSH",
+   "name": "George H. W. Bush",
+   "providerLabel": "D",
+   "segments": 58,
+   "talkMs": 222914
+  },
+  {
+   "id": "COMPTON",
+   "name": "Ann Compton (panelist)",
+   "providerLabel": "E",
+   "segments": 2,
+   "talkMs": 17890
+  }
+ ],
+ "segments": [
+  {
+   "startMs": 906,
+   "endMs": 10544,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Good evening and welcome to the first of 3 debates among the major candidates for president of the United States sponsored by the Commission on Presidential Debates."
+  },
+  {
+   "startMs": 11106,
+   "endMs": 20977,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "The candidates are independent candidate Ross Perot, Governor Bill Clinton, the Democratic nominee, and President George Bush, the Republican nominee."
+  },
+  {
+   "startMs": 22004,
+   "endMs": 28617,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "I am Jim Lehrer of the MacNeil-Lehrer NewsHour on PBS, and I will be the moderator for this 90-minute event."
+  },
+  {
+   "startMs": 29066,
+   "endMs": 35595,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "which is taking place before an audience here in the athletic complex on the campus of Washington University in St."
+  },
+  {
+   "startMs": 35643,
+   "endMs": 40087,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Louis, Missouri. 3 journalists will be asking questions tonight."
+  },
+  {
+   "startMs": 40472,
+   "endMs": 48413,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "They are John Masic of the Boston Globe, Ann Compton of ABC News, and Sander Van Ocker, a freelance journalist."
+  },
+  {
+   "startMs": 49279,
+   "endMs": 55439,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "We will follow a format agreed to by representatives of the Clinton and Bush campaigns."
+  },
+  {
+   "startMs": 56052,
+   "endMs": 62012,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "That agreement contains no restrictions on the content or subject matter of the questions."
+  },
+  {
+   "startMs": 62990,
+   "endMs": 66613,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Each candidate will have up to 2 minutes for a closing statement."
+  },
+  {
+   "startMs": 67158,
+   "endMs": 71951,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "The order of those, as well as the questioning, was determined by a drawing."
+  },
+  {
+   "startMs": 72865,
+   "endMs": 74628,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "The first question goes to Mr."
+  },
+  {
+   "startMs": 74708,
+   "endMs": 83334,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Perot. He will have 2 minutes to answer, to be followed by rebuttals of 1 minute each from Governor Clinton, and then President Bush."
+  },
+  {
+   "startMs": 84516,
+   "endMs": 85941,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Gentlemen, good evening."
+  },
+  {
+   "startMs": 86459,
+   "endMs": 87074,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Good evening, Jim."
+  },
+  {
+   "startMs": 87673,
+   "endMs": 93710,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "The first topic tonight is what separates each of you from the other."
+  },
+  {
+   "startMs": 95522,
+   "endMs": 104713,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Mr. Perot, what do you believe tonight is the single most important separating issue of this campaign?"
+  },
+  {
+   "startMs": 106704,
+   "endMs": 113690,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I think the principal issue that separates me Is that 5.5 million people came together on their own and put me on the ballot."
+  },
+  {
+   "startMs": 114734,
+   "endMs": 116886,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I was not put on the ballot by either of the two parties."
+  },
+  {
+   "startMs": 117304,
+   "endMs": 122748,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I was not put on the ballot by any PAC money, by any foreign lobbyist money, by any special interest money."
+  },
+  {
+   "startMs": 123423,
+   "endMs": 125880,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "This is a movement that came from the people."
+  },
+  {
+   "startMs": 126458,
+   "endMs": 132223,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "This is the way the framers of the Constitution intended our government to be, a government that comes from the people."
+  },
+  {
+   "startMs": 133283,
+   "endMs": 136399,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "Over time, we have developed a government that comes at the people."
+  },
+  {
+   "startMs": 136672,
+   "endMs": 149905,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "Comes from the top down, where the people are more or less treated as objects to be programmed during the campaign with commercials and media events and fear messages and personal attacks and things of that nature."
+  },
+  {
+   "startMs": 150949,
+   "endMs": 163427,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "The thing that separates my candidacy and makes it unique is that this came from millions of people in 50 states all over this country who wanted a candidate that worked and belonged to nobody but them."
+  },
+  {
+   "startMs": 164422,
+   "endMs": 168992,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I go into this race as their servant, and I belong to them."
+  },
+  {
+   "startMs": 169202,
+   "endMs": 170817,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "So this comes from the people."
+  },
+  {
+   "startMs": 172679,
+   "endMs": 174291,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Governor Clinton, 1-minute response."
+  },
+  {
+   "startMs": 175852,
+   "endMs": 187767,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "The most important distinction in this campaign is that I represent real hope for change, a departure from trickle-down economics, a departure from tax-and-spend economics, to invest and grow."
+  },
+  {
+   "startMs": 188973,
+   "endMs": 192239,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "But before I can do that, I must challenge the American people to change."
+  },
+  {
+   "startMs": 193226,
+   "endMs": 194125,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "And they must decide."
+  },
+  {
+   "startMs": 195377,
+   "endMs": 198444,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Tonight I say to the president, Mr."
+  },
+  {
+   "startMs": 198492,
+   "endMs": 202009,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Bush, for 12 years you've had it your way."
+  },
+  {
+   "startMs": 202089,
+   "endMs": 204995,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "You've had your chance, and it didn't work."
+  },
+  {
+   "startMs": 205734,
+   "endMs": 207339,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "It's time to change."
+  },
+  {
+   "startMs": 208752,
+   "endMs": 216460,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I want to bring that change to the American people, but we must all decide first we have the courage to change for hope and a better tomorrow."
+  },
+  {
+   "startMs": 216588,
+   "endMs": 217006,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Mr."
+  },
+  {
+   "startMs": 218230,
+   "endMs": 219928,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "President Bush, 1-minute response, sir."
+  },
+  {
+   "startMs": 220571,
+   "endMs": 224361,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Well, I, I think one thing that distinguishes is experience."
+  },
+  {
+   "startMs": 225068,
+   "endMs": 226963,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I think we've dramatically changed the world."
+  },
+  {
+   "startMs": 227172,
+   "endMs": 228682,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I'll talk about that a little bit later."
+  },
+  {
+   "startMs": 228762,
+   "endMs": 231525,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But the changes are mind-boggling for world peace."
+  },
+  {
+   "startMs": 232280,
+   "endMs": 236408,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Kids go to bed at night without the same fear of nuclear war."
+  },
+  {
+   "startMs": 236954,
+   "endMs": 240006,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And change for change's sake isn't enough."
+  },
+  {
+   "startMs": 240712,
+   "endMs": 243957,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "We saw that message in the late '70s, and we heard a lot about change."
+  },
+  {
+   "startMs": 244005,
+   "endMs": 246655,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And what happened? The misery index went right through the roof."
+  },
+  {
+   "startMs": 247237,
+   "endMs": 250961,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But I— my economic program, I think, is the kind of change we want."
+  },
+  {
+   "startMs": 251010,
+   "endMs": 254769,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And the way we're going to get it done is we're going to have a brand-new Congress."
+  },
+  {
+   "startMs": 255107,
+   "endMs": 257380,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "A lot of them are thrown out because of all the scandals."
+  },
+  {
+   "startMs": 257833,
+   "endMs": 265448,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I'll sit down with them, Democrats and Republicans alike, and work for my agenda for American renewal, which represents real change."
+  },
+  {
+   "startMs": 265675,
+   "endMs": 269168,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But I'd say if you had to separate out, I think it's experience at this level."
+  },
+  {
+   "startMs": 270986,
+   "endMs": 276498,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Governor Clinton, how do you respond on— to the president's On the question— you have 2 minutes on the question of experience."
+  },
+  {
+   "startMs": 276547,
+   "endMs": 279772,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "He says that is what distinguishes him from the other 2 of you."
+  },
+  {
+   "startMs": 282090,
+   "endMs": 284378,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I believe experience counts, but it's not everything."
+  },
+  {
+   "startMs": 285550,
+   "endMs": 290763,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Values, judgment, and the record that I have amassed in my state also should count for something."
+  },
+  {
+   "startMs": 291780,
+   "endMs": 294556,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I've worked hard to create good jobs and to educate people."
+  },
+  {
+   "startMs": 295250,
+   "endMs": 299187,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "My state now ranks first in the country in job growth this year."
+  },
+  {
+   "startMs": 300514,
+   "endMs": 307528,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Fourth in income growth, fourth in the reduction of poverty, third in overall economic performance according to a major news magazine."
+  },
+  {
+   "startMs": 308523,
+   "endMs": 311863,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "That's because we believe in investing in education and in jobs."
+  },
+  {
+   "startMs": 312537,
+   "endMs": 314063,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "And we have to change in this country."
+  },
+  {
+   "startMs": 314769,
+   "endMs": 324050,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "You know, my wife Hillary gave me a book about a year ago in which the author defined insanity as just doing the same old thing over and over again and expecting a different result."
+  },
+  {
+   "startMs": 325242,
+   "endMs": 327325,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We have got to have the courage to change."
+  },
+  {
+   "startMs": 327968,
+   "endMs": 329509,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Experience is important, yes."
+  },
+  {
+   "startMs": 329862,
+   "endMs": 334984,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I've gotten a lot of good experience in dealing with ordinary people over the last year and a month."
+  },
+  {
+   "startMs": 335562,
+   "endMs": 342997,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I've touched more people's lives and seen more heartbreak and hope, more pain and more promise than anybody else who's run for president this year."
+  },
+  {
+   "startMs": 343671,
+   "endMs": 346063,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "And I think the American people deserve better than they're getting."
+  },
+  {
+   "startMs": 346641,
+   "endMs": 350238,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We have gone from 1st to 13th in the world in wages in the last 12 years."
+  },
+  {
+   "startMs": 350740,
+   "endMs": 351667,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Since Mr. Bush and Mr."
+  },
+  {
+   "startMs": 351715,
+   "endMs": 352405,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Reagan have been in."
+  },
+  {
+   "startMs": 352998,
+   "endMs": 356866,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Personal income has dropped while people have worked harder in the last 4 years."
+  },
+  {
+   "startMs": 356914,
+   "endMs": 360268,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "There have been twice as many bankruptcies as new jobs created."
+  },
+  {
+   "startMs": 360541,
+   "endMs": 361985,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We need a new approach."
+  },
+  {
+   "startMs": 362450,
+   "endMs": 364649,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "The same old experience is not relevant."
+  },
+  {
+   "startMs": 364777,
+   "endMs": 377599,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We're living in a new world after the Cold War, and what works in this new world is not trickle-down, not government for the benefit of the privileged few, not tax and spend, but a commitment to invest in American jobs and American education."
+  },
+  {
+   "startMs": 378023,
+   "endMs": 381646,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Controlling American health care costs, and bringing the American people together."
+  },
+  {
+   "startMs": 382051,
+   "endMs": 382909,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "That is what works."
+  },
+  {
+   "startMs": 383346,
+   "endMs": 386179,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "And you can have the right kind of experience and the wrong kind of experience."
+  },
+  {
+   "startMs": 386502,
+   "endMs": 391585,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Mine is rooted in the real lives of real people, and it will bring real results if we have the courage to change."
+  },
+  {
+   "startMs": 392230,
+   "endMs": 393794,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "President Bush, 1 minute to respond."
+  },
+  {
+   "startMs": 394391,
+   "endMs": 401846,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I just thought of another— another big difference here between me— I don't believe Mr."
+  },
+  {
+   "startMs": 401894,
+   "endMs": 405327,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Perot feels this way, but I know Governor Clinton did, because I want to accurately quote him."
+  },
+  {
+   "startMs": 405782,
+   "endMs": 409597,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "He thinks— I think he said that the country is coming apart at the seams."
+  },
+  {
+   "startMs": 410351,
+   "endMs": 417211,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Now, I know that the only way he can win is to make everybody believe the economy is worse than it is."
+  },
+  {
+   "startMs": 417644,
+   "endMs": 420706,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But this country is not coming apart at the seams, for heaven's sakes."
+  },
+  {
+   "startMs": 421556,
+   "endMs": 422998,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "We're the United States of America."
+  },
+  {
+   "startMs": 423175,
+   "endMs": 427872,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "We, in spite of the economic problems, we are the most respected economy around the world."
+  },
+  {
+   "startMs": 428545,
+   "endMs": 429619,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Many would trade for it."
+  },
+  {
+   "startMs": 429667,
+   "endMs": 431991,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "We've been caught up in a global slowdown."
+  },
+  {
+   "startMs": 432392,
+   "endMs": 434202,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "We can do much, much better."
+  },
+  {
+   "startMs": 434635,
+   "endMs": 441012,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But we ought not to try to convince the American people that America is a country that's coming apart at the seams."
+  },
+  {
+   "startMs": 441909,
+   "endMs": 450593,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I would hate to be running for president and think that the only way I could win would be to convince every— everybody how horrible things are."
+  },
+  {
+   "startMs": 450881,
+   "endMs": 452179,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Yes, there are big problems."
+  },
+  {
+   "startMs": 452644,
+   "endMs": 453910,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And yes, people are hurting."
+  },
+  {
+   "startMs": 454486,
+   "endMs": 458957,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But I believe that this agenda for American renewal that I have is the answer to do it."
+  },
+  {
+   "startMs": 459069,
+   "endMs": 460335,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And I believe we can get it done now."
+  },
+  {
+   "startMs": 460415,
+   "endMs": 469084,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Mr. Romney, Whereas we didn't in the past, because you're going to have a whole brand-new bunch of people in the Congress that are going to have to listen to the same American people I'm listening to."
+  },
+  {
+   "startMs": 469726,
+   "endMs": 471268,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Mr. Perot, a minute response, sir."
+  },
+  {
+   "startMs": 471749,
+   "endMs": 472873,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "Well, they've got a point."
+  },
+  {
+   "startMs": 473259,
+   "endMs": 476020,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I don't have any experience in running up a $4 trillion debt."
+  },
+  {
+   "startMs": 477369,
+   "endMs": 486329,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I don't have any experience in gridlock government where nobody takes responsibility for anything and everybody blames everybody else."
+  },
+  {
+   "startMs": 486780,
+   "endMs": 497290,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I don't have any experience in creating the worst public school system in the industrialized world, the most violent, crime-ridden society in the industrialized world, but I do have a lot of experience in getting things done."
+  },
+  {
+   "startMs": 497970,
+   "endMs": 507790,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "So if we're at a point in history where we want to stop talking about it and do it, I've got a lot of experience in figuring out how to solve problems, making the solutions work, and then moving on to the next one."
+  },
+  {
+   "startMs": 507890,
+   "endMs": 511560,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I've got a lot of experience in not taking 10 years to solve a 10-minute problem."
+  },
+  {
+   "startMs": 511830,
+   "endMs": 515024,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "So if it's time for action, I think I have experience that counts."
+  },
+  {
+   "startMs": 515495,
+   "endMs": 518855,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "If there's more time for gridlock and talk and finger-pointing, I'm the wrong man."
+  },
+  {
+   "startMs": 521522,
+   "endMs": 524008,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "President Bush, the question goes to you."
+  },
+  {
+   "startMs": 524089,
+   "endMs": 525347,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "You have 2 minutes."
+  },
+  {
+   "startMs": 525799,
+   "endMs": 531013,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "And the question is this: Are there important issues of character separating you from these other 2 men?"
+  },
+  {
+   "startMs": 532179,
+   "endMs": 534479,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I think the American people should be the judge of that."
+  },
+  {
+   "startMs": 535402,
+   "endMs": 538058,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I think character is a very important question."
+  },
+  {
+   "startMs": 539140,
+   "endMs": 549380,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I said something the other day where I was accused of being like Joe McCarthy, because I questioned— I put it this way."
+  },
+  {
+   "startMs": 549492,
+   "endMs": 558354,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I think it's wrong to demonstrate against your own country or organize demonstrations against your own country in foreign soil."
+  },
+  {
+   "startMs": 558563,
+   "endMs": 559252,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I just think it's wrong."
+  },
+  {
+   "startMs": 560101,
+   "endMs": 563691,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I— I— Then maybe they say, well, it was a youthful indiscretion."
+  },
+  {
+   "startMs": 564236,
+   "endMs": 570149,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I was 19 or 20 flying off an aircraft carrier, and that shaped me to be commander-in-chief of the armed forces."
+  },
+  {
+   "startMs": 570959,
+   "endMs": 574950,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And I'm sorry, but demonstrating— it's not a question of patriotism."
+  },
+  {
+   "startMs": 575014,
+   "endMs": 577375,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "It's a question of character and judgment."
+  },
+  {
+   "startMs": 578274,
+   "endMs": 578853,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "They get on me."
+  },
+  {
+   "startMs": 578933,
+   "endMs": 581101,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Bill's gotten on me about read my lips."
+  },
+  {
+   "startMs": 581245,
+   "endMs": 582931,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And when I make a mistake, I'll admit it."
+  },
+  {
+   "startMs": 583510,
+   "endMs": 586721,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But he has made— not admitted a mistake."
+  },
+  {
+   "startMs": 587203,
+   "endMs": 602486,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And I just find it impossible to understand how an American can demonstrate against his own country in a foreign land, organizing demonstrations against it, When young men are held prisoner in Hanoi or kids out of the ghetto were drafted."
+  },
+  {
+   "startMs": 603114,
+   "endMs": 604305,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Some say, well, you're a little old-fashioned."
+  },
+  {
+   "startMs": 605202,
+   "endMs": 607875,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Maybe I am, but I just don't think that's right."
+  },
+  {
+   "startMs": 608245,
+   "endMs": 613735,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Now, whether it's character or judgment, whatever it is, I have a big difference here on this issue."
+  },
+  {
+   "startMs": 614202,
+   "endMs": 616150,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And so we'll just have to see how it plays out."
+  },
+  {
+   "startMs": 616778,
+   "endMs": 619515,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "But I, I couldn't do that."
+  },
+  {
+   "startMs": 620176,
+   "endMs": 622253,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And I don't think most Americans could do that."
+  },
+  {
+   "startMs": 622832,
+   "endMs": 624465,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "And they all say, well, it was a long time ago."
+  },
+  {
+   "startMs": 624531,
+   "endMs": 625492,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Well, let's admit it then."
+  },
+  {
+   "startMs": 625542,
+   "endMs": 627033,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "Say, I made a terrible mistake."
+  },
+  {
+   "startMs": 627730,
+   "endMs": 640229,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "How could you be Commander-in-Chief of the Armed Forces and have some kid say, when you have to make a tough decision as I did in Panama or in Kuwait, and then have some kid jump up and say, well, I'm not gonna go."
+  },
+  {
+   "startMs": 640277,
+   "endMs": 646430,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "The Commander-in-Chief was organizing demonstrations halfway around the world during another era."
+  },
+  {
+   "startMs": 646911,
+   "endMs": 652536,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "So there are differences, but that's about the main area where I think we have a difference."
+  },
+  {
+   "startMs": 652600,
+   "endMs": 653561,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "I don't know about— I think we have a difference."
+  },
+  {
+   "startMs": 654109,
+   "endMs": 656155,
+   "speaker": "BUSH",
+   "speakerLabel": "D",
+   "text": "We'll talk about that a little with Ross here in a bit."
+  },
+  {
+   "startMs": 657129,
+   "endMs": 658299,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Mr. Perot, you have 1 minute."
+  },
+  {
+   "startMs": 660807,
+   "endMs": 673466,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I think, uh, American people will make their own decisions on character, and at a time when we have work to do and we need action, I think they need to clearly understand the backgrounds of each person."
+  },
+  {
+   "startMs": 674347,
+   "endMs": 681157,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "I think the press can play a huge role in making sure that the backgrounds are clearly presented in an objective way."
+  },
+  {
+   "startMs": 682555,
+   "endMs": 683869,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "then make a decision."
+  },
+  {
+   "startMs": 683965,
+   "endMs": 692301,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "Certainly anyone in the White House should have the character to be there, but I think it's very important to measure when and where things occurred."
+  },
+  {
+   "startMs": 692574,
+   "endMs": 698999,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "Did they occur when you were a young person in your formative years, or did they occur while you were a senior official in the federal government?"
+  },
+  {
+   "startMs": 699882,
+   "endMs": 708909,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "When you're a senior official in the federal government spending billions of dollars of taxpayers' money, and you're a mature individual, and you make a mistake, Then that was on our ticket."
+  },
+  {
+   "startMs": 709680,
+   "endMs": 711576,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "If you make it as a young man, time passes."
+  },
+  {
+   "startMs": 712250,
+   "endMs": 725886,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "So I would say, just, you know, look at all 3 of us, decide who you think will do the job, pick that person in November, because believe me, as I've said before, the party's over, and it's time for the cleanup crew."
+  },
+  {
+   "startMs": 726770,
+   "endMs": 733259,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "And we do have to have change, and people who never take responsibility for anything when it happens on their watch,"
+  },
+  {
+   "startMs": 736609,
+   "endMs": 736850,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Your time"
+  },
+  {
+   "startMs": 737219,
+   "endMs": 737539,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "is up."
+  },
+  {
+   "startMs": 738757,
+   "endMs": 739864,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "Time is up."
+  },
+  {
+   "startMs": 740649,
+   "endMs": 741146,
+   "speaker": "PEROT",
+   "speakerLabel": "C",
+   "text": "More later."
+  },
+  {
+   "startMs": 741547,
+   "endMs": 743759,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "More. Governor Clinton, you have 1 minute."
+  },
+  {
+   "startMs": 744737,
+   "endMs": 747574,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Ross gave a good answer, but I've got to respond directly to Mr."
+  },
+  {
+   "startMs": 747702,
+   "endMs": 751325,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Bush. You have questioned my patriotism."
+  },
+  {
+   "startMs": 752047,
+   "endMs": 759629,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "You even brought some right-wing congressmen into the White House to plot how to attack me for going to Russia in 1969, 1970."
+  },
+  {
+   "startMs": 760022,
+   "endMs": 761796,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "when over 50,000 other Americans did."
+  },
+  {
+   "startMs": 762310,
+   "endMs": 764927,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Now, I honor your service in World War II."
+  },
+  {
+   "startMs": 765264,
+   "endMs": 773886,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I honor Mr. Perot's service in uniform and the service of every man and woman who ever served, including Admiral Crowell, who was your Chairman of the Joint Chiefs and who's supporting me."
+  },
+  {
+   "startMs": 775154,
+   "endMs": 782025,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "But when Joe McCarthy went around this country attacking people's patriotism, he was wrong."
+  },
+  {
+   "startMs": 782684,
+   "endMs": 787442,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "He was wrong. And a senator from Connecticut stood up to him named Prescott Bush."
+  },
+  {
+   "startMs": 787909,
+   "endMs": 790199,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Your father was right to stand up to Joe McCarthy."
+  },
+  {
+   "startMs": 790586,
+   "endMs": 792505,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "You were wrong to attack my patriotism."
+  },
+  {
+   "startMs": 792972,
+   "endMs": 795353,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I was opposed to the war, but I love my country."
+  },
+  {
+   "startMs": 795788,
+   "endMs": 799103,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "And we need a president who will bring this country together, not divide it."
+  },
+  {
+   "startMs": 799151,
+   "endMs": 800197,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We've had enough division."
+  },
+  {
+   "startMs": 800278,
+   "endMs": 801501,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I want to lead a unified country."
+  },
+  {
+   "startMs": 804820,
+   "endMs": 807970,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "All right, we move now to the subject of taxes and spending."
+  },
+  {
+   "startMs": 808066,
+   "endMs": 810829,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "The question goes to Governor Clinton for a 2-minute answer."
+  },
+  {
+   "startMs": 811233,
+   "endMs": 813139,
+   "speaker": "LEHRER",
+   "speakerLabel": "A",
+   "text": "It will be asked by Ann Compton."
+  },
+  {
+   "startMs": 814237,
+   "endMs": 828142,
+   "speaker": "COMPTON",
+   "speakerLabel": "E",
+   "text": "Governor Clinton, can you lock in a level here tonight on where middle-income families can be guaranteed a tax cut, or at the very least, at what income level they can be guaranteed no tax increase?"
+  },
+  {
+   "startMs": 829536,
+   "endMs": 834631,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "The tax increase I have proposed triggers in at family incomes of $200,000 and above."
+  },
+  {
+   "startMs": 835288,
+   "endMs": 839919,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Those are the people who in the 1980s had their incomes go up while their taxes went down."
+  },
+  {
+   "startMs": 840918,
+   "endMs": 853095,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Middle-class people, defined as people with incomes of $52,000 and down, had their incomes go down while their taxes went up in the Reagan-Bush years because of 6 increases in the payroll taxes."
+  },
+  {
+   "startMs": 853528,
+   "endMs": 856324,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "So that is where my income limit would trigger."
+  },
+  {
+   "startMs": 856983,
+   "endMs": 860968,
+   "speaker": "COMPTON",
+   "speakerLabel": "E",
+   "text": "So there would be no tax increases below $200,000?"
+  },
+  {
+   "startMs": 861113,
+   "endMs": 868681,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "My plan, notwithstanding the— my opponent's ad, my plan triggers in at gross incomes, family incomes of $200,000 and above."
+  },
+  {
+   "startMs": 869034,
+   "endMs": 877774,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Then we want to give modest middle-class tax relief to restore some fairness, especially to middle-class people with families with incomes of under $60,000."
+  },
+  {
+   "startMs": 878416,
+   "endMs": 892747,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "In addition to that, the money that I raise from upper-income people and from asking foreign corporations just to pay the same income on their income earned in America that American corporations do will be used to give incentives back to upper-income people."
+  },
+  {
+   "startMs": 893213,
+   "endMs": 909056,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I want to give people permanent incentives, an investment tax credit like President Kennedy and the Congress inaugurated in the early '60s to get industry moving again, a research and development tax credit, a low-income housing tax credit, a long-term capital gains proposal for new business and business expansions."
+  },
+  {
+   "startMs": 909442,
+   "endMs": 911386,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We've got to have no more trickle-down."
+  },
+  {
+   "startMs": 911450,
+   "endMs": 913989,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We don't need across-the-board tax cuts for the wealthy for nothing."
+  },
+  {
+   "startMs": 914343,
+   "endMs": 918745,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We need to say, here's your tax incentive if you create American jobs the old-fashioned way."
+  },
+  {
+   "startMs": 919003,
+   "endMs": 922160,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "I'd like to create more millionaires than were created under Mr."
+  },
+  {
+   "startMs": 922208,
+   "endMs": 928764,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "Bush and Mr. Reagan, but I don't want to have 4 years where we have no growth in the private sector, and that's what's happened in the last 4 years."
+  },
+  {
+   "startMs": 928812,
+   "endMs": 931808,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We're down 35,000 jobs in the private sector."
+  },
+  {
+   "startMs": 932194,
+   "endMs": 934884,
+   "speaker": "CLINTON",
+   "speakerLabel": "B",
+   "text": "We need to invest and grow, and that's what I want to do."
+  }
+ ]
+}
