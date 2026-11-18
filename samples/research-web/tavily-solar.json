@@ -1,0 +1,15 @@
+{
+  "query": "Solar output supplied 40 percent of Spain's electricity at midday. — Solar Output",
+  "results": [
+    {
+      "title": "Red Eléctrica de España",
+      "url": "https://www.ree.es/en",
+      "content": "Spain publishes electricity generation data through its transmission system operator."
+    },
+    {
+      "title": "Solar PV",
+      "url": "https://www.iea.org/energy-system/renewables/solar-pv",
+      "content": "Solar generation varies through the day with available sunlight."
+    }
+  ]
+}

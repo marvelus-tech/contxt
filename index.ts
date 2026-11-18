@@ -21,3 +21,11 @@ export {
 } from "./pipeline/cloud.js";
 export type { CloudTranscription, TimedWord } from "./pipeline/cloud.js";
 export type { Claim, PageClaim, TranscriptSegment } from "./pipeline/types.js";
+export {
+  buildResearchQuery,
+  createResearcher,
+  TavilySearchProvider,
+  WebResearcher,
+  CompositeResearcher,
+} from "./pipeline/research.js";
+export type { ResearcherMode, ResearcherHandle } from "./pipeline/research.js";

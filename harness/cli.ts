@@ -9,7 +9,8 @@ function usage(): string {
   contxt-replay recording.opus --transcriber deepgram [--keyterm Perot --keyterm Lehrer]
   contxt-replay recording.opus --transcriber assemblyai --speakers "Jim Lehrer,Ross Perot,Bill Clinton"
 
-Transcribers: fixture, whisper, assemblyai, deepgram`;
+Transcribers: fixture, whisper, assemblyai, deepgram
+Researchers: fixture, web, composite (default fixture; composite tries fixture then Tavily)`;
 }
 
 function parseArgs(args: string[]): ReplayOptions {
@@ -20,6 +21,7 @@ function parseArgs(args: string[]): ReplayOptions {
   let cloudModel: string | undefined;
   const keyterms: string[] = [];
   let speakerHints: string[] = [];
+  let researcher: ReplayOptions["researcher"];
 
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]!;
@@ -57,6 +59,10 @@ function parseArgs(args: string[]): ReplayOptions {
       if (term) keyterms.push(term);
       continue;
     }
+    if (argument === "--researcher") {
+      researcher = args[++index] as ReplayOptions["researcher"];
+      continue;
+    }
     if (!argument.startsWith("-") && !inputPath) {
       inputPath = argument;
       continue;
@@ -71,6 +77,12 @@ function parseArgs(args: string[]): ReplayOptions {
   ) {
     throw new Error(`Unknown transcriber: ${transcriber}`);
   }
+  if (
+    researcher &&
+    !["fixture", "web", "composite"].includes(researcher)
+  ) {
+    throw new Error(`Unknown researcher: ${researcher}`);
+  }
   return {
     inputPath,
     speed,
@@ -79,6 +91,7 @@ function parseArgs(args: string[]): ReplayOptions {
     ...(cloudModel ? { cloudModel } : {}),
     ...(keyterms.length ? { keyterms } : {}),
     ...(speakerHints.length ? { speakerHints } : {}),
+    ...(researcher ? { researcher } : {}),
   };
 }
 
