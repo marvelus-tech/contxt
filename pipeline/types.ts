@@ -1,5 +1,7 @@
 export type TranscriberStatus = "ok" | "skipped" | "stub";
 
+export type IngestionMode = "replay" | "live";
+
 export type ResearcherStatus = "ok" | "skipped" | "error";
 
 export interface AudioChunk {
@@ -19,6 +21,13 @@ export interface TranscriptSegment {
   speakerConfidence?: number;
   /** Set for the moderator, whose framing lines are procedural rather than claims. */
   speakerRole?: "moderator";
+}
+
+export interface IngestBatch {
+  index: number;
+  startMs: number;
+  endMs: number;
+  segments: TranscriptSegment[];
 }
 
 export interface Claim {
@@ -142,6 +151,8 @@ export interface ClaimToPageMetric {
 
 export interface Scorecard {
   runId: string;
+  /** Wall-clock replay uses speed-scaled chunks; live feeds segments on a timer. */
+  ingestionMode?: IngestionMode;
   transcriber: string;
   transcriberStatus: TranscriberStatus;
   researcher?: string;

@@ -166,6 +166,18 @@ npm run eval:research   # offline check on recorded Tavily JSON
   - Repeats merge across the whole recording. `claims.json` lists each unique claim with every `occurrence` (time, speaker, wording).
 - **Evaluation.** `npm run eval:claims` re-runs naming accuracy and claim metrics on the committed provider output. Results are in [docs/CLAIMS.md](docs/CLAIMS.md).
 
+## Live ingestion (step 5)
+
+Run the pipeline on a wall-clock schedule as segments arrive (not batch replay):
+
+```bash
+npm run live -- --fixture samples/demo.json
+npm run live -- recording.wav --transcriber deepgram-live   # needs DEEPGRAM_API_KEY
+npm run ci:live
+```
+
+See [docs/LIVE.md](docs/LIVE.md) for Deepgram streaming, fixture timing and API notes.
+
 ## Agent API
 
 Agents can import `runReplay()`:
@@ -189,6 +201,7 @@ See `llms.txt` for the compact command reference.
 npm test
 npm run ci:replay
 npm run ci:debate
+npm run ci:live
 npm run eval:claims
 npm run eval:research
 ```
