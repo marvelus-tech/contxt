@@ -1,8 +1,6 @@
-import { execFile } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
-import { promisify } from "node:util";
 import {
   createResearcher,
   type ResearcherHandle,
@@ -12,28 +10,20 @@ import {
   HeuristicClaimExtractor,
   HeuristicTopicGrouper,
   HtmlPageBuilder,
-  isCitedFact,
 } from "../pipeline/stages.js";
-import { ClaimIndex } from "../pipeline/claims.js";
 import { createTranscriber } from "../pipeline/transcribers.js";
 import type {
-  Claim,
   ClaimExtractor,
-  ClaimToPageMetric,
-  Fact,
   Page,
   PageBuilder,
   Researcher,
   Scorecard,
-  StageLatency,
   TimelineEvent,
-  Topic,
   TopicGrouper,
   Transcriber,
 } from "../pipeline/types.js";
-
-const execFileAsync = promisify(execFile);
-const CHUNK_MS = 1_500;
+import { CHUNK_MS, mediaDuration, runIdentifier, sleep } from "./media.js";
+import { createPipelineSession, type PipelineRunArtifacts } from "./pipeline.js";
 
 export interface ReplayStages {
   transcriber?: Transcriber;
@@ -48,11 +38,8 @@ export interface ReplayOptions {
   speed?: number;
   transcriber?: "fixture" | "whisper" | "assemblyai" | "deepgram";
   modelPath?: string;
-  /** Cloud model override, for example universal-3-pro or nova-3. */
   cloudModel?: string;
-  /** Keyterm prompts for cloud transcribers (names, jargon). */
   keyterms?: string[];
-  /** Known participants used to name generic speaker labels. */
   speakerHints?: string[];
   researcher?: ResearcherMode;
   researchFixture?: string;
@@ -62,103 +49,10 @@ export interface ReplayOptions {
   onSummary?: (summary: string) => void;
 }
 
-export interface ReplayResult {
-  runDir: string;
-  deckPath: string;
-  timelinePath: string;
-  scorecardPath: string;
-  claimsPath: string;
-  scorecard: Scorecard;
-  timeline: TimelineEvent[];
-  pages: Page[];
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
-}
-
-async function fixtureDuration(path: string): Promise<number> {
-  const parsed = JSON.parse(await readFile(path, "utf8")) as {
-    segments?: Array<{ endMs: number }>;
-  };
-  return Math.max(0, ...(parsed.segments ?? []).map((segment) => segment.endMs));
-}
-
-async function wavDuration(path: string): Promise<number> {
-  const data = await readFile(path);
-  if (
-    data.length < 12 ||
-    data.toString("ascii", 0, 4) !== "RIFF" ||
-    data.toString("ascii", 8, 12) !== "WAVE"
-  ) {
-    throw new Error("Invalid WAV file");
-  }
-  let byteRate = 0;
-  let audioBytes = 0;
-  for (let offset = 12; offset + 8 <= data.length; ) {
-    const id = data.toString("ascii", offset, offset + 4);
-    const size = data.readUInt32LE(offset + 4);
-    const body = offset + 8;
-    if (body + size > data.length) throw new Error("Invalid WAV chunk");
-    if (id === "fmt " && size >= 16) byteRate = data.readUInt32LE(body + 8);
-    if (id === "data") audioBytes += size;
-    offset = body + size + (size % 2);
-  }
-  if (!byteRate || !audioBytes) {
-    throw new Error("WAV duration metadata is missing");
-  }
-  return (audioBytes / byteRate) * 1_000;
-}
-
-async function mediaDuration(path: string): Promise<number> {
-  const extension = extname(path).toLowerCase();
-  if (extension === ".json") return fixtureDuration(path);
-  if (extension === ".wav") return wavDuration(path);
-  if ([".mp3", ".opus", ".ogg", ".webm", ".m4a", ".flac"].includes(extension)) {
-    try {
-      const { stdout } = await execFileAsync("ffprobe", [
-        "-v",
-        "error",
-        "-show_entries",
-        "format=duration",
-        "-of",
-        "default=noprint_wrappers=1:nokey=1",
-        path,
-      ]);
-      return Number.parseFloat(stdout) * 1_000;
-    } catch {
-      throw new Error(`${extension.slice(1).toUpperCase()} replay needs ffprobe to determine duration`);
-    }
-  }
-  throw new Error("Replay input must be a WAV, MP3, Opus, OGG, WebM, M4A or FLAC file, or a transcript JSON file");
-}
-
-function runIdentifier(): string {
-  const stamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
-  return `${stamp}-${Math.random().toString(16).slice(2, 6)}`;
-}
-
-function summarizeLatency(
-  samples: Record<string, number[]>,
-): Record<string, StageLatency> {
-  return Object.fromEntries(
-    Object.entries(samples).map(([stage, values]) => [
-      stage,
-      {
-        count: values.length,
-        totalMs: Number(values.reduce((sum, value) => sum + value, 0).toFixed(3)),
-        averageMs: Number(
-          (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(
-            3,
-          ),
-        ),
-        maxMs: Number(Math.max(...values).toFixed(3)),
-      },
-    ]),
-  );
-}
+export type ReplayResult = PipelineRunArtifacts;
 
 export function formatScorecard(scorecard: Scorecard): string {
+  const label = scorecard.ingestionMode === "live" ? "live" : "replay";
   const stages = Object.entries(scorecard.latencyByStageMs)
     .map(
       ([stage, latency]) =>
@@ -171,7 +65,8 @@ export function formatScorecard(scorecard: Scorecard): string {
         `  ${metric.claimId}${metric.speaker ? ` (${metric.speaker})` : ""} -> ${metric.pageId}: ${metric.action} in ${metric.seconds.toFixed(3)} seconds`,
     )
     .join("\n");
-  return `CONTXT replay scorecard
+  return `CONTXT ${label} scorecard
+ingestion: ${scorecard.ingestionMode ?? "replay"}
 transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
 researcher: ${scorecard.researcher ?? "n/a"} (${scorecard.researcherStatus ?? "n/a"})${
     scorecard.researchRequests !== undefined
@@ -238,155 +133,26 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
           fixturePath: resolve(options.researchFixture ?? "samples/research.json"),
           cachePath: join(runDir, "research-cache.json"),
         });
-  const researcher = researchHandle.researcher;
-  const researchAvailability = await researchHandle.status();
   const pageBuilder = options.stages?.pageBuilder ?? new HtmlPageBuilder();
 
-  const started = performance.now();
-  const timeline: TimelineEvent[] = [];
-  const topics: Topic[] = [];
-  const pages = new Map<string, Page>();
-  const claimIndex = new ClaimIndex();
-  const topicByMergedClaim = new Map<string, string>();
-  const mergedIdByClaim = new Map<string, string>();
-  const latencySamples: Record<string, number[]> = {
-    transcriber: [],
-    claimExtractor: [],
-    topicGrouper: [],
-    researcher: [],
-    pageBuilder: [],
-  };
-  const claimToPageSeconds: ClaimToPageMetric[] = [];
-  const claimsSeen: Claim[] = [];
-  let pagesCreated = 0;
-  let pagesUpdated = 0;
-  let duplicatesMerged = 0;
-  let factsProposed = 0;
-  let factsDroppedForNoSource = 0;
-
-  const record = (
-    mediaMs: number,
-    stage: string,
-    type: string,
-    detail: string,
-    refId?: string,
-    latencyMs?: number,
-    claim?: Claim,
-  ): void => {
-    timeline.push({
-      atMs: Number((performance.now() - started).toFixed(3)),
-      mediaMs,
-      stage,
-      type,
-      detail,
-      refId,
-      latencyMs,
-      ...(claim?.speaker ? { speaker: claim.speaker } : {}),
-      ...(claim ? { claim: claim.text } : {}),
-    });
-  };
-
-  const timed = async <T>(stage: string, work: () => Promise<T>): Promise<T> => {
-    const before = performance.now();
-    const result = await work();
-    latencySamples[stage]!.push(performance.now() - before);
-    return result;
-  };
-
-  const processClaim = async (claim: Claim): Promise<void> => {
-    const claimReceived = performance.now();
-    claimsSeen.push(claim);
-    const { merged, isRepeat } = claimIndex.add({
-      claimId: claim.id,
-      startMs: claim.startMs,
-      endMs: claim.endMs,
-      text: claim.text,
-      ...(claim.speaker ? { speaker: claim.speaker } : {}),
-    });
-    mergedIdByClaim.set(claim.id, merged.id);
-    if (isRepeat) duplicatesMerged += 1;
-    // Only checkable claims (statistic, factual) go on to research and pages.
-    // Custom extractors that do not classify are treated as checkable.
-    if (claim.checkable === false) {
-      record(
-        claim.endMs,
-        "claimExtractor",
-        isRepeat ? "repeat-not-checkable" : "claim-not-checkable",
-        claim.type ?? "not checkable",
-        merged.id,
-        undefined,
-        claim,
-      );
-      return;
-    }
-    const priorTopicId = topicByMergedClaim.get(merged.id);
-    const priorTopic = priorTopicId
-      ? topics.find((candidate) => candidate.id === priorTopicId)
-      : undefined;
-    const topic =
-      priorTopic ??
-      (await timed("topicGrouper", () => grouper.group(claim, topics)));
-    if (priorTopic) priorTopic.claimIds.push(claim.id);
-    topicByMergedClaim.set(merged.id, topic.id);
-    record(
-      claim.endMs,
-      "topicGrouper",
-      "topic-grouped",
-      topic.title,
-      topic.id,
-      undefined,
-      claim,
-    );
-
-    const existingPage = pages.get(topic.id);
-    let facts: Fact[] = [];
-    if (priorTopic) {
-      record(
-        claim.endMs,
-        "dedupe",
-        "duplicate-merged",
-        claim.text,
-        existingPage?.id,
-        undefined,
-        claim,
-      );
-    } else {
-      const proposedFacts = await timed("researcher", () =>
-        researcher.research(claim, topic),
-      );
-      factsProposed += proposedFacts.length;
-      facts = proposedFacts.filter(isCitedFact);
-      factsDroppedForNoSource += proposedFacts.length - facts.length;
-    }
-
-    const built = await timed("pageBuilder", () =>
-      pageBuilder.build({ claim, topic, facts, existingPage }),
-    );
-    pages.set(topic.id, built.page);
-    const action = existingPage ? "updated" : "created";
-    if (existingPage) pagesUpdated += 1;
-    else pagesCreated += 1;
-    const seconds = (performance.now() - claimReceived) / 1_000;
-    claimToPageSeconds.push({
-      claimId: claim.id,
-      pageId: built.page.id,
-      action,
-      seconds: Number(seconds.toFixed(6)),
-      ...(claim.speaker ? { speaker: claim.speaker } : {}),
-    });
-    record(
-      claim.endMs,
-      "pageBuilder",
-      `page-${action}`,
-      `${action === "created" ? "Created" : "Updated"} ${built.page.title}`,
-      built.page.id,
-      seconds * 1_000,
-      claim,
-    );
-  };
+  const session = createPipelineSession({
+    runId,
+    runDir,
+    speed,
+    chunkMs: CHUNK_MS,
+    durationMs,
+    ingestionMode: "replay",
+    transcriberId: transcriber.id,
+    researchHandle,
+    extractor,
+    grouper,
+    researcher: researchHandle.researcher,
+    pageBuilder,
+  });
 
   const availability = await transcriber.status();
   if (availability.status === "ok") {
+    const started = performance.now();
     const chunkCount = Math.ceil(durationMs / CHUNK_MS);
     for (let index = 0; index < chunkCount; index += 1) {
       const startMs = index * CHUNK_MS;
@@ -394,8 +160,8 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
       const targetElapsedMs = startMs / speed;
       const remainingDelayMs = targetElapsedMs - (performance.now() - started);
       if (remainingDelayMs > 0) await sleep(remainingDelayMs);
-      record(startMs, "harness", "chunk", `Chunk ${index + 1}`);
-      const segments = await timed("transcriber", () =>
+      session.record(startMs, "harness", "chunk", `Chunk ${index + 1}`);
+      const segments = await session.timed("transcriber", () =>
         transcriber.transcribe({
           index,
           startMs,
@@ -403,108 +169,17 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
           sourcePath: inputPath,
         }),
       );
-      const claims = await timed("claimExtractor", () =>
-        extractor.extract(segments, { mediaTimeMs: endMs }),
-      );
-      for (const claim of claims) await processClaim(claim);
+      await session.processSegments(segments, endMs);
     }
-    const remaining = await timed("claimExtractor", () =>
-      extractor.flush({ mediaTimeMs: durationMs }),
-    );
-    for (const claim of remaining) await processClaim(claim);
+    await session.flushExtractor(durationMs);
   } else {
-    record(0, "transcriber", availability.status, availability.reason ?? "");
+    session.record(0, "transcriber", availability.status, availability.reason ?? "");
   }
 
-  for (const [stage, values] of Object.entries(latencySamples)) {
-    if (values.length === 0) delete latencySamples[stage];
-  }
-  const claimById = new Map(claimsSeen.map((claim) => [claim.id, claim]));
-  const pageList = [...pages.values()];
-  const factsOnPages = pageList.flatMap((page) => page.facts);
-  const factsOnPagesCited = factsOnPages.filter(isCitedFact).length;
-  const researchStats = researchHandle.stats();
-  const scorecard: Scorecard = {
-    runId,
-    transcriber: transcriber.id,
-    transcriberStatus: availability.status,
-    researcher: researchHandle.id,
-    researcherStatus: researchAvailability.status,
-    researchRequests: researchStats.requests,
-    researchCacheHits: researchStats.cacheHits,
-    speed,
-    chunkMs: CHUNK_MS,
-    durationMs,
-    pagesCreated,
-    pagesUpdated,
-    duplicatesMerged,
-    factsProposed,
-    factsDroppedForNoSource,
-    factsOnPagesCitedPercent: factsOnPages.length
-      ? (factsOnPagesCited / factsOnPages.length) * 100
-      : 100,
-    latencyByStageMs: summarizeLatency(latencySamples),
-    claimToPageSeconds,
-    claimStats: {
-      ...(extractor.stats?.() ?? {}),
-      claimsExtracted: claimsSeen.length,
-      uniqueClaims: claimIndex.merged.length,
-      repeatsMerged: claimsSeen.length - claimIndex.merged.length,
-      checkableUnique: claimIndex.merged.filter(
-        (merged) => claimById.get(merged.id)?.checkable !== false,
-      ).length,
-      uniqueByType: claimIndex.merged.reduce<Record<string, number>>((counts, merged) => {
-        const type = claimById.get(merged.id)?.type ?? "untyped";
-        counts[type] = (counts[type] ?? 0) + 1;
-        return counts;
-      }, {}),
-    },
-    claimsBySpeaker: Object.fromEntries(
-      [...new Set(claimsSeen.map((claim) => claim.speaker ?? "unknown"))].map(
-        (speaker) => [
-          speaker,
-          claimsSeen.filter((claim) => (claim.speaker ?? "unknown") === speaker)
-            .length,
-        ],
-      ),
-    ),
-    ...(availability.reason ? { skipReason: availability.reason } : {}),
-  };
-  await researchHandle.flush?.();
-  const deckPath = join(runDir, "deck.html");
-  const timelinePath = join(runDir, "timeline.json");
-  const scorecardPath = join(runDir, "scorecard.json");
-  const claimsPath = join(runDir, "claims.json");
-  const claimsOut = claimIndex.merged.map((merged) => {
-    const first = claimById.get(merged.id)!;
-    return {
-      id: merged.id,
-      type: first.type ?? null,
-      checkable: first.checkable ?? true,
-      speaker: first.speaker ?? null,
-      ...(first.speakerConfidence !== undefined ? { speakerConfidence: first.speakerConfidence } : {}),
-      startMs: first.startMs,
-      endMs: first.endMs,
-      text: first.text,
-      topicId: topicByMergedClaim.get(merged.id) ?? null,
-      occurrences: merged.occurrences,
-    };
-  });
-  await Promise.all([
-    writeFile(claimsPath, `${JSON.stringify(claimsOut, null, 2)}\n`),
-    writeFile(deckPath, pageBuilder.render(pageList, timeline)),
-    writeFile(timelinePath, `${JSON.stringify(timeline, null, 2)}\n`),
-    writeFile(scorecardPath, `${JSON.stringify(scorecard, null, 2)}\n`),
-  ]);
-  options.onSummary?.(formatScorecard(scorecard));
-  return {
-    runDir,
-    deckPath,
-    timelinePath,
-    scorecardPath,
-    claimsPath,
-    scorecard,
-    timeline,
-    pages: pageList,
-  };
+  const result = await session.finalize(
+    availability.status,
+    availability.reason,
+  );
+  options.onSummary?.(formatScorecard(result.scorecard));
+  return result;
 }

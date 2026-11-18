@@ -11,6 +11,7 @@
   },
   "bin": {
     "contxt-replay": "./dist/harness/cli.js",
+    "contxt-live": "./dist/harness/live-cli.js",
     "contxt-transcribe": "./dist/harness/transcribe.js"
   },
   "scripts": {
@@ -20,11 +21,17 @@
     "ci:replay": "npm run replay -- --fixture samples/demo.json --speed 1000",
     "transcribe": "npm run build && node dist/harness/transcribe.js",
     "ci:debate": "npm run replay -- --fixture samples/debate1992.json --speed 1000",
+    "live": "npm run build && node dist/harness/live-cli.js",
+    "ci:live": "npm run live -- --fixture samples/demo.json --speed 1000",
     "eval:claims": "npm run build && node bakeoff/eval_claims.mjs",
     "eval:research": "npm run build && node bakeoff/eval_research.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
+    "@types/ws": "^8.18.2",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "ws": "^8.23.0"
   }
 }

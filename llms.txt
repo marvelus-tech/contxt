@@ -11,6 +11,12 @@ npm run replay -- --fixture samples/demo.json
 Faster fixture:
 npm run replay -- --fixture samples/demo.json --speed 4
 
+Live ingestion (wall-clock chunks, same pipeline):
+npm run live -- --fixture samples/demo.json
+npm run live -- recording.wav --transcriber deepgram-live
+npm run ci:live
+See docs/LIVE.md
+
 Local audio:
 npm run replay -- recording.wav --speed 4 --transcriber whisper
 
@@ -25,8 +31,9 @@ Debate sample with speakers:
 npm run ci:debate   (samples/debate1992.json, 5 named speakers)
 
 Agent API:
-import { runReplay } from "contxt-replay-harness";
+import { runReplay, runLive } from "contxt-replay-harness";
 await runReplay({ inputPath: "samples/demo.json", speed: 4 });
+await runLive({ inputPath: "samples/demo.json", speed: 4 });
 
 Optional runReplay fields:
 transcriber: fixture | whisper | assemblyai | deepgram
@@ -57,5 +64,6 @@ Checks:
 npm test
 npm run ci:replay
 npm run ci:debate
+npm run ci:live
 npm run eval:claims
 npm run eval:research

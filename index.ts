@@ -4,6 +4,8 @@ export type {
   ReplayResult,
   ReplayStages,
 } from "./harness/replay.js";
+export { runLive } from "./harness/live.js";
+export type { LiveOptions, LiveResult } from "./harness/live.js";
 export type {
   ClaimExtractor,
   PageBuilder,
@@ -29,3 +31,15 @@ export {
   CompositeResearcher,
 } from "./pipeline/research.js";
 export type { ResearcherMode, ResearcherHandle } from "./pipeline/research.js";
+export {
+  DeepgramLiveSource,
+  FixtureLiveSource,
+  NodeDeepgramWebSocket,
+  createLiveSource,
+} from "./pipeline/live.js";
+export type {
+  DeepgramLiveOptions,
+  DeepgramLiveWebSocket,
+  FixtureLiveOptions,
+  SegmentSource,
+} from "./pipeline/live.js";
