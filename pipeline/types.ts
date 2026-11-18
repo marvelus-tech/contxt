@@ -1,5 +1,7 @@
 export type TranscriberStatus = "ok" | "skipped" | "stub";
 
+export type ResearcherStatus = "ok" | "skipped" | "error";
+
 export interface AudioChunk {
   index: number;
   startMs: number;
@@ -142,6 +144,10 @@ export interface Scorecard {
   runId: string;
   transcriber: string;
   transcriberStatus: TranscriberStatus;
+  researcher?: string;
+  researcherStatus?: ResearcherStatus;
+  researchRequests?: number;
+  researchCacheHits?: number;
   speed: number;
   chunkMs: number;
   durationMs: number;

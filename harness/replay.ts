@@ -4,7 +4,11 @@ import { extname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { promisify } from "node:util";
 import {
-  FixtureResearcher,
+  createResearcher,
+  type ResearcherHandle,
+  type ResearcherMode,
+} from "../pipeline/research.js";
+import {
   HeuristicClaimExtractor,
   HeuristicTopicGrouper,
   HtmlPageBuilder,
@@ -50,6 +54,7 @@ export interface ReplayOptions {
   keyterms?: string[];
   /** Known participants used to name generic speaker labels. */
   speakerHints?: string[];
+  researcher?: ResearcherMode;
   researchFixture?: string;
   outRoot?: string;
   runId?: string;
@@ -168,6 +173,11 @@ export function formatScorecard(scorecard: Scorecard): string {
     .join("\n");
   return `CONTXT replay scorecard
 transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
+researcher: ${scorecard.researcher ?? "n/a"} (${scorecard.researcherStatus ?? "n/a"})${
+    scorecard.researchRequests !== undefined
+      ? ` | requests ${scorecard.researchRequests} cache hits ${scorecard.researchCacheHits ?? 0}`
+      : ""
+  }
 claims extracted: ${scorecard.claimStats?.claimsExtracted ?? scorecard.claimToPageSeconds.length}
 unique claims: ${scorecard.claimStats?.uniqueClaims ?? "n/a"} (checkable ${scorecard.claimStats?.checkableUnique ?? "n/a"})
 claim types: ${Object.entries(scorecard.claimStats?.uniqueByType ?? {})
@@ -212,16 +222,25 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   const extractor =
     options.stages?.claimExtractor ?? new HeuristicClaimExtractor();
   const grouper = options.stages?.topicGrouper ?? new HeuristicTopicGrouper();
-  const researcher =
-    options.stages?.researcher ??
-    (await FixtureResearcher.fromFile(
-      resolve(options.researchFixture ?? "samples/research.json"),
-    ));
-  const pageBuilder = options.stages?.pageBuilder ?? new HtmlPageBuilder();
-
   const runId = options.runId ?? runIdentifier();
   const runDir = resolve(options.outRoot ?? "out", runId);
   await mkdir(runDir, { recursive: true });
+  const researchHandle: ResearcherHandle =
+    options.stages?.researcher !== undefined
+      ? {
+          id: "custom",
+          researcher: options.stages.researcher,
+          status: async () => ({ status: "ok" as const }),
+          stats: () => ({ requests: 0, cacheHits: 0 }),
+        }
+      : await createResearcher({
+          mode: options.researcher ?? "fixture",
+          fixturePath: resolve(options.researchFixture ?? "samples/research.json"),
+          cachePath: join(runDir, "research-cache.json"),
+        });
+  const researcher = researchHandle.researcher;
+  const researchAvailability = await researchHandle.status();
+  const pageBuilder = options.stages?.pageBuilder ?? new HtmlPageBuilder();
 
   const started = performance.now();
   const timeline: TimelineEvent[] = [];
@@ -404,10 +423,15 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
   const pageList = [...pages.values()];
   const factsOnPages = pageList.flatMap((page) => page.facts);
   const factsOnPagesCited = factsOnPages.filter(isCitedFact).length;
+  const researchStats = researchHandle.stats();
   const scorecard: Scorecard = {
     runId,
     transcriber: transcriber.id,
     transcriberStatus: availability.status,
+    researcher: researchHandle.id,
+    researcherStatus: researchAvailability.status,
+    researchRequests: researchStats.requests,
+    researchCacheHits: researchStats.cacheHits,
     speed,
     chunkMs: CHUNK_MS,
     durationMs,
@@ -446,6 +470,7 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
     ),
     ...(availability.reason ? { skipReason: availability.reason } : {}),
   };
+  await researchHandle.flush?.();
   const deckPath = join(runDir, "deck.html");
   const timelinePath = join(runDir, "timeline.json");
   const scorecardPath = join(runDir, "scorecard.json");

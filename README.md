@@ -2,7 +2,7 @@
 
 CONTXT is a live context companion for anything spoken. This first step replays a recording through pluggable pipeline stages and measures how claims become cited topic pages.
 
-Research is still fixture-backed. Step 2 adds real transcription through AssemblyAI and Deepgram, with speaker labels carried through to every claim. It does not rank speakers or pick winners.
+Research defaults to a fixture for CI; Step 4 adds optional Tavily web research (`--researcher web|composite`). Step 2 adds real transcription through AssemblyAI and Deepgram, with speaker labels carried through to every claim. It does not rank speakers or pick winners.
 
 ## Requirements
 
@@ -141,6 +141,18 @@ If a key is missing, the run exits successfully with `skipped` in the scorecard.
    - Results and the recommendation are in [docs/REPORT.md](docs/REPORT.md).
    - The clip comes from `scripts/fetch_debate1992.sh`. It's public domain, from Wikimedia Commons, and runs 00:02:06.0 to 00:17:41.4. Details are in `samples/debate1992.clip.json`.
 
+## Web research (step 4)
+
+- **Researchers:** `fixture` (default), `web` (Tavily), `composite` (fixture then web).
+- Set `TAVILY_API_KEY` in `.env` for live search. Missing key skips web gracefully.
+- Each run can write `out/<run-id>/research-cache.json` keyed by normalized claim.
+- Details and smoke commands: [docs/RESEARCH.md](docs/RESEARCH.md).
+
+```bash
+npm run replay -- --fixture samples/debate1992.json --speed 1000 --researcher composite
+npm run eval:research   # offline check on recorded Tavily JSON
+```
+
 ## Claims, types and speaker names (step 3)
 
 - **Speaker naming.**
@@ -178,4 +190,5 @@ npm test
 npm run ci:replay
 npm run ci:debate
 npm run eval:claims
+npm run eval:research
 ```

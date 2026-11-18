@@ -42,6 +42,11 @@ speakerHints: known participant names for speaker naming
 Speaker naming: generic labels are named from introductions and address cues; hints with --speakers "A,B,C".
 Claims: typed statistic|factual|prediction|promise|opinion; only statistic and factual are checkable and go to pages.
 
+Research (step 4):
+--researcher fixture|web|composite   default fixture
+TAVILY_API_KEY for web/composite Tavily leg; RESEARCH_MAX_FACTS optional (default 5)
+out/<run-id>/research-cache.json caches web results by normalized claim
+
 Outputs:
 out/<run-id>/claims.json   (unique claims: type, checkable, speaker, speakerConfidence, topicId, occurrences[])
 out/<run-id>/deck.html
@@ -53,3 +58,4 @@ npm test
 npm run ci:replay
 npm run ci:debate
 npm run eval:claims
+npm run eval:research

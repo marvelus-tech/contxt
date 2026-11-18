@@ -100,6 +100,35 @@ test("page builder updates a topic page instead of duplicating it", async () => 
   assert.equal(updated.page.claimIds.length, 2);
 });
 
+test("custom researcher stage feeds cited facts to the deck", async () => {
+  const outRoot = await mkdtemp(join(tmpdir(), "contxt-test-"));
+  try {
+    const result = await runReplay({
+      inputPath: resolve("samples/demo.json"),
+      speed: 1000,
+      outRoot,
+      runId: "custom-researcher",
+      stages: {
+        researcher: {
+          async research() {
+            return [
+              {
+                text: "Fixture override",
+                sourceUrl: "https://example.com/override",
+              },
+            ];
+          },
+        },
+      },
+    });
+    assert.equal(result.scorecard.factsOnPagesCitedPercent, 100);
+    const deck = await readFile(result.deckPath, "utf8");
+    assert.match(deck, /example\.com\/override/);
+  } finally {
+    await rm(outRoot, { recursive: true, force: true });
+  }
+});
+
 test("fixture replay writes a cited three-topic deck and scorecard", async () => {
   const outRoot = await mkdtemp(join(tmpdir(), "contxt-test-"));
   try {
@@ -138,10 +167,13 @@ test("fixture replay writes a cited three-topic deck and scorecard", async () =>
     assert.equal(await readFile(result.timelinePath, "utf8").then(JSON.parse) instanceof Array, true);
     assert.equal(
       await readFile(result.scorecardPath, "utf8").then(JSON.parse).then(
-        (scorecard: { transcriber: string }) => scorecard.transcriber,
+        (scorecard: { transcriber: string; researcher?: string }) =>
+          scorecard.transcriber,
       ),
       "fixture",
     );
+    assert.equal(result.scorecard.researcher, "fixture");
+    assert.equal(result.scorecard.researcherStatus, "ok");
   } finally {
     await rm(outRoot, { recursive: true, force: true });
   }

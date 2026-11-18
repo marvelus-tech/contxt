@@ -194,7 +194,7 @@ export class FixtureResearcher implements Researcher {
     return new FixtureResearcher(parsed.facts ?? {});
   }
 
-  async research(claim: Claim): Promise<Fact[]> {
+  async research(claim: Claim, _topic?: Topic): Promise<Fact[]> {
     return this.facts[claim.normalized] ?? [];
   }
 }
