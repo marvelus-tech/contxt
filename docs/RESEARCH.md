@@ -56,6 +56,10 @@ npm run eval:research
 - Cache is keyed by normalized claim text; replays of the same run reuse `research-cache.json`.
 - v1 uses search snippets only — no LLM synthesis or fact-check verdict.
 
+## Public demos and Firecrawl Local
+
+Use **`fixture`** for GitHub Pages, CI, and any shipped interactive demo: it costs **no Tavily credits** and matches `samples/research.json`. Use **`composite`** on your machine when a claim is missing from the fixture; Tavily runs only on those gaps if `TAVILY_API_KEY` is set. **Firecrawl Local** (scrape, crawl, map on your laptop) does **not** replace Tavily for discovering sources; cloud `/search` still uses Firecrawl credits. A later optional step is local **scrape** of URLs you already have from fixture or Tavily to enrich fact text, not to avoid fixture mode.
+
 ## Out of scope
 
 - Claim true/false adjudication.

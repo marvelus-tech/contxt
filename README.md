@@ -153,6 +153,16 @@ npm run replay -- --fixture samples/debate1992.json --speed 1000 --researcher co
 npm run eval:research   # offline check on recorded Tavily JSON
 ```
 
+## Play demo bake (Pages)
+
+Bake static artifacts for the interactive debate demo (fixture research, no Tavily):
+
+```bash
+npm run bake:play
+# optional: write into marvelus-tech.github.io checkout
+PAGES_PLAY_DIR=../marvelus-tech.github.io/contxt/play npm run bake:play
+```
+
 ## Claims, types and speaker names (step 3)
 
 - **Speaker naming.**

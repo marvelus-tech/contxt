@@ -24,7 +24,8 @@
     "live": "npm run build && node dist/harness/live-cli.js",
     "ci:live": "npm run live -- --fixture samples/demo.json --speed 1000",
     "eval:claims": "npm run build && node bakeoff/eval_claims.mjs",
-    "eval:research": "npm run build && node bakeoff/eval_research.mjs"
+    "eval:research": "npm run build && node bakeoff/eval_research.mjs",
+    "bake:play": "npm run build && node scripts/bake-play-demo.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
