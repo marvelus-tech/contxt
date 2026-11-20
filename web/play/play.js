@@ -1,4 +1,5 @@
 import { loadPreloadedSession, startDeferredIngest } from "./ingest.js";
+import { bindMicrophone } from "./mic.js";
 
 const STAGES = [
   { id: "receive", label: "Receiving recording" },
@@ -21,8 +22,6 @@ const feedEl = document.getElementById("feed");
 const topicsEl = document.getElementById("topics");
 const detailEl = document.getElementById("topic-detail");
 const metaStrip = document.getElementById("meta-strip");
-const fileNameEl = document.getElementById("file-name");
-const fileMetaEl = document.getElementById("file-meta");
 const ingestNote = document.getElementById("ingest-note");
 const stepsEl = document.getElementById("steps");
 const processStatus = document.getElementById("process-status");
@@ -30,16 +29,22 @@ const processingEl = document.getElementById("processing");
 const workspaceEl = document.getElementById("workspace");
 const researchNote = document.getElementById("research-note");
 const searchEl = document.getElementById("topic-search");
+const playerEl = document.getElementById("debate-player");
+const partialEl = document.getElementById("partial");
+const heardLive = document.getElementById("heard-live");
+const transcriptEl = document.getElementById("transcript");
+const meterEl = document.getElementById("mic-meter");
+const statusEl = document.getElementById("mic-status");
 
-const { session, pages, timeline, meta } = await loadPreloadedSession();
-
-const pageById = new Map(pages.map((page) => [page.id, page]));
+let pages = [];
+let timeline = [];
+let pageById = new Map();
+let feedEvents = [];
+let filter = "page-created";
+let selectedId = null;
+const feedNodes = [];
 const createdAt = new Map();
-for (const event of timeline) {
-  if (event.type === "page-created" && event.refId && !createdAt.has(event.refId)) {
-    createdAt.set(event.refId, event.mediaMs ?? 0);
-  }
-}
+let debateAudio = false;
 
 function escapeHtml(text) {
   return String(text)
@@ -55,32 +60,6 @@ function formatClock(ms) {
   const seconds = String(total % 60).padStart(2, "0");
   return `${minutes}:${seconds}`;
 }
-
-function durationLabel(ms) {
-  const total = Math.round(Number(ms) / 1000);
-  const minutes = Math.floor(total / 60);
-  const seconds = total % 60;
-  return `${minutes} min ${String(seconds).padStart(2, "0")} sec`;
-}
-
-fileNameEl.textContent = session.ingest.filename;
-fileMetaEl.textContent = `${durationLabel(session.ingest.durationMs)} · ${session.ingest.speakers.length} speakers · Public domain`;
-metaStrip.textContent = `${meta.pagesCreated} pages · ${meta.uniqueClaims} unique claims · research: ${meta.researcher} (${meta.researchRequests} Tavily calls)`;
-researchNote.textContent = `Research mode: ${meta.researcher}. Tavily requests: ${meta.researchRequests}.`;
-
-function bindDeferred(button, kind) {
-  button.addEventListener("click", () => {
-    const result = startDeferredIngest(kind);
-    ingestNote.textContent = result.message;
-  });
-}
-bindDeferred(document.getElementById("btn-upload"), "file-upload");
-bindDeferred(document.getElementById("btn-mic"), "microphone");
-
-const feedEvents = timeline.filter((event) => FEED_TYPES.has(event.type));
-let filter = "page-created";
-let selectedId = null;
-const feedNodes = [];
 
 function eventMatchesFilter(event) {
   return filter === "all" || event.type === filter;
@@ -105,19 +84,25 @@ function eventLabel(event) {
 function renderFeed() {
   feedEl.replaceChildren();
   feedNodes.length = 0;
-  for (const event of feedEvents) {
-    if (!eventMatchesFilter(event)) continue;
+  const visible = feedEvents.filter(eventMatchesFilter);
+  if (visible.length === 0) {
+    const empty = document.createElement("li");
+    empty.textContent = "Cited topics land here after a checkable sentence.";
+    feedEl.appendChild(empty);
+    return;
+  }
+  for (const event of visible) {
     const li = document.createElement("li");
     li.dataset.mediaMs = String(event.mediaMs ?? 0);
     li.dataset.refId = event.refId ?? "";
     li.dataset.type = event.type;
     li.innerHTML = `<time>${formatClock(event.mediaMs ?? 0)}</time><span class="stage">${escapeHtml(event.type)}</span> ${escapeHtml(eventLabel(event))}`;
     li.tabIndex = 0;
-    li.addEventListener("click", () => selectPage(event.refId, true));
-    li.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        selectPage(event.refId, true);
+    li.addEventListener("click", () => selectPage(event.refId, debateAudio));
+    li.addEventListener("keydown", (eventKey) => {
+      if (eventKey.key === "Enter" || eventKey.key === " ") {
+        eventKey.preventDefault();
+        selectPage(event.refId, debateAudio);
       }
     });
     feedEl.appendChild(li);
@@ -134,9 +119,18 @@ function pageCardLabel(page) {
 function renderTopics(query) {
   const q = (query ?? "").trim().toLowerCase();
   topicsEl.replaceChildren();
-  for (const page of pages) {
+  const matched = pages.filter((page) => {
     const hay = `${page.currentClaim} ${page.currentSpeaker ?? ""} ${page.title}`.toLowerCase();
-    if (q && !hay.includes(q)) continue;
+    return !q || hay.includes(q);
+  });
+  if (matched.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent = "No cited topics yet.";
+    topicsEl.appendChild(empty);
+    return;
+  }
+  for (const page of matched) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "topic-card";
@@ -148,7 +142,7 @@ function renderTopics(query) {
   }
 }
 
-function selectPage(pageId, seekAudio) {
+function selectPage(pageId, seekAudio, writeHash = true) {
   if (!pageId || !pageById.has(pageId)) return;
   selectedId = pageId;
   const page = pageById.get(pageId);
@@ -168,24 +162,84 @@ function selectPage(pageId, seekAudio) {
     )
     .join("");
   detailEl.innerHTML = `
-    <p class="speaker">${escapeHtml(page.currentSpeaker ?? "Unknown speaker")} · ${formatClock(page.createdAtMs)}</p>
+    <p class="speaker">${escapeHtml(page.currentSpeaker ?? "Speaker")} · ${formatClock(page.updatedAtMs ?? page.createdAtMs)}</p>
     <h3>${escapeHtml(page.currentClaim || page.title)}</h3>
     <h4>Cited facts</h4>
-    <ul class="facts">${facts || "<li>No cited facts on this page.</li>"}</ul>
+    <ul class="facts">${facts || "<li>No cited facts on this page yet.</li>"}</ul>
     ${claims ? `<h4>Claims on this topic</h4><ul>${claims}</ul>` : ""}
     <p class="panel-note"><a href="/contxt/play/deck.html#${encodeURIComponent(page.id)}">Open in deck</a></p>
   `;
-  for (const node of feedNodes) {
-    node.classList.toggle("hot", node.dataset.refId === pageId);
-  }
+  for (const node of feedNodes) node.classList.toggle("hot", node.dataset.refId === pageId);
   for (const card of topicsEl.querySelectorAll(".topic-card")) {
     card.classList.toggle("is-on", card.dataset.pageId === pageId);
   }
-  if (seekAudio && audio && createdAt.has(pageId)) {
-    audio.currentTime = createdAt.get(pageId) / 1000;
-  }
-  history.replaceState(null, "", `#${pageId}`);
+  if (seekAudio && audio && createdAt.has(pageId)) audio.currentTime = createdAt.get(pageId) / 1000;
+  if (writeHash) history.replaceState(null, "", `#${pageId}`);
 }
+
+function replaceSession(nextPages, nextTimeline) {
+  pages = nextPages;
+  timeline = nextTimeline;
+  pageById = new Map(pages.map((page) => [page.id, page]));
+  feedEvents = timeline.filter((event) => FEED_TYPES.has(event.type));
+  createdAt.clear();
+  for (const event of timeline) {
+    if (event.type === "page-created" && event.refId && !createdAt.has(event.refId)) {
+      createdAt.set(event.refId, event.mediaMs ?? 0);
+    }
+  }
+  renderFeed();
+  renderTopics(searchEl.value);
+}
+
+function applySnapshot(snapshot) {
+  replaceSession(snapshot.pages, snapshot.timeline);
+  const newest = [...snapshot.timeline].reverse().find(
+    (event) => event.type === "page-created" || event.type === "page-updated",
+  );
+  if (newest?.refId) selectPage(newest.refId, false, false);
+  researchNote.textContent = `Research mode: wikipedia. Lookups: ${snapshot.researchRequests}. Tavily requests: 0.`;
+  metaStrip.textContent = `${snapshot.pagesCreated} live pages · ${snapshot.pagesUpdated} updates`;
+  workspaceEl.hidden = false;
+}
+
+const mic = bindMicrophone({
+  button: document.getElementById("btn-mic"),
+  label: document.getElementById("mic-label"),
+  onPhase(notice) {
+    statusEl.textContent = notice.message;
+    const failed = ["denied", "no-device", "insecure", "token-missing", "token-error", "error"].includes(notice.phase);
+    statusEl.classList.toggle("is-bad", failed);
+    if (failed) partialEl.textContent = "";
+    if (notice.phase === "requesting-permission") {
+      transcriptEl.replaceChildren();
+      partialEl.textContent = "Waiting for speech.";
+      heardLive.textContent = "";
+      meterEl.style.width = "0";
+    }
+  },
+  onPartial(text) {
+    partialEl.textContent = text || "Waiting for speech.";
+  },
+  onFinal(text) {
+    partialEl.textContent = "Waiting for speech.";
+    heardLive.textContent = text;
+    const li = document.createElement("li");
+    li.textContent = text;
+    transcriptEl.appendChild(li);
+    transcriptEl.scrollTop = transcriptEl.scrollHeight;
+  },
+  onLevel(rms) {
+    const width = Math.max(0, Math.min(100, Math.round(rms * 280)));
+    meterEl.style.width = `${width}%`;
+  },
+  onSnapshot: applySnapshot,
+});
+
+document.getElementById("btn-upload").addEventListener("click", () => {
+  const result = startDeferredIngest("file-upload");
+  ingestNote.textContent = result.message;
+});
 
 for (const chip of document.querySelectorAll("[data-filter]")) {
   chip.addEventListener("click", () => {
@@ -201,6 +255,7 @@ for (const chip of document.querySelectorAll("[data-filter]")) {
 searchEl.addEventListener("input", () => renderTopics(searchEl.value));
 
 function highlightByAudio(ms) {
+  if (!debateAudio) return;
   let hottest = null;
   for (const li of feedNodes) {
     const at = Number(li.dataset.mediaMs);
@@ -215,15 +270,8 @@ function highlightByAudio(ms) {
   }
 }
 
-audio.addEventListener("timeupdate", () => highlightByAudio(audio.currentTime * 1000));
-audio.addEventListener("seeked", () => highlightByAudio(audio.currentTime * 1000));
-document.addEventListener("keydown", (event) => {
-  if (event.code === "Space" && event.target === document.body) {
-    event.preventDefault();
-    if (audio.paused) audio.play();
-    else audio.pause();
-  }
-});
+audio?.addEventListener("timeupdate", () => highlightByAudio(audio.currentTime * 1000));
+audio?.addEventListener("seeked", () => highlightByAudio(audio.currentTime * 1000));
 
 function renderSteps(activeIndex) {
   stepsEl.replaceChildren();
@@ -236,46 +284,62 @@ function renderSteps(activeIndex) {
   });
 }
 
-let ready = false;
-
-function showReady() {
-  if (ready) return;
-  ready = true;
-  processingEl.classList.add("is-done");
-  processingEl.setAttribute("aria-hidden", "true");
-  workspaceEl.hidden = false;
-  renderFeed();
-  renderTopics(searchEl.value);
-  const fromHash = decodeURIComponent(location.hash.replace(/^#/, ""));
-  const firstPage = pages[0]?.id;
-  selectPage(pageById.has(fromHash) ? fromHash : firstPage, false);
-  processStatus.textContent = `Ready · ${pages.length} cited topics`;
-}
-
 async function runProcessing() {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const skip = new URLSearchParams(location.search).has("ready") || reduce;
+  processingEl.hidden = false;
+  processingEl.classList.remove("is-done");
+  processingEl.removeAttribute("aria-hidden");
   renderSteps(0);
   if (skip) {
     renderSteps(STAGES.length);
-    showReady();
+    processingEl.hidden = true;
+    workspaceEl.hidden = false;
     return;
   }
   let skipped = false;
-  document.getElementById("btn-skip").addEventListener("click", () => {
+  const skipButton = document.getElementById("btn-skip");
+  const onSkip = () => {
     skipped = true;
-    showReady();
-  });
+    processingEl.hidden = true;
+    workspaceEl.hidden = false;
+  };
+  skipButton.addEventListener("click", onSkip, { once: true });
   for (let i = 0; i < STAGES.length; i += 1) {
     if (skipped) return;
     renderSteps(i);
-    processStatus.textContent = `${STAGES[i].label}…`;
-    await new Promise((resolve) => setTimeout(resolve, 380));
+    processStatus.textContent = `${STAGES[i].label}...`;
+    await new Promise((resolve) => setTimeout(resolve, 280));
   }
   if (!skipped) {
     renderSteps(STAGES.length);
-    showReady();
+    processingEl.hidden = true;
+    workspaceEl.hidden = false;
+    processStatus.textContent = `Ready · ${pages.length} cited topics`;
   }
 }
 
-await runProcessing();
+document.getElementById("btn-debate").addEventListener("click", async () => {
+  await mic.stop();
+  ingestNote.textContent = "Loading the baked 1992 debate.";
+  try {
+    const loaded = await loadPreloadedSession();
+    debateAudio = true;
+    playerEl.hidden = false;
+    replaceSession(loaded.pages, loaded.timeline);
+    metaStrip.textContent = `${loaded.meta.pagesCreated} pages · ${loaded.meta.uniqueClaims} unique claims · research: ${loaded.meta.researcher} (${loaded.meta.researchRequests} Tavily calls)`;
+    researchNote.textContent = `Research mode: ${loaded.meta.researcher}. Tavily requests: ${loaded.meta.researchRequests}.`;
+    workspaceEl.hidden = true;
+    await runProcessing();
+    const fromHash = decodeURIComponent(location.hash.replace(/^#/, ""));
+    selectPage(pageById.has(fromHash) ? fromHash : pages[0]?.id, false);
+    ingestNote.textContent = "Showing the preloaded 1992 debate. File upload is still deferred.";
+  } catch {
+    ingestNote.textContent = "The baked debate is not on this host yet. Run the play bake, then try again.";
+  }
+});
+
+replaceSession([], []);
+metaStrip.textContent = "Live microphone ready";
+researchNote.textContent = "Research mode: wikipedia, when you speak. The baked debate uses fixture research and zero Tavily calls.";
+workspaceEl.hidden = false;

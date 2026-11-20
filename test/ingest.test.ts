@@ -6,6 +6,7 @@ import test from "node:test";
 import {
   FileUploadIngestAdapter,
   IngestDeferredError,
+  MicrophoneBrowserError,
   MicrophoneIngestAdapter,
   PreloadedPresentationAdapter,
   assertPublicDemoIsOffline,
@@ -95,11 +96,11 @@ test("preloaded adapter refuses a session that called Tavily", async () => {
   }
 });
 
-test("upload and microphone adapters stay deferred", async () => {
+test("upload stays deferred and microphone capture is browser-only", async () => {
   const upload = ingestAdapterFor("file-upload");
   const mic = ingestAdapterFor("microphone");
   assert.equal(upload.available(), false);
-  assert.equal(mic.available(), false);
+  assert.equal(mic.available(), true);
   await assert.rejects(
     () => new FileUploadIngestAdapter().load(),
     (error: unknown) => {
@@ -111,8 +112,7 @@ test("upload and microphone adapters stay deferred", async () => {
   await assert.rejects(
     () => new MicrophoneIngestAdapter().load(),
     (error: unknown) => {
-      assert.ok(error instanceof IngestDeferredError);
-      assert.equal(error.kind, "microphone");
+      assert.ok(error instanceof MicrophoneBrowserError);
       return true;
     },
   );

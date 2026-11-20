@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CONTXT | 1992 debate, cited topics</title>
-  <meta name="description" content="Auto-load the 1992 presidential debate clip, watch CONTXT process claims, then browse an interactive timeline of cited topic pages. Fixture research only.">
+  <title>CONTXT | Live microphone, cited topics</title>
+  <meta name="description" content="Speak into CONTXT and watch finished sentences become cited topics in real time. The microphone uses a short-lived speech token. The 1992 debate is still here.">
   <link rel="canonical" href="https://marvelus-tech.github.io/contxt/play/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://marvelus-tech.github.io/contxt/play/">
-  <meta property="og:title" content="CONTXT | 1992 debate, cited topics">
-  <meta property="og:description" content="The 1992 debate auto-loads like an upload, then opens a cited topic timeline. Fixture research, no live web search.">
+  <meta property="og:title" content="CONTXT | Live microphone, cited topics">
+  <meta property="og:description" content="A live microphone turns speech into cited topics while you talk. Speech tokens stay on the server. The baked 1992 debate is one click away.">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="CONTXT | 1992 debate, cited topics">
-  <meta name="twitter:description" content="Auto-loaded 1992 debate with a cited topic timeline. Fixture research only.">
+  <meta name="twitter:title" content="CONTXT | Live microphone, cited topics">
+  <meta name="twitter:description" content="Live microphone for CONTXT. You see words as you speak, then cited topics. The 1992 debate is still on this page.">
   <meta name="theme-color" content="#f7f0e4">
   <link rel="stylesheet" href="play.css">
 </head>
@@ -26,36 +26,42 @@
       <span aria-hidden="true">/</span>
       <span aria-current="page">Play</span>
     </nav>
-    <p class="meta" id="meta-strip">Loading session…</p>
+    <p class="meta" id="meta-strip">Live microphone ready</p>
   </header>
 
-  <section class="source" aria-labelledby="source-heading">
+  <section class="mic" aria-labelledby="mic-heading">
     <div class="source-copy">
-      <h1 id="source-heading">Open session</h1>
-      <p class="lede">The existing 1992 debate presentation loads as if you uploaded it. Real file upload and microphone ingest stay deferred.</p>
+      <h1 id="mic-heading">Listen live</h1>
+      <p class="lede">Speak, and finished sentences become cited topics while the next words are still on screen. The speech key stays on the server.</p>
     </div>
-    <article class="file-chip" id="file-chip">
-      <p class="file-name" id="file-name">debate1992.opus</p>
-      <p class="file-meta" id="file-meta">Public-domain clip</p>
-      <p class="file-status"><span class="dot" aria-hidden="true"></span> Loaded</p>
-    </article>
+    <div class="mic-panel">
+      <button type="button" id="btn-mic" class="mic-button" aria-pressed="false" aria-describedby="mic-status">
+        <span class="mic-label" id="mic-label">Use microphone</span>
+      </button>
+      <div class="mic-meter-track" aria-hidden="true"><span id="mic-meter" class="mic-meter"></span></div>
+      <p id="mic-status" class="mic-status" role="status">Microphone is idle. Start it when you are ready to speak.</p>
+      <p id="partial" class="partial">Waiting for speech.</p>
+      <p id="heard-live" class="sr-only" aria-live="polite"></p>
+      <h2 class="heard-heading">Heard</h2>
+      <ol id="transcript" class="transcript"></ol>
+    </div>
     <div class="ingest-actions">
       <button type="button" id="btn-upload" aria-disabled="true" aria-describedby="ingest-note">Upload recording</button>
-      <button type="button" id="btn-mic" aria-disabled="true" aria-describedby="ingest-note">Use microphone</button>
-      <p class="ingest-note" id="ingest-note" role="status">Upload and microphone adapters are stubbed. This session uses the preloaded debate.</p>
+      <button type="button" id="btn-debate">Open the 1992 debate</button>
+      <p class="ingest-note" id="ingest-note" role="status">File upload stays deferred. The microphone is live on this page.</p>
     </div>
   </section>
 
-  <section class="processing" id="processing" aria-labelledby="processing-heading" aria-live="polite">
+  <section class="processing" id="processing" hidden aria-labelledby="processing-heading" aria-live="polite">
     <div class="processing-head">
       <h2 id="processing-heading">Processing</h2>
       <button type="button" class="text-btn" id="btn-skip">Skip to results</button>
     </div>
     <ol class="steps" id="steps"></ol>
-    <p class="process-status" id="process-status">Receiving recording…</p>
+    <p class="process-status" id="process-status">Receiving recording...</p>
   </section>
 
-  <main class="workspace" id="workspace" hidden>
+  <main class="workspace" id="workspace">
     <section class="panel feed-panel" aria-labelledby="feed-heading">
       <div class="panel-head">
         <h2 id="feed-heading">Timeline</h2>
@@ -77,13 +83,13 @@
         <p class="panel-note"><a href="/contxt/play/deck.html">Open full deck</a></p>
       </div>
       <div id="topic-detail" class="topic-detail" tabindex="-1">
-        <p class="empty">Select a timeline row or a topic card.</p>
+        <p class="empty">Select a timeline row after you speak, or open the 1992 debate.</p>
       </div>
       <div id="topics" class="topics"></div>
     </section>
   </main>
 
-  <section class="player" aria-label="Optional debate audio">
+  <section class="player" id="debate-player" hidden aria-label="Optional debate audio">
     <p class="player-label">Replay against the clip (optional)</p>
     <audio id="audio" controls preload="metadata" src="debate1992.opus">
       <p>Your browser does not support Opus audio.</p>
@@ -92,7 +98,7 @@
   </section>
 
   <footer class="foot">
-    <p id="research-note">Research mode: fixture. Tavily requests: 0.</p>
+    <p id="research-note">Research mode: wikipedia, when you speak. The baked debate uses fixture research and zero Tavily calls.</p>
     <p><a href="/contxt/">Back to CONTXT</a> · <a href="/">MarvelUs directory</a></p>
   </footer>
 

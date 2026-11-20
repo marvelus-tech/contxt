@@ -39,6 +39,7 @@ export {
   PreloadedPresentationAdapter,
   FileUploadIngestAdapter,
   MicrophoneIngestAdapter,
+  MicrophoneBrowserError,
   IngestDeferredError,
   ingestAdapterFor,
   assertPublicDemoIsOffline,
@@ -63,3 +64,13 @@ export type {
   FixtureLiveOptions,
   SegmentSource,
 } from "./pipeline/live.js";
+export {
+  browserListenProtocols,
+  deepgramBrowserListenUrl,
+  describeMicFailure,
+  isSafeTokenUrl,
+  readDeepgramListenEvent,
+} from "./pipeline/mic.js";
+export { handleMicGrantRequest, isGrantOriginAllowed } from "./pipeline/mic-grant.js";
+export { WikipediaSearchProvider } from "./pipeline/wikipedia.js";
+export { createMicrophonePipeline } from "./web/mic/browser.js";
