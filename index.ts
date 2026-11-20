@@ -32,6 +32,26 @@ export {
 } from "./pipeline/research.js";
 export type { ResearcherMode, ResearcherHandle } from "./pipeline/research.js";
 export {
+  KeywordContextResearcher,
+  createOfflineDemoResearcher,
+} from "./pipeline/context-research.js";
+export {
+  PreloadedPresentationAdapter,
+  FileUploadIngestAdapter,
+  MicrophoneIngestAdapter,
+  IngestDeferredError,
+  ingestAdapterFor,
+  assertPublicDemoIsOffline,
+  DEFERRED_INGEST_MESSAGE,
+} from "./pipeline/ingest.js";
+export type {
+  PresentationIngestKind,
+  PresentationIngestAdapter,
+  PresentationSource,
+  LoadedPresentation,
+  PlaySessionMeta,
+} from "./pipeline/ingest.js";
+export {
   DeepgramLiveSource,
   FixtureLiveSource,
   NodeDeepgramWebSocket,

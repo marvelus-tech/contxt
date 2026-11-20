@@ -155,13 +155,17 @@ npm run eval:research   # offline check on recorded Tavily JSON
 
 ## Play demo bake (Pages)
 
-Bake static artifacts for the interactive debate demo (fixture research, no Tavily):
+Bake static artifacts for the interactive debate demo. Research stays **fixture plus offline keyword context**. That path never calls Tavily (`researchRequests` must be 0 or bake exits).
+
+The play UI auto-loads the 1992 debate as a preloaded presentation: processing state, then timeline and cited topics. File upload and microphone are typed ingest adapters that stay deferred.
 
 ```bash
 npm run bake:play
 # optional: write into marvelus-tech.github.io checkout
 PAGES_PLAY_DIR=../marvelus-tech.github.io/contxt/play npm run bake:play
 ```
+
+Canonical UI source is `web/play/`. Bake copies it next to `session.json`, `pages.json`, `timeline.json`, and `debate1992.opus`.
 
 ## Claims, types and speaker names (step 3)
 

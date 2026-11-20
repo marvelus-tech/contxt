@@ -75,7 +75,7 @@ export async function runLive(options: LiveOptions): Promise<LiveResult> {
   const researchHandle: ResearcherHandle =
     options.stages?.researcher !== undefined
       ? {
-          id: "custom",
+          id: options.researcher ?? "custom",
           researcher: options.stages.researcher,
           status: async () => ({ status: "ok" as const }),
           stats: () => ({ requests: 0, cacheHits: 0 }),
