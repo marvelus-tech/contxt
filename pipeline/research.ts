@@ -1,4 +1,3 @@
-import { readFile, writeFile } from "node:fs/promises";
 import { isCitedFact } from "./stages.js";
 import { FixtureResearcher } from "./stages.js";
 import type { Claim, Fact, Researcher, Topic } from "./types.js";
@@ -44,7 +43,7 @@ export function buildResearchQuery(claim: Claim, topic: Topic): string {
   if (title && !claim.text.toLowerCase().includes(title.toLowerCase())) {
     parts.push(title);
   }
-  const query = parts.join(" — ");
+  const query = parts.join(". ");
   return query.length > QUERY_MAX ? `${query.slice(0, QUERY_MAX - 1)}…` : query;
 }
 
@@ -115,9 +114,15 @@ export class TavilySearchProvider implements SearchProvider {
 
 type CacheStore = Record<string, Fact[]>;
 
+function readEnv(name: string): string | undefined {
+  const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
+  return proc?.env?.[name];
+}
+
 async function loadCache(path: string | undefined): Promise<CacheStore> {
   if (!path) return {};
   try {
+    const { readFile } = await import("node:fs/promises");
     return JSON.parse(await readFile(path, "utf8")) as CacheStore;
   } catch {
     return {};
@@ -126,6 +131,7 @@ async function loadCache(path: string | undefined): Promise<CacheStore> {
 
 async function saveCache(path: string | undefined, cache: CacheStore): Promise<void> {
   if (!path) return;
+  const { writeFile } = await import("node:fs/promises");
   await writeFile(path, `${JSON.stringify(cache, null, 2)}\n`);
 }
 
@@ -226,10 +232,10 @@ export async function createResearcher(
   const stats: ResearcherStats = { requests: 0, cacheHits: 0 };
   const maxFacts =
     options.maxFacts ??
-    (process.env.RESEARCH_MAX_FACTS
-      ? Number(process.env.RESEARCH_MAX_FACTS)
+    (readEnv("RESEARCH_MAX_FACTS")
+      ? Number(readEnv("RESEARCH_MAX_FACTS"))
       : DEFAULT_MAX_FACTS);
-  const apiKey = options.apiKey ?? process.env.TAVILY_API_KEY ?? "";
+  const apiKey = options.apiKey ?? readEnv("TAVILY_API_KEY") ?? "";
 
   const fixture = await FixtureResearcher.fromFile(options.fixturePath);
 

@@ -157,7 +157,7 @@ npm run eval:research   # offline check on recorded Tavily JSON
 
 Bake static artifacts for the interactive debate demo. Research stays **fixture plus offline keyword context**. That path never calls Tavily (`researchRequests` must be 0 or bake exits).
 
-The play UI auto-loads the 1992 debate as a preloaded presentation: processing state, then timeline and cited topics. File upload and microphone are typed ingest adapters that stay deferred.
+The play UI opens on a live microphone. Finished sentences become cited topics through the existing pipeline, with Wikipedia citations in the browser. The 1992 debate is one click away and still uses fixture research. File upload stays deferred. `npm run mic:serve` hosts the page and the token route. See [docs/LIVE.md](docs/LIVE.md).
 
 ```bash
 npm run bake:play
@@ -190,7 +190,7 @@ npm run live -- recording.wav --transcriber deepgram-live   # needs DEEPGRAM_API
 npm run ci:live
 ```
 
-See [docs/LIVE.md](docs/LIVE.md) for Deepgram streaming, fixture timing and API notes.
+See [docs/LIVE.md](docs/LIVE.md) for Deepgram streaming, the browser microphone, fixture timing and API notes.
 
 ## Agent API
 

@@ -54,7 +54,9 @@ Research (step 4):
 TAVILY_API_KEY for web/composite Tavily leg; RESEARCH_MAX_FACTS optional (default 5)
 out/<run-id>/research-cache.json caches web results by normalized claim
 Public play demo: npm run bake:play (fixture + samples/research-context.json, 0 Tavily)
-Ingest adapters: preloaded (MVP), file-upload and microphone deferred (pipeline/ingest.ts)
+Ingest adapters: preloaded debate, live microphone (short-lived Deepgram grant, browser PCM), file-upload deferred
+Mic server: npm run mic:serve  (GET /api/mic/token, serves web/play)
+Worker: wrangler.jsonc workers/mic (secret DEEPGRAM_API_KEY, never in the page)
 
 Outputs:
 out/<run-id>/claims.json   (unique claims: type, checkable, speaker, speakerConfidence, topicId, occurrences[])

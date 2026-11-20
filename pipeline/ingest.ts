@@ -4,8 +4,8 @@ import type { Page, Scorecard, TimelineEvent } from "./types.js";
 
 /**
  * Browser/file ingest kinds for a presentation session.
- * `preloaded` is the MVP path. `file-upload` and `microphone` stay
- * typed so a later adapter can drop in without rewriting the play UI.
+ * `preloaded` loads a baked session. `microphone` is live in the browser.
+ * `file-upload` stays deferred.
  */
 export type PresentationIngestKind = "preloaded" | "file-upload" | "microphone";
 
@@ -19,15 +19,21 @@ export class IngestDeferredError extends Error {
   }
 }
 
-export const DEFERRED_INGEST_MESSAGE: Record<
-  Exclude<PresentationIngestKind, "preloaded">,
-  string
-> = {
+export const DEFERRED_INGEST_MESSAGE = {
   "file-upload":
-    "File upload is a deferred ingest adapter. This MVP auto-loads the 1992 debate presentation.",
-  microphone:
-    "Microphone capture is a deferred ingest adapter. This MVP auto-loads the 1992 debate presentation.",
-};
+    "File upload is a deferred ingest adapter. Use the microphone, or open the 1992 debate.",
+} as const;
+
+export class MicrophoneBrowserError extends Error {
+  readonly kind = "microphone" as const;
+
+  constructor() {
+    super(
+      "Microphone capture runs in the browser. The play page streams audio to Deepgram with a short-lived token minted on the server.",
+    );
+    this.name = "MicrophoneBrowserError";
+  }
+}
 
 export interface PresentationSource {
   id: string;
@@ -130,15 +136,16 @@ export class FileUploadIngestAdapter implements PresentationIngestAdapter {
   }
 }
 
+/** Node cannot open a microphone. The browser play page is the live adapter. */
 export class MicrophoneIngestAdapter implements PresentationIngestAdapter {
   readonly kind = "microphone" as const;
 
   available(): boolean {
-    return false;
+    return true;
   }
 
   async load(): Promise<LoadedPresentation> {
-    throw new IngestDeferredError("microphone", DEFERRED_INGEST_MESSAGE.microphone);
+    throw new MicrophoneBrowserError();
   }
 }
 

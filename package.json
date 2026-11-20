@@ -15,7 +15,8 @@
     "contxt-transcribe": "./dist/harness/transcribe.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/bundle-mic.mjs",
+    "mic:serve": "npm run build && node dist/harness/mic-server.js",
     "test": "npm run build && node --test dist/test/*.test.js",
     "replay": "npm run build && node dist/harness/cli.js",
     "ci:replay": "npm run replay -- --fixture samples/demo.json --speed 1000",
@@ -30,7 +31,9 @@
   "devDependencies": {
     "@types/node": "^24.7.2",
     "@types/ws": "^8.18.2",
-    "typescript": "^5.9.3"
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.165.0"
   },
   "dependencies": {
     "ws": "^8.23.0"
