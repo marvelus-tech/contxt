@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CONTXT | 1992 debate, cited topics</title>
+  <meta name="description" content="Auto-load the 1992 presidential debate clip, watch CONTXT process claims, then browse an interactive timeline of cited topic pages. Fixture research only.">
+  <link rel="canonical" href="https://marvelus-tech.github.io/contxt/play/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://marvelus-tech.github.io/contxt/play/">
+  <meta property="og:title" content="CONTXT | 1992 debate, cited topics">
+  <meta property="og:description" content="The 1992 debate auto-loads like an upload, then opens a cited topic timeline. Fixture research, no live web search.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CONTXT | 1992 debate, cited topics">
+  <meta name="twitter:description" content="Auto-loaded 1992 debate with a cited topic timeline. Fixture research only.">
+  <meta name="theme-color" content="#f7f0e4">
+  <link rel="stylesheet" href="play.css">
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to timeline</a>
+  <header class="top">
+    <nav class="crumb" aria-label="CONTXT">
+      <a href="/">MarvelUs</a>
+      <span aria-hidden="true">/</span>
+      <a href="/contxt/">CONTXT</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Play</span>
+    </nav>
+    <p class="meta" id="meta-strip">Loading session…</p>
+  </header>
+
+  <section class="source" aria-labelledby="source-heading">
+    <div class="source-copy">
+      <h1 id="source-heading">Open session</h1>
+      <p class="lede">The existing 1992 debate presentation loads as if you uploaded it. Real file upload and microphone ingest stay deferred.</p>
+    </div>
+    <article class="file-chip" id="file-chip">
+      <p class="file-name" id="file-name">debate1992.opus</p>
+      <p class="file-meta" id="file-meta">Public-domain clip</p>
+      <p class="file-status"><span class="dot" aria-hidden="true"></span> Loaded</p>
+    </article>
+    <div class="ingest-actions">
+      <button type="button" id="btn-upload" aria-disabled="true" aria-describedby="ingest-note">Upload recording</button>
+      <button type="button" id="btn-mic" aria-disabled="true" aria-describedby="ingest-note">Use microphone</button>
+      <p class="ingest-note" id="ingest-note" role="status">Upload and microphone adapters are stubbed. This session uses the preloaded debate.</p>
+    </div>
+  </section>
+
+  <section class="processing" id="processing" aria-labelledby="processing-heading" aria-live="polite">
+    <div class="processing-head">
+      <h2 id="processing-heading">Processing</h2>
+      <button type="button" class="text-btn" id="btn-skip">Skip to results</button>
+    </div>
+    <ol class="steps" id="steps"></ol>
+    <p class="process-status" id="process-status">Receiving recording…</p>
+  </section>
+
+  <main class="workspace" id="workspace" hidden>
+    <section class="panel feed-panel" aria-labelledby="feed-heading">
+      <div class="panel-head">
+        <h2 id="feed-heading">Timeline</h2>
+        <div class="filters" role="group" aria-label="Timeline filters">
+          <button type="button" class="chip" data-filter="all">All</button>
+          <button type="button" class="chip is-on" data-filter="page-created">Pages</button>
+          <button type="button" class="chip" data-filter="page-updated">Updates</button>
+          <button type="button" class="chip" data-filter="claim-not-checkable">Dropped</button>
+        </div>
+      </div>
+      <label class="search-label" for="topic-search">Filter topics</label>
+      <input id="topic-search" type="search" placeholder="Search claims or speakers" autocomplete="off">
+      <ol id="feed" class="feed"></ol>
+    </section>
+
+    <section class="panel topic-panel" aria-labelledby="topic-heading">
+      <div class="panel-head">
+        <h2 id="topic-heading">Cited topics</h2>
+        <p class="panel-note"><a href="/contxt/play/deck.html">Open full deck</a></p>
+      </div>
+      <div id="topic-detail" class="topic-detail" tabindex="-1">
+        <p class="empty">Select a timeline row or a topic card.</p>
+      </div>
+      <div id="topics" class="topics"></div>
+    </section>
+  </main>
+
+  <section class="player" aria-label="Optional debate audio">
+    <p class="player-label">Replay against the clip (optional)</p>
+    <audio id="audio" controls preload="metadata" src="debate1992.opus">
+      <p>Your browser does not support Opus audio.</p>
+    </audio>
+    <p class="hint">Scrubbing highlights the matching timeline row. Results stay visible even when the clip is paused.</p>
+  </section>
+
+  <footer class="foot">
+    <p id="research-note">Research mode: fixture. Tavily requests: 0.</p>
+    <p><a href="/contxt/">Back to CONTXT</a> · <a href="/">MarvelUs directory</a></p>
+  </footer>
+
+  <script src="play.js" type="module"></script>
+</body>
+</html>

@@ -53,6 +53,8 @@ Research (step 4):
 --researcher fixture|web|composite   default fixture
 TAVILY_API_KEY for web/composite Tavily leg; RESEARCH_MAX_FACTS optional (default 5)
 out/<run-id>/research-cache.json caches web results by normalized claim
+Public play demo: npm run bake:play (fixture + samples/research-context.json, 0 Tavily)
+Ingest adapters: preloaded (MVP), file-upload and microphone deferred (pipeline/ingest.ts)
 
 Outputs:
 out/<run-id>/claims.json   (unique claims: type, checkable, speaker, speakerConfidence, topicId, occurrences[])

@@ -1,0 +1,191 @@
+{
+  "packs": [
+    {
+      "id": "federal-debt",
+      "keywords": [
+        "trillion",
+        "debt",
+        "deficit",
+        "national debt"
+      ],
+      "facts": [
+        {
+          "text": "Gross federal debt was about $4 trillion during 1992.",
+          "sourceUrl": "https://fred.stlouisfed.org/series/GFDEBTN"
+        },
+        {
+          "text": "Treasury publishes historical debt to the penny and related fiscal series.",
+          "sourceUrl": "https://fiscaldata.treasury.gov/datasets/debt-to-the-penny/debt-to-the-penny"
+        },
+        {
+          "text": "Ross Perot raised the debt as a central 1992 debate issue.",
+          "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+        }
+      ]
+    },
+    {
+      "id": "jobs-wages",
+      "keywords": [
+        "jobs",
+        "job growth",
+        "wages",
+        "unemploy",
+        "bankrupt",
+        "poverty",
+        "income growth"
+      ],
+      "facts": [
+        {
+          "text": "The U.S. unemployment rate peaked near 7.8 percent in June 1992.",
+          "sourceUrl": "https://fred.stlouisfed.org/series/UNRATE"
+        },
+        {
+          "text": "BLS publishes national and state employment and wage statistics.",
+          "sourceUrl": "https://www.bls.gov/data/"
+        },
+        {
+          "text": "Census Bureau poverty and income tables cover the early 1990s.",
+          "sourceUrl": "https://www.census.gov/topics/income-poverty/poverty.html"
+        }
+      ]
+    },
+    {
+      "id": "taxes",
+      "keywords": [
+        "tax",
+        "taxes",
+        "payroll",
+        "capital gains",
+        "tax credit"
+      ],
+      "facts": [
+        {
+          "text": "Federal individual income and payroll tax rules are documented in IRS Statistics of Income.",
+          "sourceUrl": "https://www.irs.gov/statistics/soi-tax-stats-historical-table-23"
+        },
+        {
+          "text": "The Tax Policy Center summarizes major 1980s and 1990s tax acts.",
+          "sourceUrl": "https://www.taxpolicycenter.org/statistics"
+        },
+        {
+          "text": "Clinton's 1992 economic plan discussed upper-income tax rates and middle-class relief.",
+          "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+        }
+      ]
+    },
+    {
+      "id": "health",
+      "keywords": [
+        "health care",
+        "healthcare",
+        "health"
+      ],
+      "facts": [
+        {
+          "text": "CMS National Health Expenditure data track U.S. health spending over time.",
+          "sourceUrl": "https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data"
+        },
+        {
+          "text": "Health costs were a major 1992 campaign topic across the three candidates.",
+          "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "keywords": [
+        "education",
+        "educate",
+        "schools"
+      ],
+      "facts": [
+        {
+          "text": "NCES publishes historical tables on U.S. education enrollment and spending.",
+          "sourceUrl": "https://nces.ed.gov/"
+        },
+        {
+          "text": "Clinton tied Arkansas education policy to his national economic argument.",
+          "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+        }
+      ]
+    },
+    {
+      "id": "cold-war",
+      "keywords": [
+        "cold war",
+        "nuclear",
+        "world peace",
+        "foreign"
+      ],
+      "facts": [
+        {
+          "text": "The Soviet Union dissolved in December 1991, months before this debate.",
+          "sourceUrl": "https://history.state.gov/milestones/1989-1992/collapse-soviet-union"
+        },
+        {
+          "text": "Bush argued that ending the Cold War reduced the fear of nuclear conflict.",
+          "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+        }
+      ]
+    },
+    {
+      "id": "ballot",
+      "keywords": [
+        "ballot",
+        "petition",
+        "50 states",
+        "pac money",
+        "independent"
+      ],
+      "facts": [
+        {
+          "text": "The FEC explains how candidates qualify and report campaign funds.",
+          "sourceUrl": "https://www.fec.gov/introduction-campaign-finance/how-to-become-a-candidate/"
+        },
+        {
+          "text": "Perot ran in 1992 as an independent after a nationwide petition drive.",
+          "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+        }
+      ]
+    },
+    {
+      "id": "constitution",
+      "keywords": [
+        "constitution",
+        "framers"
+      ],
+      "facts": [
+        {
+          "text": "The National Archives holds the U.S. Constitution and founding documents.",
+          "sourceUrl": "https://www.archives.gov/founding-docs/constitution"
+        }
+      ]
+    },
+    {
+      "id": "misery-index",
+      "keywords": [
+        "misery index"
+      ],
+      "facts": [
+        {
+          "text": "The misery index is the sum of the unemployment rate and the inflation rate.",
+          "sourceUrl": "https://fred.stlouisfed.org/series/UNRATE"
+        },
+        {
+          "text": "CPI-U is the standard BLS inflation series used in that calculation.",
+          "sourceUrl": "https://www.bls.gov/cpi/"
+        }
+      ]
+    }
+  ],
+  "fallback": [
+    {
+      "text": "This claim was spoken in the opening of the 11 Oct 1992 presidential debate in St. Louis.",
+      "sourceUrl": "https://www.debates.org/voter-education/debate-transcripts/october-11-1992-first-half-debate-transcript/"
+    },
+    {
+      "text": "The source recording is public domain, from the George H. W. Bush Presidential Library via Wikimedia Commons.",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Presidential_Debate_with_George_H._W._Bush,_Bill_Clinton_and_Ross_Perot_11_October_1992.webm"
+    }
+  ]
+}

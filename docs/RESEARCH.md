@@ -58,7 +58,9 @@ npm run eval:research
 
 ## Public demos and Firecrawl Local
 
-Use **`fixture`** for GitHub Pages, CI, and any shipped interactive demo: it costs **no Tavily credits** and matches `samples/research.json`. Use **`composite`** on your machine when a claim is missing from the fixture; Tavily runs only on those gaps if `TAVILY_API_KEY` is set. **Firecrawl Local** (scrape, crawl, map on your laptop) does **not** replace Tavily for discovering sources; cloud `/search` still uses Firecrawl credits. A later optional step is local **scrape** of URLs you already have from fixture or Tavily to enrich fact text, not to avoid fixture mode.
+Use **`fixture`** for GitHub Pages, CI, and any shipped interactive demo: it costs **no Tavily credits** and matches `samples/research.json`. The play bake (`npm run bake:play`) keeps the scorecard researcher as `fixture` with **0 Tavily requests**, then fills debate gaps from `samples/research-context.json` (offline keyword packs). Use **`composite`** on your machine when a claim is missing from the fixture; Tavily runs only on those gaps if `TAVILY_API_KEY` is set. **Firecrawl Local** (scrape, crawl, map on your laptop) does **not** replace Tavily for discovering sources; cloud `/search` still uses Firecrawl credits. A later optional step is local **scrape** of URLs you already have from fixture or Tavily to enrich fact text, not to avoid fixture mode.
+
+Presentation ingest for the hosted demo is **preloaded** (`pipeline/ingest.ts`). File upload and microphone adapters exist as types and throw `IngestDeferredError` until a later step.
 
 ## Out of scope
 

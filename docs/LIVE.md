@@ -32,7 +32,8 @@ If `DEEPGRAM_API_KEY` is missing, the run completes with `transcriberStatus: "sk
 
 ## Out of scope for v1
 
-- Microphone capture (pipe `ffmpeg` or `sox` into a WAV file, then use Deepgram live)
+- Microphone capture (pipe `ffmpeg` or `sox` into a WAV file, then use Deepgram live). The play UI exposes a deferred `microphone` ingest adapter (`pipeline/ingest.ts`) so that work has a typed boundary.
+- File upload in the browser (deferred `file-upload` adapter; the hosted demo auto-loads the 1992 debate instead)
 - AssemblyAI streaming
 - React UI
 
