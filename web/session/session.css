@@ -9,9 +9,15 @@
   font-size: 0.92rem;
 }
 
+.session-layout {
+  width: 100%;
+}
+
 .session-head {
-  padding: 1rem 1.25rem 0.75rem;
+  padding: 1rem var(--cntxt-gutter) 0.75rem;
   border-bottom: 1px solid var(--line);
+  max-width: var(--cntxt-content-max);
+  margin: 0 auto;
 }
 
 .session-head h1 {
@@ -19,7 +25,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  max-width: 42rem;
+  max-width: var(--cntxt-measure);
 }
 
 .session-meta {
@@ -33,9 +39,9 @@
 
 .transport {
   position: sticky;
-  top: 0;
-  z-index: 4;
-  padding: 0.65rem 1.25rem;
+  top: var(--cntxt-top-h);
+  z-index: 5;
+  padding: 0.65rem var(--cntxt-gutter);
   border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   backdrop-filter: blur(6px);
@@ -43,13 +49,16 @@
 
 .transport audio {
   width: 100%;
-  max-width: 42rem;
+  max-width: var(--cntxt-measure);
   display: block;
+  margin: 0 auto;
 }
 
 .processing {
-  padding: 1rem 1.25rem;
+  padding: 1rem var(--cntxt-gutter);
   border-bottom: 1px solid var(--line);
+  max-width: var(--cntxt-content-max);
+  margin: 0 auto;
 }
 
 .processing.is-done {
@@ -121,6 +130,10 @@
   grid-template-columns: minmax(0, 1.4fr) minmax(12rem, 0.45fr);
   align-items: start;
   min-height: 50vh;
+  max-width: var(--cntxt-content-max);
+  margin: 0 auto;
+  padding: 0 var(--cntxt-gutter);
+  box-sizing: border-box;
 }
 
 .workspace[hidden] {
@@ -128,7 +141,7 @@
 }
 
 .insight-stage {
-  padding: 1rem 1.25rem 2.5rem;
+  padding: 1rem 0 2.5rem;
   min-width: 0;
   max-width: min(52rem, 100%);
 }
@@ -297,7 +310,7 @@
 }
 
 .moments-panel {
-  padding: 1rem 1.25rem 2rem;
+  padding: 1rem 0 2rem;
   border-left: 1px solid var(--line);
   min-width: 0;
   max-height: calc(100vh - 8rem);
