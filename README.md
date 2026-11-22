@@ -157,15 +157,22 @@ npm run eval:research   # offline check on recorded Tavily JSON
 
 Bake static artifacts for the interactive debate demo. Research stays **fixture plus offline keyword context**. That path never calls Tavily (`researchRequests` must be 0 or bake exits).
 
-The play UI auto-loads the 1992 debate as a preloaded presentation: processing state, then timeline and cited topics. File upload and microphone are typed ingest adapters that stay deferred.
+The play UI opens on a live microphone. Finished sentences become cited topics through the existing pipeline, with Wikipedia citations in the browser. The 1992 debate is one click away and still uses fixture research. File upload stays deferred. `npm run mic:serve` hosts the page and the token route. See [docs/LIVE.md](docs/LIVE.md).
 
 ```bash
 npm run bake:play
-# optional: write into marvelus-tech.github.io checkout
-PAGES_PLAY_DIR=../marvelus-tech.github.io/contxt/play npm run bake:play
+# legacy play folder (redirects to sessions on Pages)
+
+npm run bake:session -- --slug 1992-debate \
+  --title "First 1992 presidential debate (Bush, Clinton, Perot), opening segment" \
+  --fixture samples/debate1992.json \
+  --audio samples/audio/debate1992.opus \
+  --clip samples/debate1992.clip.json \
+  --kind demo
+# writes ../marvelus-tech.github.io/cntxt/sessions/<slug>/ and updates sessions.json
 ```
 
-Canonical UI source is `web/play/`. Bake copies it next to `session.json`, `pages.json`, `timeline.json`, and `debate1992.opus`.
+Canonical session UI is `web/session/`. See [docs/session-publish.md](docs/session-publish.md) and [docs/DEPLOY-MIC.md](docs/DEPLOY-MIC.md).
 
 ## Claims, types and speaker names (step 3)
 
@@ -190,7 +197,7 @@ npm run live -- recording.wav --transcriber deepgram-live   # needs DEEPGRAM_API
 npm run ci:live
 ```
 
-See [docs/LIVE.md](docs/LIVE.md) for Deepgram streaming, fixture timing and API notes.
+See [docs/LIVE.md](docs/LIVE.md) for Deepgram streaming, the browser microphone, fixture timing and API notes.
 
 ## Agent API
 

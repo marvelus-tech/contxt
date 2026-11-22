@@ -11,5 +11,5 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["harness/**/*.ts", "pipeline/**/*.ts", "test/**/*.ts", "index.ts"]
+  "include": ["harness/**/*.ts", "pipeline/**/*.ts", "test/**/*.ts", "web/mic/**/*.ts", "index.ts"]
 }

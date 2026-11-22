@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNTXT | 1992 debate session</title>
+  <meta name="description" content="Browse cited topic pages from the 1992 presidential debate opening segment. Public-domain demo session.">
+  <link rel="canonical" href="https://marvelus-tech.github.io/cntxt/sessions/1992-debate/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://marvelus-tech.github.io/cntxt/sessions/1992-debate/">
+  <meta property="og:title" content="CNTXT | 1992 debate session">
+  <meta property="og:description" content="Cited topics from the 1992 debate, browsable like a presentation.">
+  <meta name="theme-color" content="#f7f4ee">
+  <link rel="stylesheet" href="session.css">
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to topics</a>
+  <header class="cntxt-top">
+    <a class="cntxt-brand" href="../../">CNTXT</a>
+    <div class="cntxt-top__actions">
+      <a class="cntxt-link" href="../">All sessions</a>
+      <a class="cntxt-link" href="deck.html">Present</a>
+    </div>
+  </header>
+
+  <div class="session-head">
+    <h1 id="session-title">Loading session…</h1>
+    <p class="session-meta" id="session-meta"></p>
+    <p class="debug-strip" id="debug-strip" hidden></p>
+  </div>
+
+  <div class="transport" id="transport" hidden>
+    <audio id="audio" controls preload="metadata" src="debate1992.opus">
+      <p>Your browser does not support Opus audio.</p>
+    </audio>
+  </div>
+
+  <section class="processing" id="processing" aria-labelledby="processing-heading" aria-live="polite">
+    <div class="processing-head">
+      <h2 id="processing-heading">Preparing session</h2>
+      <button type="button" class="text-btn" id="btn-skip">Skip</button>
+    </div>
+    <ol class="steps" id="steps"></ol>
+    <p class="process-status" id="process-status">Loading…</p>
+  </section>
+
+  <main class="workspace" id="workspace" hidden>
+    <section class="panel" aria-labelledby="topics-heading">
+      <div class="panel-head">
+        <h2 id="topics-heading">Topics</h2>
+      </div>
+      <label class="sr-only" for="topic-search">Search topics</label>
+      <input id="topic-search" type="search" placeholder="Search topics or speakers" autocomplete="off">
+
+      <details class="refine">
+        <summary>Filter timeline</summary>
+        <div class="refine__body filters" role="group" aria-label="Timeline filters">
+          <button type="button" class="chip is-on" data-filter="all">All</button>
+          <button type="button" class="chip" data-filter="page-created">New</button>
+          <button type="button" class="chip" data-filter="page-updated">Updated</button>
+          <button type="button" class="chip" data-filter="claim-not-checkable">Skipped</button>
+        </div>
+      </details>
+
+      <ol id="feed" class="feed"></ol>
+    </section>
+
+    <section class="panel panel--detail" aria-labelledby="detail-heading">
+      <div class="panel-head">
+        <h2 id="detail-heading">Topic</h2>
+      </div>
+      <article id="topic-detail" class="topic-detail" tabindex="-1">
+        <p class="muted">Choose a topic from the list.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="cntxt-foot">
+    <p id="foot-note">Demo uses a public-domain 1992 debate clip.</p>
+    <p><a href="../">Sessions</a> · <a href="../../">CNTXT</a></p>
+  </footer>
+
+  <script src="session.js" type="module"></script>
+</body>
+</html>

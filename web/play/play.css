@@ -131,6 +131,77 @@ audio:focus-visible {
   opacity: 0.7;
   cursor: pointer;
 }
+
+.mic {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.9fr);
+  gap: 1rem 1.5rem;
+  align-items: start;
+}
+.mic-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  min-width: 0;
+}
+.mic-button {
+  min-width: 11.5rem;
+  min-height: 3.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.8rem 1.25rem;
+  cursor: pointer;
+}
+.mic-button[aria-pressed="true"] { background: #6d2c22; }
+.mic-meter-track {
+  width: min(100%, 16rem);
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.mic-meter {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--ok);
+}
+.mic-status { color: var(--muted); font-weight: 650; max-width: 36rem; }
+.mic-status.is-bad { color: #6e2c1c; }
+.partial {
+  min-height: 2.8rem;
+  font-size: 1.2rem;
+  font-weight: 650;
+  max-width: 40rem;
+}
+.heard-heading { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.transcript:empty { display: none; }
+.heard-heading:has(+ .transcript:empty) { display: none; }
+.transcript {
+  list-style: none;
+  width: 100%;
+  max-height: 8.5rem;
+  overflow: auto;
+}
+.transcript li {
+  font-size: 0.9rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
 .ingest-note { flex: 1 1 16rem; }
 
 .processing {
@@ -288,9 +359,19 @@ audio:focus-visible {
 }
 
 @media (max-width: 860px) {
-  .source, .workspace { grid-template-columns: 1fr; }
+  .mic, .source, .workspace { grid-template-columns: 1fr; }
   .panel { border-right: none; border-bottom: 1px solid var(--line); }
-  .feed, .topics { max-height: none; }
+  .feed, .topics, .transcript { max-height: none; }
+  .mic-button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mic-button[aria-pressed="true"] {
+    animation: mic-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes mic-pulse {
+    50% { box-shadow: 0 0 0 0.45rem rgba(113, 66, 20, 0.18); }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

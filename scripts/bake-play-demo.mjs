@@ -100,7 +100,16 @@ const artifactNames = [
   "claims.json",
   "scorecard.json",
 ];
-const uiNames = ["index.html", "play.css", "play.js", "ingest.js"];
+const uiNames = [
+  "index.html",
+  "play.css",
+  "play.js",
+  "ingest.js",
+  "mic.js",
+  "mic-engine.js",
+  "mic-worklet.js",
+  "mic-config.json",
+];
 
 for (const dir of new Set([staging, outDir])) {
   await mkdir(dir, { recursive: true });

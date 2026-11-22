@@ -1,6 +1,3 @@
-import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { performance } from "node:perf_hooks";
 import { ClaimIndex } from "../pipeline/claims.js";
 import type { ResearcherHandle } from "../pipeline/research.js";
 import { isCitedFact } from "../pipeline/stages.js";
@@ -35,6 +32,17 @@ export interface PipelineSessionConfig {
   grouper: TopicGrouper;
   researcher: Researcher;
   pageBuilder: PageBuilder;
+  /** When false, finalize keeps artifacts in memory and does not touch disk. */
+  persist?: boolean;
+}
+
+export interface PipelineSnapshot {
+  timeline: TimelineEvent[];
+  pages: Page[];
+  pagesCreated: number;
+  pagesUpdated: number;
+  factsProposed: number;
+  researchRequests: number;
 }
 
 export interface PipelineSession extends PipelineSessionConfig {
@@ -52,6 +60,7 @@ export interface PipelineSession extends PipelineSessionConfig {
   processSegments(segments: TranscriptSegment[], mediaTimeMs: number): Promise<void>;
   processClaim(claim: Claim): Promise<void>;
   flushExtractor(mediaTimeMs: number): Promise<void>;
+  snapshot(): PipelineSnapshot;
   finalize(
     transcriberStatus: TranscriberStatus,
     skipReason?: string,
@@ -88,7 +97,7 @@ function summarizeLatency(
 }
 
 export function createPipelineSession(config: PipelineSessionConfig): PipelineSession {
-  const started = performance.now();
+  const started = globalThis.performance.now();
   const timeline: TimelineEvent[] = [];
   const topics: Topic[] = [];
   const pages = new Map<string, Page>();
@@ -119,7 +128,7 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
     claim?: Claim,
   ): void => {
     timeline.push({
-      atMs: Number((performance.now() - started).toFixed(3)),
+      atMs: Number((globalThis.performance.now() - started).toFixed(3)),
       mediaMs,
       stage,
       type,
@@ -132,14 +141,14 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
   };
 
   const timed = async <T>(stage: string, work: () => Promise<T>): Promise<T> => {
-    const before = performance.now();
+    const before = globalThis.performance.now();
     const result = await work();
-    latencySamples[stage]!.push(performance.now() - before);
+    latencySamples[stage]!.push(globalThis.performance.now() - before);
     return result;
   };
 
   const processClaim = async (claim: Claim): Promise<void> => {
-    const claimReceived = performance.now();
+    const claimReceived = globalThis.performance.now();
     claimsSeen.push(claim);
     const { merged, isRepeat } = claimIndex.add({
       claimId: claim.id,
@@ -200,7 +209,7 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
     const action = existingPage ? "updated" : "created";
     if (existingPage) pagesUpdated += 1;
     else pagesCreated += 1;
-    const seconds = (performance.now() - claimReceived) / 1_000;
+    const seconds = (globalThis.performance.now() - claimReceived) / 1_000;
     claimToPageSeconds.push({
       claimId: claim.id,
       pageId: built.page.id,
@@ -235,6 +244,20 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
     );
     for (const claim of remaining) await processClaim(claim);
   };
+
+  const snapshot = (): PipelineSnapshot => ({
+    timeline: timeline.map((event) => ({ ...event })),
+    pages: [...pages.values()].map((page) => ({
+      ...page,
+      claimIds: [...page.claimIds],
+      claims: page.claims.map((claim) => ({ ...claim })),
+      facts: page.facts.map((fact) => ({ ...fact })),
+    })),
+    pagesCreated,
+    pagesUpdated,
+    factsProposed,
+    researchRequests: config.researchHandle.stats().requests,
+  });
 
   const finalize = async (
     transcriberStatus: TranscriberStatus,
@@ -297,6 +320,20 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
     };
 
     await config.researchHandle.flush?.();
+    if (config.persist === false) {
+      return {
+        runDir: config.runDir,
+        deckPath: "",
+        timelinePath: "",
+        scorecardPath: "",
+        claimsPath: "",
+        scorecard,
+        timeline,
+        pages: pageList,
+      };
+    }
+    const { writeFile } = await import("node:fs/promises");
+    const { join } = await import("node:path");
     const deckPath = join(config.runDir, "deck.html");
     const timelinePath = join(config.runDir, "timeline.json");
     const scorecardPath = join(config.runDir, "scorecard.json");
@@ -346,6 +383,7 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
     processClaim,
     processSegments,
     flushExtractor,
+    snapshot,
     finalize,
   };
 }

@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { classifyClaim } from "./claims.js";
 import type {
   BuildPageInput,
@@ -188,6 +187,9 @@ export class FixtureResearcher implements Researcher {
   private constructor(private readonly facts: Record<string, Fact[]>) {}
 
   static async fromFile(path: string): Promise<FixtureResearcher> {
+    // Loaded only when a Node replay asks for the fixture file. The browser
+    // bundle never calls this, so it does not need the filesystem.
+    const { readFile } = await import("node:fs/promises");
     const parsed = JSON.parse(await readFile(path, "utf8")) as {
       facts: Record<string, Fact[]>;
     };

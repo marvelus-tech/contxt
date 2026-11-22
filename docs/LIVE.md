@@ -30,10 +30,29 @@ npm run live -- samples/recording.wav --transcriber deepgram-live
 
 If `DEEPGRAM_API_KEY` is missing, the run completes with `transcriberStatus: "skipped"` like other cloud adapters.
 
-## Out of scope for v1
+## Browser microphone
 
-- Microphone capture (pipe `ffmpeg` or `sox` into a WAV file, then use Deepgram live). The play UI exposes a deferred `microphone` ingest adapter (`pipeline/ingest.ts`) so that work has a typed boundary.
-- File upload in the browser (deferred `file-upload` adapter; the hosted demo auto-loads the 1992 debate instead)
+The play page captures the microphone, shows Deepgram partials immediately, and feeds each final line into the same claim, topic, research and page session as `runLive`. Citations for live speech come from Wikipedia in the browser. The baked 1992 debate stays on the page and still uses fixture research with zero Tavily calls. File upload stays deferred.
+
+The browser never sees `DEEPGRAM_API_KEY`. A server calls `POST https://api.deepgram.com/v1/auth/grant` and returns only a short-lived JWT. The page opens `wss://api.deepgram.com/v1/listen` with the WebSocket subprotocols `bearer` and that JWT.
+
+```bash
+npm run mic:serve
+# http://127.0.0.1:8787/  needs DEEPGRAM_API_KEY in the environment or .env
+```
+
+GitHub Pages cannot mint tokens. The smallest host for the page and the token route together is the Cloudflare Worker in `wrangler.jsonc`:
+
+```bash
+npx wrangler secret put DEEPGRAM_API_KEY
+npx wrangler deploy
+```
+
+The key needs Member permission or higher. After deploy, set `web/play/mic-config.json` `tokenUrl` to `https://<worker>/api/mic/token` if the page is not served by that same Worker. Leave `tokenUrl` empty when the page and the token route share an origin.
+
+## Out of scope
+
+- File upload in the browser (deferred `file-upload` adapter)
 - AssemblyAI streaming
 - React UI
 

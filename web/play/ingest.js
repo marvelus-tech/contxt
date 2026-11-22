@@ -1,13 +1,11 @@
 /**
- * Browser ingest boundary. Mirrors pipeline/ingest.ts:
- * preloaded is the only live path; upload and microphone stay deferred.
+ * Browser ingest boundary. Mirrors pipeline/ingest.ts.
+ * Preloaded debate and live microphone are real. File upload stays deferred.
  */
 
 export const DEFERRED_INGEST_MESSAGE = {
   "file-upload":
-    "File upload is a deferred ingest adapter. This MVP auto-loads the 1992 debate presentation.",
-  microphone:
-    "Microphone capture is a deferred ingest adapter. This MVP auto-loads the 1992 debate presentation.",
+    "File upload is a deferred ingest adapter. Use the microphone, or open the 1992 debate.",
 };
 
 function assertPublicDemoIsOffline(meta) {
@@ -21,10 +19,22 @@ function assertPublicDemoIsOffline(meta) {
 
 export async function loadPreloadedSession() {
   const [session, pages, timeline, meta] = await Promise.all([
-    fetch("session.json").then((r) => r.json()),
-    fetch("pages.json").then((r) => r.json()),
-    fetch("timeline.json").then((r) => r.json()),
-    fetch("meta.json").then((r) => r.json()),
+    fetch("session.json").then((response) => {
+      if (!response.ok) throw new Error("session");
+      return response.json();
+    }),
+    fetch("pages.json").then((response) => {
+      if (!response.ok) throw new Error("pages");
+      return response.json();
+    }),
+    fetch("timeline.json").then((response) => {
+      if (!response.ok) throw new Error("timeline");
+      return response.json();
+    }),
+    fetch("meta.json").then((response) => {
+      if (!response.ok) throw new Error("meta");
+      return response.json();
+    }),
   ]);
   assertPublicDemoIsOffline(session);
   assertPublicDemoIsOffline(meta);
@@ -32,9 +42,14 @@ export async function loadPreloadedSession() {
 }
 
 export function startDeferredIngest(kind) {
-  const message = DEFERRED_INGEST_MESSAGE[kind];
-  if (!message) {
-    return { ok: false, kind, message: "Unknown ingest source." };
+  if (kind === "microphone") {
+    return {
+      ok: false,
+      kind,
+      message: "The microphone is live on this page. Use the microphone button.",
+    };
   }
+  const message = DEFERRED_INGEST_MESSAGE[kind];
+  if (!message) return { ok: false, kind, message: "Unknown ingest source." };
   return { ok: false, kind, message };
 }

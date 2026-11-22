@@ -1,0 +1,3 @@
+# Server-only files must not be uploaded as public assets.
+api/
+cursor/
