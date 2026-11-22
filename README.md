@@ -161,11 +161,18 @@ The play UI opens on a live microphone. Finished sentences become cited topics t
 
 ```bash
 npm run bake:play
-# optional: write into marvelus-tech.github.io checkout
-PAGES_PLAY_DIR=../marvelus-tech.github.io/contxt/play npm run bake:play
+# legacy play folder (redirects to sessions on Pages)
+
+npm run bake:session -- --slug 1992-debate \
+  --title "First 1992 presidential debate (Bush, Clinton, Perot), opening segment" \
+  --fixture samples/debate1992.json \
+  --audio samples/audio/debate1992.opus \
+  --clip samples/debate1992.clip.json \
+  --kind demo
+# writes ../marvelus-tech.github.io/cntxt/sessions/<slug>/ and updates sessions.json
 ```
 
-Canonical UI source is `web/play/`. Bake copies it next to `session.json`, `pages.json`, `timeline.json`, and `debate1992.opus`.
+Canonical session UI is `web/session/`. See [docs/session-publish.md](docs/session-publish.md) and [docs/DEPLOY-MIC.md](docs/DEPLOY-MIC.md).
 
 ## Claims, types and speaker names (step 3)
 
