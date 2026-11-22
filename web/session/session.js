@@ -91,9 +91,37 @@ function insightHeadline(page) {
   return truncate(page.currentClaim ?? "Moment", HEADLINE_MAX);
 }
 
+function normalizeForCompare(text) {
+  return String(text ?? "")
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function hookRedundantWithFact(page) {
+  const fact = page?.facts?.[0]?.text;
+  const claim = page?.currentClaim;
+  if (!fact || !claim) return false;
+  const a = normalizeForCompare(fact);
+  const b = normalizeForCompare(claim);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const shorter = a.length <= b.length ? a : b;
+  const longer = a.length > b.length ? a : b;
+  if (shorter.length >= 24 && longer.startsWith(shorter.slice(0, Math.min(48, shorter.length)))) {
+    return true;
+  }
+  return false;
+}
+
 function spokenHook(page) {
+  if (hookRedundantWithFact(page)) return "";
   return truncate(page?.currentClaim ?? "", HOOK_MAX);
 }
+
+const isBakedDemo =
+  session.ingest?.kind === "preloaded" || Boolean(meta?.bakedAt);
 
 const title = session.ingest.title || "CNTXT session";
 sessionTitle.textContent = title;
@@ -177,6 +205,9 @@ function renderFeed() {
 function renderInsightHero(page) {
   const facts = (page.facts ?? []).map(
     (fact, i) => `<li class="fact-card">
+        <div class="fact-card__head">
+          <span class="fact-card__index" aria-hidden="true">${i + 1}</span>
+        </div>
         <p class="fact-card__text">${escapeHtml(fact.text)}</p>
         <a class="fact-card__source" href="${escapeHtml(fact.sourceUrl)}" rel="noopener noreferrer" target="_blank">Source</a>
       </li>`,
@@ -208,7 +239,7 @@ function renderInsightHero(page) {
     ${factsBlock}
     ${hookBlock}
     ${transcriptBlock}
-    <a class="present-link" href="deck.html#${encodeURIComponent(page.id)}">Present this topic</a>
+    <a class="btn-primary present-link" href="deck.html#${encodeURIComponent(page.id)}">Present this topic</a>
   `;
 }
 
@@ -354,7 +385,11 @@ async function runProcessing() {
   } catch {
     seen = false;
   }
-  const skip = new URLSearchParams(location.search).has("ready") || reduce || seen;
+  const skip =
+    new URLSearchParams(location.search).has("ready") ||
+    reduce ||
+    seen ||
+    isBakedDemo;
 
   if (skip) {
     renderSteps(STAGES.length);

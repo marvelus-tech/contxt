@@ -1,7 +1,7 @@
-Static play demo. The 1992 debate auto-loads as a preloaded presentation.
+Baked session workspace UI (insight-first layout).
 
-Regenerate baked JSON/HTML/audio from marvelus-tech/contxt:
+Source of truth: marvelus-tech.github.io cntxt/sessions/1992-debate/ (index.html, session.js, session.css).
 
-  PAGES_PLAY_DIR=/path/to/marvelus-tech.github.io/cntxt/play npm run bake:play
+Copy into github.io with: npm run bake:session -- --slug <id> --title "…"
 
-UI source of truth: contxt repo web/play/. Research is fixture plus offline keyword context (0 Tavily requests).
+Baked output lives at cntxt/sessions/<slug>/ on Pages. Load ../../shared.css from index.html (canonical shared.css on github.io cntxt/). web/shared.css in this repo is a copy for local template preview only.
