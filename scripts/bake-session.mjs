@@ -10,6 +10,8 @@
  *
  * Env:
  *   PAGES_ROOT  default ../marvelus-tech.github.io/cntxt
+ *
+ * Baked sessions assume Pages layout: sessions/<slug>/ with ../../shared.css on github.io.
  */
 import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
