@@ -1,4 +1,4 @@
-# CONTXT milestone 1: real audio in
+# CNTXT milestone 1: real audio in
 
 Run on 9 Nov 2026 (Melbourne time, AEDT).
 
@@ -52,7 +52,7 @@ Run on 9 Nov 2026 (Melbourne time, AEDT).
 | **Perot** | "Perrault" 3 times, "Perot" 3 times | "Perot" every time | "Perot" |
 | John Mashek / Sander Vanocur | "Maschick" / "Sandra Van Ocher" | "Masic" / "Sandra Vanocur" | "Masic" / "Sandra Van Ocker" |
 
-Every service got every numeric claim right. The real difference is names. Deepgram got the moderator and a candidate wrong, and that matters for CONTXT, because claims get grouped and researched by who said them and who they're about. Deepgram's number formatting is also inconsistent: some numbers come out as digits and some spelled out.
+Every service got every numeric claim right. The real difference is names. Deepgram got the moderator and a candidate wrong, and that matters for CNTXT, because claims get grouped and researched by who said them and who they're about. Deepgram's number formatting is also inconsistent: some numbers come out as digits and some spelled out.
 
 ## Recommendation
 
@@ -93,7 +93,7 @@ Keyterms fixed Deepgram's names: "Jim Lehrer" and "Perot" came out right, with n
 
 ## Notes and caveats
 
-- Speaker names in the fixture come from aligning the provider labels with the reference transcript. In real use, CONTXT will need its own naming step, such as matching self-introductions or a moderator cue list.
+- Speaker names in the fixture come from aligning the provider labels with the reference transcript. In real use, CNTXT will need its own naming step, such as matching self-introductions or a moderator cue list.
 - The harness now carries `speaker` from segments to claims. Claims are written to `out/<run>/claims.json`, the deck shows who said each claim, and the scorecard counts claims per speaker.
 - Deepgram spells out some numbers ("twelve years"), so the heuristic claim filter, which wants a digit or a cue word, keeps fewer of its sentences. That's 61 claims through the Deepgram adapter against 87 from the AssemblyAI fixture.
 - Each segment is one sentence, so the claim extractor sees sentences rather than whole two-minute answers.

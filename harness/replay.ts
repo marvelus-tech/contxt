@@ -171,7 +171,7 @@ export function formatScorecard(scorecard: Scorecard): string {
         `  ${metric.claimId}${metric.speaker ? ` (${metric.speaker})` : ""} -> ${metric.pageId}: ${metric.action} in ${metric.seconds.toFixed(3)} seconds`,
     )
     .join("\n");
-  return `CONTXT replay scorecard
+  return `CNTXT replay scorecard
 transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
 researcher: ${scorecard.researcher ?? "n/a"} (${scorecard.researcherStatus ?? "n/a"})${
     scorecard.researchRequests !== undefined
