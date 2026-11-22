@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="session.css">
 </head>
 <body>
-  <a class="skip" href="#workspace">Skip to topics</a>
+  <a class="skip" href="#insight-stage">Skip to insights</a>
   <header class="cntxt-top">
     <a class="cntxt-brand" href="../../">CNTXT</a>
     <div class="cntxt-top__actions">
@@ -45,34 +45,44 @@
   </section>
 
   <main class="workspace" id="workspace" hidden>
-    <section class="panel" aria-labelledby="topics-heading">
-      <div class="panel-head">
-        <h2 id="topics-heading">Topics</h2>
+    <section class="insight-stage" id="insight-stage" aria-labelledby="insight-heading">
+      <div class="insight-stage__head">
+        <h2 id="insight-heading" class="sr-only">Current insight</h2>
+        <nav class="carousel-nav" aria-label="Browse moments">
+          <button type="button" class="carousel-nav__btn" id="btn-prev" aria-label="Previous moment">Prev</button>
+          <p class="carousel-nav__count" id="carousel-count" aria-live="polite">—</p>
+          <button type="button" class="carousel-nav__btn" id="btn-next" aria-label="Next moment">Next</button>
+        </nav>
+        <button type="button" class="text-btn browse-btn" id="btn-browse" aria-expanded="false" aria-controls="moments-panel">
+          Browse moments
+        </button>
       </div>
-      <label class="sr-only" for="topic-search">Search topics</label>
-      <input id="topic-search" type="search" placeholder="Search topics or speakers" autocomplete="off">
-
-      <details class="refine">
-        <summary>Filter timeline</summary>
-        <div class="refine__body filters" role="group" aria-label="Timeline filters">
-          <button type="button" class="chip is-on" data-filter="all">All</button>
-          <button type="button" class="chip" data-filter="page-created">New</button>
-          <button type="button" class="chip" data-filter="page-updated">Updated</button>
-          <button type="button" class="chip" data-filter="claim-not-checkable">Skipped</button>
-        </div>
-      </details>
-
-      <ol id="feed" class="feed"></ol>
-    </section>
-
-    <section class="panel panel--detail" aria-labelledby="detail-heading">
-      <div class="panel-head">
-        <h2 id="detail-heading">Topic</h2>
-      </div>
-      <article id="topic-detail" class="topic-detail" tabindex="-1">
-        <p class="muted">Choose a topic from the list.</p>
+      <article id="topic-detail" class="insight-hero" tabindex="-1">
+        <p class="muted">Loading…</p>
       </article>
     </section>
+
+    <aside class="moments-panel" id="moments-panel" aria-labelledby="moments-heading" hidden>
+      <div class="moments-panel__head">
+        <h2 id="moments-heading">Moments</h2>
+        <button type="button" class="text-btn moments-panel__close" id="btn-close-moments">Close</button>
+      </div>
+      <p class="moments-peek" id="moments-peek"></p>
+      <div class="moments-panel__tools">
+        <label class="sr-only" for="topic-search">Search moments</label>
+        <input id="topic-search" type="search" placeholder="Search insights or speakers" autocomplete="off">
+
+        <details class="refine">
+          <summary>Filter timeline</summary>
+          <div class="refine__body filters" role="group" aria-label="Timeline filters">
+            <button type="button" class="chip is-on" data-filter="all">All</button>
+            <button type="button" class="chip" data-filter="page-updated">Updated</button>
+            <button type="button" class="chip" data-filter="claim-not-checkable">Skipped</button>
+          </div>
+        </details>
+      </div>
+      <ol id="feed" class="feed"></ol>
+    </aside>
   </main>
 
   <footer class="cntxt-foot">
