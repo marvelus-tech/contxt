@@ -305,10 +305,18 @@ export class HtmlPageBuilder implements PageBuilder {
   <h2>Cited facts</h2>
   <ul>${page.facts
     .slice(0, 5)
-    .map(
-      (fact) =>
-        `<li>${escapeHtml(fact.text)} <a href="${escapeHtml(fact.sourceUrl)}">Source</a></li>`,
-    )
+    .map((fact) => {
+      const meta: string[] = [];
+      if (fact.publisher) meta.push(escapeHtml(fact.publisher));
+      if (fact.sourceTitle && !fact.publisher) meta.push(escapeHtml(fact.sourceTitle));
+      if (fact.rating) meta.push(`Rating: ${escapeHtml(fact.rating)}`);
+      const metaHtml =
+        meta.length > 0
+          ? ` <span class="source-meta">(${meta.join(", ")})</span>`
+          : "";
+      const label = fact.provider === "google-fact-check" ? "Fact check" : "Source";
+      return `<li>${escapeHtml(fact.text)}${metaHtml} <a href="${escapeHtml(fact.sourceUrl)}">${label}</a></li>`;
+    })
     .join("")}</ul>
   <h2>Why it matters</h2>
   <p>This topic was selected because it contains a concrete claim worth checking.</p>

@@ -1,5 +1,5 @@
 import { ClaimIndex } from "../pipeline/claims.js";
-import type { ResearcherHandle } from "../pipeline/research.js";
+import type { ResearcherHandle } from "../pipeline/researchers.js";
 import { isCitedFact } from "../pipeline/stages.js";
 import type {
   Claim,
@@ -281,6 +281,8 @@ export function createPipelineSession(config: PipelineSessionConfig): PipelineSe
       researcherStatus: researchAvailability.status,
       researchRequests: researchStats.requests,
       researchCacheHits: researchStats.cacheHits,
+      claimsResearched: researchStats.claimsResearched,
+      claimsSkippedNonCheckable: researchStats.claimsSkippedNonCheckable,
       speed: config.speed,
       chunkMs: config.chunkMs,
       durationMs: config.durationMs,

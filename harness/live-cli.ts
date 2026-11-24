@@ -7,7 +7,7 @@ function usage(): string {
   contxt-live recording.wav --transcriber deepgram-live
 
 Transcribers: fixture (default for JSON), deepgram-live (default for WAV)
-Researchers: fixture, web, composite (default fixture; composite tries fixture then Tavily)`;
+Researchers: fixture, live, tavily, factcheck (default fixture; live queries Google Fact Check and Tavily in parallel)`;
 }
 
 function parseArgs(args: string[]): LiveOptions {
@@ -69,7 +69,12 @@ function parseArgs(args: string[]): LiveOptions {
   if (transcriber && !["fixture", "deepgram-live"].includes(transcriber)) {
     throw new Error(`Unknown transcriber: ${transcriber}`);
   }
-  if (researcher && !["fixture", "web", "composite"].includes(researcher)) {
+  if (
+    researcher &&
+    !["fixture", "live", "tavily", "factcheck", "web", "composite"].includes(
+      researcher,
+    )
+  ) {
     throw new Error(`Unknown researcher: ${researcher}`);
   }
   return {

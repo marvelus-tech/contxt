@@ -492,9 +492,15 @@ var HtmlPageBuilder = class {
         (claim) => `<li><time>${formatClock(claim.startMs)}</time> ${claim.speaker ? `<strong>${escapeHtml(claim.speaker)}:</strong> ` : ""}${escapeHtml(claim.text)}</li>`
       ).join("")}</ol>` : ""}
   <h2>Cited facts</h2>
-  <ul>${page.facts.slice(0, 5).map(
-        (fact) => `<li>${escapeHtml(fact.text)} <a href="${escapeHtml(fact.sourceUrl)}">Source</a></li>`
-      ).join("")}</ul>
+  <ul>${page.facts.slice(0, 5).map((fact) => {
+        const meta = [];
+        if (fact.publisher) meta.push(escapeHtml(fact.publisher));
+        if (fact.sourceTitle && !fact.publisher) meta.push(escapeHtml(fact.sourceTitle));
+        if (fact.rating) meta.push(`Rating: ${escapeHtml(fact.rating)}`);
+        const metaHtml = meta.length > 0 ? ` <span class="source-meta">(${meta.join(", ")})</span>` : "";
+        const label = fact.provider === "google-fact-check" ? "Fact check" : "Source";
+        return `<li>${escapeHtml(fact.text)}${metaHtml} <a href="${escapeHtml(fact.sourceUrl)}">${label}</a></li>`;
+      }).join("")}</ul>
   <h2>Why it matters</h2>
   <p>This topic was selected because it contains a concrete claim worth checking.</p>
 </section>`
@@ -696,6 +702,8 @@ function createPipelineSession(config) {
       researcherStatus: researchAvailability.status,
       researchRequests: researchStats.requests,
       researchCacheHits: researchStats.cacheHits,
+      claimsResearched: researchStats.claimsResearched,
+      claimsSkippedNonCheckable: researchStats.claimsSkippedNonCheckable,
       speed: config.speed,
       chunkMs: config.chunkMs,
       durationMs: config.durationMs,
@@ -959,7 +967,6 @@ function floatToInt16(sample) {
 }
 
 // pipeline/research.ts
-var DEFAULT_MAX_FACTS = 5;
 var SNIPPET_MAX = 280;
 var QUERY_MAX = 400;
 function buildResearchQuery(claim, topic) {
@@ -1038,7 +1045,7 @@ var WebResearcher = class {
       return this.cache[key] ?? [];
     }
     this.recordRequest();
-    const maxFacts = this.options.maxFacts ?? DEFAULT_MAX_FACTS;
+    const maxFacts = this.options.maxFacts ?? 5;
     const query = buildResearchQuery(claim, topic);
     let facts = [];
     try {
@@ -1095,7 +1102,12 @@ var WikipediaSearchProvider = class {
 
 // web/mic/browser.ts
 function createMicrophonePipeline(fetchImpl = fetch) {
-  const stats = { requests: 0, cacheHits: 0 };
+  const stats = {
+    requests: 0,
+    cacheHits: 0,
+    claimsResearched: 0,
+    claimsSkippedNonCheckable: 0
+  };
   const researcher = new WebResearcher({
     provider: new WikipediaSearchProvider(fetchImpl),
     maxFacts: 3,

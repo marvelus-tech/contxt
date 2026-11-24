@@ -4,7 +4,7 @@ import {
   createResearcher,
   type ResearcherHandle,
   type ResearcherMode,
-} from "../pipeline/research.js";
+} from "../pipeline/researchers.js";
 import { createLiveSource, type DeepgramLiveOptions } from "../pipeline/live.js";
 import {
   HeuristicClaimExtractor,
@@ -78,7 +78,12 @@ export async function runLive(options: LiveOptions): Promise<LiveResult> {
           id: options.researcher ?? "custom",
           researcher: options.stages.researcher,
           status: async () => ({ status: "ok" as const }),
-          stats: () => ({ requests: 0, cacheHits: 0 }),
+          stats: () => ({
+            requests: 0,
+            cacheHits: 0,
+            claimsResearched: 0,
+            claimsSkippedNonCheckable: 0,
+          }),
         }
       : await createResearcher({
           mode: options.researcher ?? "fixture",
