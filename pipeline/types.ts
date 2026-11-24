@@ -53,6 +53,11 @@ export interface Topic {
 export interface Fact {
   text: string;
   sourceUrl?: string | null;
+  sourceTitle?: string;
+  publisher?: string;
+  rating?: string;
+  provider?: "tavily" | "google-fact-check" | string;
+  publishedDate?: string;
 }
 
 export interface Page {
@@ -63,7 +68,12 @@ export interface Page {
   currentSpeaker?: string;
   claimIds: string[];
   claims: PageClaim[];
-  facts: Array<{ text: string; sourceUrl: string }>;
+  facts: Array<
+    {
+      text: string;
+      sourceUrl: string;
+    } & Pick<Fact, "sourceTitle" | "publisher" | "rating" | "provider" | "publishedDate">
+  >;
   createdAtMs: number;
   updatedAtMs: number;
 }
@@ -159,6 +169,8 @@ export interface Scorecard {
   researcherStatus?: ResearcherStatus;
   researchRequests?: number;
   researchCacheHits?: number;
+  claimsResearched?: number;
+  claimsSkippedNonCheckable?: number;
   speed: number;
   chunkMs: number;
   durationMs: number;

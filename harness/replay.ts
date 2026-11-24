@@ -5,7 +5,7 @@ import {
   createResearcher,
   type ResearcherHandle,
   type ResearcherMode,
-} from "../pipeline/research.js";
+} from "../pipeline/researchers.js";
 import {
   HeuristicClaimExtractor,
   HeuristicTopicGrouper,
@@ -43,6 +43,8 @@ export interface ReplayOptions {
   speakerHints?: string[];
   researcher?: ResearcherMode;
   researchFixture?: string;
+  researchCache?: string;
+  maxResearchClaims?: number;
   outRoot?: string;
   runId?: string;
   stages?: ReplayStages;
@@ -71,6 +73,10 @@ transcriber: ${scorecard.transcriber} (${scorecard.transcriberStatus})
 researcher: ${scorecard.researcher ?? "n/a"} (${scorecard.researcherStatus ?? "n/a"})${
     scorecard.researchRequests !== undefined
       ? ` | requests ${scorecard.researchRequests} cache hits ${scorecard.researchCacheHits ?? 0}`
+      : ""
+  }${
+    scorecard.claimsResearched !== undefined
+      ? ` | researched ${scorecard.claimsResearched} skipped non-checkable ${scorecard.claimsSkippedNonCheckable ?? 0}`
       : ""
   }
 claims extracted: ${scorecard.claimStats?.claimsExtracted ?? scorecard.claimToPageSeconds.length}
@@ -126,12 +132,23 @@ export async function runReplay(options: ReplayOptions): Promise<ReplayResult> {
           id: options.researcher ?? "custom",
           researcher: options.stages.researcher,
           status: async () => ({ status: "ok" as const }),
-          stats: () => ({ requests: 0, cacheHits: 0 }),
+          stats: () => ({
+            requests: 0,
+            cacheHits: 0,
+            claimsResearched: 0,
+            claimsSkippedNonCheckable: 0,
+          }),
         }
       : await createResearcher({
           mode: options.researcher ?? "fixture",
           fixturePath: resolve(options.researchFixture ?? "samples/research.json"),
           cachePath: join(runDir, "research-cache.json"),
+          ...(options.researchCache
+            ? { cacheDir: resolve(options.researchCache) }
+            : {}),
+          ...(options.maxResearchClaims !== undefined
+            ? { maxClaims: options.maxResearchClaims }
+            : {}),
         });
   const pageBuilder = options.stages?.pageBuilder ?? new HtmlPageBuilder();
 

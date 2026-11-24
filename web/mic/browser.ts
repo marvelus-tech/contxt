@@ -33,7 +33,12 @@ export {
  * Citations come from Wikipedia in the browser, so no search key ships in the page.
  */
 export function createMicrophonePipeline(fetchImpl: typeof fetch = fetch) {
-  const stats = { requests: 0, cacheHits: 0 };
+  const stats = {
+    requests: 0,
+    cacheHits: 0,
+    claimsResearched: 0,
+    claimsSkippedNonCheckable: 0,
+  };
   const researcher = new WebResearcher({
     provider: new WikipediaSearchProvider(fetchImpl),
     maxFacts: 3,

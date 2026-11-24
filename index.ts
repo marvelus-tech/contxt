@@ -25,12 +25,18 @@ export type { CloudTranscription, TimedWord } from "./pipeline/cloud.js";
 export type { Claim, PageClaim, TranscriptSegment } from "./pipeline/types.js";
 export {
   buildResearchQuery,
-  createResearcher,
   TavilySearchProvider,
   WebResearcher,
-  CompositeResearcher,
+  hitsToFacts,
 } from "./pipeline/research.js";
-export type { ResearcherMode, ResearcherHandle } from "./pipeline/research.js";
+export {
+  buildCompositeResearchQuery,
+  createResearcher,
+  CompositeResearcher,
+  GoogleFactCheckResearcher,
+  TavilyResearcher,
+} from "./pipeline/researchers.js";
+export type { ResearcherMode, ResearcherHandle } from "./pipeline/researchers.js";
 export {
   KeywordContextResearcher,
   createOfflineDemoResearcher,

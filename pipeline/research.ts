@@ -1,11 +1,7 @@
 import { isCitedFact } from "./stages.js";
-import { FixtureResearcher } from "./stages.js";
 import type { Claim, Fact, Researcher, Topic } from "./types.js";
 
-import type { ResearcherStatus } from "./types.js";
-
-export type ResearcherMode = "fixture" | "web" | "composite";
-export type { ResearcherStatus };
+export type { ResearcherStatus } from "./types.js";
 
 export interface SearchHit {
   title?: string;
@@ -18,22 +14,6 @@ export interface SearchProvider {
   search(query: string, maxResults: number): Promise<SearchHit[]>;
 }
 
-export interface ResearcherStats {
-  requests: number;
-  cacheHits: number;
-}
-
-export interface ResearcherHandle {
-  readonly id: string;
-  researcher: Researcher;
-  status(): Promise<{ status: ResearcherStatus; reason?: string }>;
-  stats(): ResearcherStats;
-  flush?(): Promise<void>;
-}
-
-type FetchLike = typeof fetch;
-
-const DEFAULT_MAX_FACTS = 5;
 const SNIPPET_MAX = 280;
 const QUERY_MAX = 400;
 
@@ -81,7 +61,7 @@ export class TavilySearchProvider implements SearchProvider {
 
   constructor(
     private readonly apiKey: string,
-    private readonly fetchImpl: FetchLike = fetch,
+    private readonly fetchImpl: typeof fetch = fetch,
   ) {}
 
   async search(query: string, maxResults: number): Promise<SearchHit[]> {
@@ -139,7 +119,7 @@ export interface WebResearcherOptions {
   provider: SearchProvider;
   cachePath?: string;
   maxFacts?: number;
-  stats?: ResearcherStats;
+  stats?: { requests: number; cacheHits: number };
 }
 
 export class WebResearcher implements Researcher {
@@ -174,7 +154,7 @@ export class WebResearcher implements Researcher {
       return this.cache[key] ?? [];
     }
     this.recordRequest();
-    const maxFacts = this.options.maxFacts ?? DEFAULT_MAX_FACTS;
+    const maxFacts = this.options.maxFacts ?? 5;
     const query = buildResearchQuery(claim, topic);
     let facts: Fact[] = [];
     try {
@@ -196,101 +176,19 @@ export class WebResearcher implements Researcher {
   }
 }
 
-export class CompositeResearcher implements Researcher {
-  readonly id: string;
-
-  constructor(
-    private readonly fixture: FixtureResearcher,
-    private readonly web: WebResearcher,
-  ) {
-    this.id = "composite";
-  }
-
-  async research(claim: Claim, topic: Topic): Promise<Fact[]> {
-    const fixtureFacts = await this.fixture.research(claim, topic);
-    if (fixtureFacts.length > 0) return fixtureFacts;
-    return this.web.research(claim, topic);
-  }
-
-  async flushCache(): Promise<void> {
-    await this.web.flushCache();
-  }
-}
-
-export interface CreateResearcherOptions {
-  mode: ResearcherMode;
+export async function createLegacyWebResearcher(options: {
   fixturePath: string;
   cachePath?: string;
   apiKey?: string;
   maxFacts?: number;
-  fetchImpl?: FetchLike;
-}
-
-export async function createResearcher(
-  options: CreateResearcherOptions,
-): Promise<ResearcherHandle> {
-  const stats: ResearcherStats = { requests: 0, cacheHits: 0 };
-  const maxFacts =
-    options.maxFacts ??
-    (readEnv("RESEARCH_MAX_FACTS")
-      ? Number(readEnv("RESEARCH_MAX_FACTS"))
-      : DEFAULT_MAX_FACTS);
+  fetchImpl?: typeof fetch;
+}): Promise<{ researcher: Researcher; flush?: () => Promise<void> }> {
   const apiKey = options.apiKey ?? readEnv("TAVILY_API_KEY") ?? "";
-
-  const fixture = await FixtureResearcher.fromFile(options.fixturePath);
-
-  if (options.mode === "fixture") {
-    return {
-      id: "fixture",
-      researcher: fixture,
-      async status() {
-        return { status: "ok" };
-      },
-      stats: () => stats,
-    };
-  }
-
-  const provider = apiKey
-    ? new TavilySearchProvider(apiKey, options.fetchImpl ?? fetch)
-    : undefined;
+  const provider = new TavilySearchProvider(apiKey, options.fetchImpl ?? fetch);
   const web = new WebResearcher({
-    provider: provider ?? new TavilySearchProvider("", options.fetchImpl ?? fetch),
+    provider,
     cachePath: options.cachePath,
-    maxFacts: Number.isFinite(maxFacts) ? maxFacts : DEFAULT_MAX_FACTS,
-    stats,
+    maxFacts: options.maxFacts,
   });
-
-  const webStatus = async (): Promise<{
-    status: ResearcherStatus;
-    reason?: string;
-  }> => {
-    if (!apiKey) {
-      return { status: "skipped", reason: "TAVILY_API_KEY is not set" };
-    }
-    if (!provider) return { status: "skipped", reason: "web research unavailable" };
-    return { status: "ok" };
-  };
-
-  if (options.mode === "web") {
-    return {
-      id: web.id,
-      researcher: web,
-      status: webStatus,
-      stats: () => stats,
-      flush: () => web.flushCache(),
-    };
-  }
-
-  const composite = new CompositeResearcher(fixture, web);
-  return {
-    id: composite.id,
-    researcher: composite,
-    async status() {
-      const web = await webStatus();
-      if (web.status === "ok") return { status: "ok" };
-      return { status: "ok", reason: web.reason };
-    },
-    stats: () => stats,
-    flush: () => composite.flushCache(),
-  };
+  return { researcher: web, flush: () => web.flushCache() };
 }

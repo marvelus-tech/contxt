@@ -10,7 +10,7 @@ function usage(): string {
   contxt-replay recording.opus --transcriber assemblyai --speakers "Jim Lehrer,Ross Perot,Bill Clinton"
 
 Transcribers: fixture, whisper, assemblyai, deepgram
-Researchers: fixture, web, composite (default fixture; composite tries fixture then Tavily)`;
+Researchers: fixture, live, tavily, factcheck (default fixture; live queries Google Fact Check and Tavily in parallel)`;
 }
 
 function parseArgs(args: string[]): ReplayOptions {
@@ -22,6 +22,8 @@ function parseArgs(args: string[]): ReplayOptions {
   const keyterms: string[] = [];
   let speakerHints: string[] = [];
   let researcher: ReplayOptions["researcher"];
+  let researchCache: string | undefined;
+  let maxResearchClaims: number | undefined;
 
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]!;
@@ -63,6 +65,14 @@ function parseArgs(args: string[]): ReplayOptions {
       researcher = args[++index] as ReplayOptions["researcher"];
       continue;
     }
+    if (argument === "--research-cache") {
+      researchCache = args[++index];
+      continue;
+    }
+    if (argument === "--max-research-claims") {
+      maxResearchClaims = Number(args[++index]);
+      continue;
+    }
     if (!argument.startsWith("-") && !inputPath) {
       inputPath = argument;
       continue;
@@ -79,7 +89,9 @@ function parseArgs(args: string[]): ReplayOptions {
   }
   if (
     researcher &&
-    !["fixture", "web", "composite"].includes(researcher)
+    !["fixture", "live", "tavily", "factcheck", "web", "composite"].includes(
+      researcher,
+    )
   ) {
     throw new Error(`Unknown researcher: ${researcher}`);
   }
@@ -92,6 +104,8 @@ function parseArgs(args: string[]): ReplayOptions {
     ...(keyterms.length ? { keyterms } : {}),
     ...(speakerHints.length ? { speakerHints } : {}),
     ...(researcher ? { researcher } : {}),
+    ...(researchCache ? { researchCache } : {}),
+    ...(maxResearchClaims !== undefined ? { maxResearchClaims } : {}),
   };
 }
 

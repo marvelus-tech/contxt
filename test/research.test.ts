@@ -7,10 +7,10 @@ import {
   WebResearcher,
   TavilySearchProvider,
   buildResearchQuery,
-  createResearcher,
   hitsToFacts,
   type SearchHit,
 } from "../pipeline/research.js";
+import { createResearcher } from "../pipeline/researchers.js";
 import { normalizeClaim } from "../pipeline/stages.js";
 import type { Claim, Topic } from "../pipeline/types.js";
 
