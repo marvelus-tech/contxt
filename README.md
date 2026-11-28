@@ -1,6 +1,6 @@
-# CONTXT replay harness
+# CNTXT replay harness
 
-CONTXT is a live context companion for anything spoken. This first step replays a recording through pluggable pipeline stages and measures how claims become cited topic pages.
+CNTXT is a live context companion for anything spoken. This first step replays a recording through pluggable pipeline stages and measures how claims become cited topic pages.
 
 Research defaults to a fixture for CI; Step 4 adds optional Tavily web research (`--researcher web|composite`). Step 2 adds real transcription through AssemblyAI and Deepgram, with speaker labels carried through to every claim. It does not rank speakers or pick winners.
 

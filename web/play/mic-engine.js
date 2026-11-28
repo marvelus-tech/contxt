@@ -482,7 +482,7 @@ var HtmlPageBuilder = class {
   }
   render(pages, timeline) {
     const sections = pages.map(
-      (page, index) => `<section id="${escapeHtml(page.id)}" class="page">
+      (page, index) => `<section id="${escapeHtml(page.id)}" class="deck-page page">
   <p class="eyebrow">Topic ${index + 1} of ${pages.length}</p>
   <h1>${escapeHtml(page.title)}</h1>
   <p class="claim">${escapeHtml(page.currentClaim)}</p>${page.currentSpeaker ? `
@@ -509,17 +509,58 @@ var HtmlPageBuilder = class {
       (event) => `<li><time>${(event.mediaMs / 1e3).toFixed(1)}s</time> ${escapeHtml(event.detail)}${event.claim ? `<br><span class="said">${event.speaker ? `<strong>${escapeHtml(event.speaker)}:</strong> ` : ""}${escapeHtml(event.claim)}</span>` : ""}</li>`
     ).join("");
     return `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-<title>CONTXT replay deck</title><style>
-:root{color:#24211d;background:#f7f0e4;font:18px/1.55 system-ui,sans-serif}body{margin:0}
-nav{position:fixed;inset:auto 0 0;display:flex;justify-content:center;gap:1rem;padding:1rem;background:#f7f0e4e8}
-.page{min-height:82vh;padding:8vh max(8vw,2rem);scroll-snap-align:start}.claim{font-size:1.5rem;max-width:50rem}
-.eyebrow,time,.speaker{color:#6d5843}.speaker{margin-top:-.5rem;font-weight:600}.said{color:#4a4038}a{color:#714214}main{scroll-snap-type:y mandatory}
-.timeline{padding:3rem max(8vw,2rem) 7rem}li{margin:.7rem 0}
-</style></head><body><main>${sections || '<section class="page"><h1>No topics yet</h1></section>'}
-<section class="timeline"><h1>Chronological timeline</h1><ol>${markers}</ol></section></main>
-<nav><button type="button" onclick="move(-1)">Previous</button><button type="button" onclick="move(1)">Next</button></nav>
-<script>const pages=[...document.querySelectorAll(".page")];let current=0;function move(step){current=Math.max(0,Math.min(pages.length-1,current+step));pages[current]?.scrollIntoView({behavior:"smooth"})}<\/script>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CNTXT | Presentation deck</title>
+<link rel="stylesheet" href="../../shared.css">
+<style>
+  body.deck-shell { min-height: 100vh; font-size: 1.0625rem; line-height: 1.55; }
+  .deck-main { scroll-snap-type: y mandatory; padding: 1rem 0 6rem; }
+  .deck-page {
+    min-height: 80vh;
+    padding: 2.5rem var(--cntxt-gutter) 4rem;
+    scroll-snap-align: start;
+    max-width: var(--cntxt-measure);
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .deck-page h1 { font-size: clamp(1.35rem, 3vw, 1.75rem); font-weight: 700; letter-spacing: -0.02em; margin: 0.35rem 0 0.75rem; }
+  .deck-page h2 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.35rem 0 0.5rem; font-weight: 650; }
+  .deck-page .claim { font-size: clamp(1.15rem, 2.5vw, 1.45rem); max-width: 40rem; line-height: 1.4; }
+  .deck-page .eyebrow { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .deck-page .speaker { color: var(--muted); font-weight: 600; margin-top: 0.35rem; }
+  .deck-page ul, .deck-page ol { padding-left: 1.15rem; margin: 0.35rem 0; }
+  .deck-page li { margin: 0.45rem 0; }
+  .deck-page time, .deck-timeline .said { color: var(--muted); font-size: 0.92rem; }
+  .deck-page a { color: #714214; }
+  .deck-timeline { padding: 2rem var(--cntxt-gutter) 5rem; max-width: var(--cntxt-measure); margin: 0 auto; border-top: 1px solid var(--line); }
+  .deck-timeline h1 { font-size: 1.15rem; font-weight: 650; margin-bottom: 0.85rem; }
+  .deck-nav {
+    position: fixed; inset: auto 0 0; z-index: 25;
+    display: flex; justify-content: center; gap: 0.65rem;
+    padding: 0.85rem var(--cntxt-gutter);
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .deck-nav button { font: inherit; font-weight: 650; min-height: 2.75rem; padding: 0.55rem 1.1rem; border: 1px solid var(--line); background: var(--paper); cursor: pointer; }
+  .deck-nav button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .deck-back { font-size: 0.72rem; }
+</style></head>
+<body class="cntxt-shell deck-shell">
+<header class="cntxt-top">
+  <div class="cntxt-top__inner">
+    <a class="cntxt-brand" href="../../">CNTXT</a>
+    <nav aria-label="Deck">
+      <ul class="cntxt-top__nav">
+        <li><a class="cntxt-link deck-back" href="index.html">\u2190 Workspace</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main class="cntxt-main deck-main">${sections || '<section class="deck-page page"><h1>No topics yet</h1></section>'}
+<section class="deck-timeline timeline" aria-labelledby="timeline-heading"><h1 id="timeline-heading">Chronological timeline</h1><ol>${markers}</ol></section></main>
+<nav class="deck-nav" aria-label="Slide navigation"><button type="button" onclick="move(-1)">Previous</button><button type="button" onclick="move(1)">Next</button></nav>
+<script>const pages=[...document.querySelectorAll(".deck-page")];let current=0;function move(step){current=Math.max(0,Math.min(pages.length-1,current+step));pages[current]?.scrollIntoView({behavior:"smooth"})}<\/script>
 </body></html>`;
   }
 };

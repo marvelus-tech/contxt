@@ -1,6 +1,6 @@
-# CONTXT replay harness
+# CNTXT replay harness
 
-Purpose: replay recorded audio or a timestamped transcript through the CONTXT pipeline and score the run.
+Purpose: replay recorded audio or a timestamped transcript through the CNTXT pipeline and score the run.
 
 Install:
 npm install

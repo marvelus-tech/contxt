@@ -1,4 +1,4 @@
-# CONTXT milestone 2: claim extraction on real speech
+# CNTXT milestone 2: claim extraction on real speech
 
 Run on 9 Nov 2026 (Melbourne time, AEDT). The source is the 15:35 clip of the 1992 debate.
 
