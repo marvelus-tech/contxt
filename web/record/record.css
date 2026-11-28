@@ -1,0 +1,135 @@
+.record-layout {
+  width: 100%;
+  max-width: var(--cntxt-wide, 72rem);
+  margin: 0 auto;
+  padding: 0 var(--cntxt-gutter) 3rem;
+  box-sizing: border-box;
+}
+
+.mic-strip {
+  margin: 1rem 0 1.25rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.mic-strip__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.mic-strip__head h2 {
+  font-size: 1rem;
+  font-weight: 650;
+  margin: 0;
+}
+
+.research-pill {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mic-button {
+  font: inherit;
+  font-weight: 650;
+  width: 100%;
+  min-height: 3rem;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.mic-button[aria-pressed="true"] {
+  background: #2a251f;
+}
+
+.mic-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mic-status,
+.partial-line {
+  margin-top: 0.65rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.mic-status.is-bad {
+  color: #8b2e2e;
+}
+
+.partial-line code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  color: var(--ink);
+}
+
+.meter {
+  height: 4px;
+  background: var(--line);
+  margin-top: 0.5rem;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--ink);
+  transition: width 0.08s linear;
+}
+
+.heard-block {
+  margin-top: 0.85rem;
+}
+
+.heard-block[hidden] {
+  display: none !important;
+}
+
+.heard-heading {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.35rem;
+}
+
+.transcript-compact {
+  margin: 0;
+  padding-left: 1.1rem;
+  max-height: 8rem;
+  overflow-y: auto;
+  font-size: 0.88rem;
+}
+
+.export-panel {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--line);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.export-panel[hidden] {
+  display: none !important;
+}
+
+.export-panel .btn-secondary {
+  margin-top: 0.65rem;
+}
+
+.token-hint a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
