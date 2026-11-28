@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Reproducibly download the public-domain 1992 debate and cut the CONTXT test clip.
+# Reproducibly download the public-domain 1992 debate and cut the CNTXT test clip.
 # Output: samples/audio/debate1992.wav (16 kHz mono) and samples/audio/debate1992.opus.
 # The opus file is already committed; run this to rebuild it or to get the WAV.
 set -euo pipefail
