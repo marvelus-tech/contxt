@@ -28,6 +28,7 @@
     "eval:research": "npm run build && node bakeoff/eval_research.mjs",
     "bake:play": "npm run build && node scripts/bake-play-demo.mjs",
     "bake:session": "npm run build && node scripts/bake-session.mjs",
+    "publish:record": "npm run build && node scripts/publish-record-assets.mjs",
     "mic:serve": "npm run build && node dist/harness/mic-server.js"
   },
   "devDependencies": {

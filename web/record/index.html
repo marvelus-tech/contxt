@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNTXT | Live session</title>
+  <meta name="description" content="Record a live CNTXT session on the web. Finished sentences become cited insights with Wikipedia facts while you speak.">
+  <link rel="canonical" href="https://marvelus-tech.github.io/cntxt/sessions/record/">
+  <meta name="theme-color" content="#f7f4ee">
+  <link rel="stylesheet" href="../../shared.css">
+  <link rel="stylesheet" href="session.css">
+  <link rel="stylesheet" href="record.css">
+</head>
+<body class="cntxt-shell">
+  <a class="skip" href="#insight-stage">Skip to insights</a>
+  <header class="cntxt-top">
+    <div class="cntxt-top__inner">
+      <a class="cntxt-brand" href="../../">CNTXT</a>
+      <nav aria-label="Record">
+        <ul class="cntxt-top__nav">
+          <li><a class="cntxt-link" href="../../">Home</a></li>
+          <li><a class="cntxt-link" href="../">Sessions</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="cntxt-main session-layout record-layout">
+    <div class="session-head">
+      <h1 id="session-title">Live session</h1>
+      <p class="session-meta" id="session-meta">Live · insights appear as you speak</p>
+    </div>
+
+    <section class="mic-strip" aria-labelledby="mic-heading">
+      <div class="mic-strip__head">
+        <h2 id="mic-heading">Microphone</h2>
+        <p class="research-pill" id="research-note">Wikipedia · 0 lookups</p>
+      </div>
+      <button type="button" id="btn-mic" class="mic-button" aria-pressed="false">
+        <span id="mic-label">Use microphone</span>
+      </button>
+      <div class="meter" aria-hidden="true"><span id="mic-meter"></span></div>
+      <p id="mic-status" class="mic-status" role="status">Microphone is idle.</p>
+      <p id="mic-hint" class="partial-line token-hint" hidden></p>
+      <p id="partial" class="partial-line">Waiting for speech.</p>
+      <p id="heard-live" class="sr-only" aria-live="polite"></p>
+      <div id="heard-block" class="heard-block" hidden>
+        <h3 class="heard-heading">Heard</h3>
+        <ol id="transcript" class="transcript-compact"></ol>
+      </div>
+      <h3 class="sr-only">Snapshot export</h3>
+      <div id="export-panel" class="export-panel" hidden>
+        <p>Session lives in browser memory only. Download JSON, then run <code>npm run bake:session</code> locally to publish.</p>
+        <button type="button" class="btn-secondary" id="btn-download-snapshot">Download snapshot JSON</button>
+        <p class="muted" style="margin-top:0.5rem;font-size:0.85rem">
+          <a href="https://github.com/marvelus-tech/contxt/blob/main/docs/session-publish.md" rel="noreferrer">Session publish guide</a>
+        </p>
+      </div>
+    </section>
+
+    <div class="workspace" id="workspace">
+      <section class="insight-stage" id="insight-stage" aria-labelledby="insight-heading">
+        <div class="insight-stage__head">
+          <h2 id="insight-heading" class="sr-only">Current insight</h2>
+          <nav class="carousel-nav" aria-label="Browse moments">
+            <button type="button" class="btn-secondary carousel-nav__btn" id="btn-prev" aria-label="Previous moment">Prev</button>
+            <p class="carousel-nav__count" id="carousel-count" aria-live="polite">-</p>
+            <button type="button" class="btn-secondary carousel-nav__btn" id="btn-next" aria-label="Next moment">Next</button>
+          </nav>
+          <button type="button" class="btn-secondary browse-btn" id="btn-browse" aria-expanded="false" aria-controls="moments-panel">
+            Browse moments
+          </button>
+        </div>
+        <article id="topic-detail" class="insight-hero" tabindex="-1">
+          <p class="muted">Speak a checkable claim. Cited facts from Wikipedia land here as you talk.</p>
+        </article>
+      </section>
+
+      <aside class="moments-panel" id="moments-panel" aria-labelledby="moments-heading" hidden>
+        <div class="moments-panel__head">
+          <h2 id="moments-heading">Moments</h2>
+          <button type="button" class="text-btn moments-panel__close" id="btn-close-moments">Close</button>
+        </div>
+        <p class="moments-peek" id="moments-peek"></p>
+        <div class="moments-panel__tools">
+          <label class="sr-only" for="topic-search">Search moments</label>
+          <input id="topic-search" type="search" placeholder="Search insights or speakers" autocomplete="off">
+          <details class="refine">
+            <summary>Filter timeline</summary>
+            <div class="refine__body filters" role="group" aria-label="Timeline filters">
+              <button type="button" class="chip is-on" data-filter="all">All</button>
+              <button type="button" class="chip" data-filter="page-updated">Updated</button>
+              <button type="button" class="chip" data-filter="claim-not-checkable">Skipped</button>
+            </div>
+          </details>
+        </div>
+        <ol id="feed" class="feed"></ol>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="cntxt-foot">
+    <div class="cntxt-foot__inner">
+      <nav aria-label="Footer">
+        <ul class="cntxt-foot__nav">
+          <li><a href="../../">Home</a></li>
+          <li><a href="../">Sessions</a></li>
+          <li><a href="../1992-debate/">Demo</a></li>
+          <li><a href="https://github.com/marvelus-tech/contxt" rel="noreferrer">GitHub</a></li>
+        </ul>
+      </nav>
+      <p class="cntxt-foot__note">Live record has no deck until you bake a named session.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const name = params.get("name")?.trim();
+    if (name) {
+      document.getElementById("session-title").textContent = name;
+      document.title = `CNTXT | ${name}`;
+    }
+
+    let config = { tokenUrl: "" };
+    try {
+      const response = await fetch("./mic-config.json", { cache: "no-store" });
+      if (response.ok) config = await response.json();
+    } catch {
+      config = { tokenUrl: "" };
+    }
+
+    const tokenUrl = typeof config.tokenUrl === "string" ? config.tokenUrl.trim() : "";
+
+    if (!tokenUrl) {
+      const status = document.getElementById("mic-status");
+      const hint = document.getElementById("mic-hint");
+      status.textContent = "Live speech is not connected on this site yet.";
+      hint.hidden = false;
+      hint.innerHTML =
+        'Set <code>tokenUrl</code> in <code>mic-config.json</code> to your Worker <code>/api/mic/token</code> after deploy. Until then, open the <a href="../1992-debate/">1992 debate demo</a>. See <a href="https://github.com/marvelus-tech/contxt/blob/main/docs/DEPLOY-MIC.md" rel="noreferrer">DEPLOY-MIC.md</a>.';
+      document.getElementById("btn-mic").disabled = true;
+      document.getElementById("partial").textContent = "Mic unavailable without a speech token.";
+    } else {
+      await import("./record.js");
+    }
+  </script>
+</body>
+</html>

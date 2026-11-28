@@ -1,0 +1,4 @@
+{
+  "_comment": "After wrangler deploy, set tokenUrl to your Worker grant endpoint.",
+  "tokenUrl": "https://contxt-mic.YOUR_SUBDOMAIN.workers.dev/api/mic/token"
+}
